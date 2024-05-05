@@ -13,8 +13,8 @@ const fb = initializeApp({
   appId: "1:270389952986:web:010827f42571edac5c80e3"
 })
 
+export const app = fb
 export const db = getDatabase(fb)
-export const auth = getAuth(fb)
 export const placesRef = ref(db, 'places')
 // export const handsRef = ref(db, 'hands')
 export const usersRef = ref(db, 'users')

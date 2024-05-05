@@ -157,6 +157,8 @@
   import { db } from '../firebase'
   import { set, ref } from 'firebase/database'
   
+  import axios from 'axios'
+
   export default {
     name: 'MyFlag',
     mixins: [mix],
@@ -207,7 +209,7 @@
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         var vm = this;
 
-        this.$http.get('https://api.opencagedata.com/geocode/v1/json?q=' + encodeURIComponent(add) + '&key=ee2340e9a9e146e090943337d14a76d4&language=zh&pretty=1')
+        axios.get('https://api.opencagedata.com/geocode/v1/json?q=' + encodeURIComponent(add) + '&key=ee2340e9a9e146e090943337d14a76d4&language=zh&pretty=1')
           .then(response => {
             var d = response.body;
             console.log(d);
