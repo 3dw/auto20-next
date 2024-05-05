@@ -1,6 +1,6 @@
 <template lang="pug">
 .hello
-  loader(v-show="!users")
+  // loader(v-show="!users")
   p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
   .ui.massive.blue.button(v-if="uid && !root.name && users" @click="setMe()") 按此開始
   .ui.huge.buttons(v-if="!user")
@@ -148,148 +148,166 @@
     br
     br
     br
-</template>
-
-<script>
-
-import mix from '../mixins/mix.js'
-import Loader from './Loader'
-import { db } from '../firebase'
-import { set, ref } from 'firebase/database'
-
-export default {
-  name: 'MyFlag',
-  mixins: [mix],
-  props: ['uid', 'user', 'email', 'mySearch', 'provider', 'photoURL', 'users', 'isInApp'],
-  components: { Loader },
-  metaInfo: {
-    // if no subcomponents specify a metaInfo.title, this title will be used
-    title: '我的旗幟',
-  },
-  data () {
-    return {
-      myIndex: -1,
-      root: {},
-      local: {}
-    }
-  },
-  // firebase: {
-  //  users: usersRef
-  // },
-  methods: {
-    setMe () {
-      console.log(this.users)
-      const keys = Object.keys(this.users)
-      this.root = this.users[this.uid] || {}
-      this.root.email = this.email
-      console.log(this.root.email)
-      this.myIndex = keys.indexOf(this.uid)
-      if (this.uid && this.myIndex === -1) {
-        console.log('new')
-        this.myIndex = this.uid
-        this.root = {
-          name: this.user.providerData[0].displayName || '新朋友',
-          uid: this.uid,
-          email: this.email,
-          photoURL: this.photoURL || '',
-          note: ''
-        }
-      }
-      console.log(this.root.name)
-      console.log(this.root)
-      this.$forceUpdate()
+  </template>
+  
+  <script>
+  
+  import mix from '../mixins/mix.js'
+  //  import Loader from './Loader'
+  import { db } from '../firebase'
+  import { set, ref } from 'firebase/database'
+  
+  export default {
+    name: 'MyFlag',
+    mixins: [mix],
+    props: ['uid', 'user', 'email', 'mySearch', 'provider', 'photoURL', 'users', 'isInApp'],
+    // components: { Loader },
+    metaInfo: {
+      // if no subcomponents specify a metaInfo.title, this title will be used
+      title: '我的旗幟',
     },
-    checkLatLng: function (add) {
-      console.log('checkLatLng:' + add)
-      this.$http.get('https://api.opencagedata.com/geocode/v1/json?q=' + encodeURIComponent(add) + '&key=ee2340e9a9e146e090943337d14a76d4&language=zh&pretty=1').then(response => {
-        var d = response.body
-        console.log(d)
-        var lat, lng
-        try {
-          lat = d.results[0].bounds.northeast.lat
-          lng = d.results[0].bounds.northeast.lng
-        } catch (e$) {
-          console.log(e$)
-        }
-        if (!lat || !lng) {
-          try {
-            lat = d.query.results.Result.latitude
-            lng = d.query.results.Result.longitude
-          } catch (e$) {
-            console.log(e$)
+    data () {
+      return {
+        myIndex: -1,
+        root: {},
+        local: {}
+      }
+    },
+    // firebase: {
+    //  users: usersRef
+    // },
+    methods: {
+      setMe () {
+        console.log(this.users)
+        const keys = Object.keys(this.users)
+        this.root = this.users[this.uid] || {}
+        this.root.email = this.email
+        console.log(this.root.email)
+        this.myIndex = keys.indexOf(this.uid)
+        if (this.uid && this.myIndex === -1) {
+          console.log('new')
+          this.myIndex = this.uid
+          this.root = {
+            name: this.user.providerData[0].displayName || '新朋友',
+            uid: this.uid,
+            email: this.email,
+            photoURL: this.photoURL || '',
+            note: ''
           }
         }
-        vm.root.latlngColumn = lat + ',' + lng
-        vm.local.lat = parseFloat(lat)
-        vm.local.lng = parseFloat(lng)
-      })
-    },
-    usedAddr: function (hand) {
-      console.log(this.users)
-      const keys = Object.keys(this.users)
-      const usersList = keys.map(function (k) {
-        return vm.users[k]
-      })
-      var ans, i$, ref$, len$, h
-      ans = false
-      for (i$ = 0, len$ = (ref$ = usersList.filter(fn$)).length; i$ < len$; ++i$) {
-        h = ref$[i$]
-        if (h.latlngColumn === hand.latlngColumn) {
-          ans = true
-          break
-        }
-      }
-      if (hand.latlngColumn === 'undefined,undefined' || hand.latlngColumn === '36.778261,-119.4179324') {
+        console.log(this.root.name)
+        console.log(this.root)
+        this.$forceUpdate()
+      },
+      checkLatLng: function(add) {
+        console.log('checkLatLng:' + add);
+        
+        // 將 Vue 實例存儲到變量中
+
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        var vm = this;
+
+        this.$http.get('https://api.opencagedata.com/geocode/v1/json?q=' + encodeURIComponent(add) + '&key=ee2340e9a9e146e090943337d14a76d4&language=zh&pretty=1')
+          .then(response => {
+            var d = response.body;
+            console.log(d);
+            var lat, lng;
+            try {
+              lat = d.results[0].bounds.northeast.lat;
+              lng = d.results[0].bounds.northeast.lng;
+            } catch (e$) {
+              console.log(e$);
+            }
+            if (!lat || !lng) {
+              try {
+                lat = d.query.results.Result.latitude;
+                lng = d.query.results.Result.longitude;
+              } catch (e$) {
+                console.log(e$);
+              }
+            }
+            
+            // 使用存儲的 Vue 實例變量來設置資料
+            vm.root.latlngColumn = lat + ',' + lng;
+            vm.local.lat = parseFloat(lat);
+            vm.local.lng = parseFloat(lng);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      },
+
+      usedAddr: function (hand) {
+        console.log(this.users)
+        
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        var vm = this;
+
+        const keys = Object.keys(this.users)
+        const usersList = keys.map(function (k) {
+          return vm.users[k]
+        })
+        var ans, i$, ref$, len$, h
         ans = false
-      }
-      return ans
-      function fn$ (o) {
-        return o.name !== hand.name
-      }
-    },
-    tooDetail: function (addr) {
-      if (!addr) {
+        for (i$ = 0, len$ = (ref$ = usersList.filter(fn$)).length; i$ < len$; ++i$) {
+          h = ref$[i$]
+          if (h.latlngColumn === hand.latlngColumn) {
+            ans = true
+            break
+          }
+        }
+        if (hand.latlngColumn === 'undefined,undefined' || hand.latlngColumn === '36.778261,-119.4179324') {
+          ans = false
+        }
+        return ans
+        function fn$ (o) {
+          return o.name !== hand.name
+        }
+      },
+      tooDetail: function (addr) {
+        if (!addr) {
+          return false
+        }
+        if (addr.match(/(號|樓|F|f)/)) {
+          return true
+        }
         return false
+      },
+      updateFlag: function () {
+        this.root.lastUpdate = (new Date()).getTime()
+        if (this.myIndex > -1) {
+          set(ref(db, 'users/' + this.uid), this.root).then(
+            alert('更新成功!')
+          )
+        } else {
+          console.log('new2')
+          set(ref(db, 'users/' + this.uid), this.root).then(
+            alert('登錄成功!')
+          )
+        }
+      },
+      loginFB: function () {
+        this.$emit('loginFB')
+      },
+      loginGoogle: function () {
+        this.$emit('loginGoogle')
       }
-      if (addr.match(/(號|樓|F|f)/)) {
-        return true
-      }
-      return false
-    },
-    updateFlag: function () {
-      this.root.lastUpdate = (new Date()).getTime()
-      if (this.myIndex > -1) {
-        set(ref(db, 'users/' + this.uid), this.root).then(
-          alert('更新成功!')
-        )
-      } else {
-        console.log('new2')
-        set(ref(db, 'users/' + this.uid), this.root).then(
-          alert('登錄成功!')
-        )
-      }
-    },
-    loginFB: function () {
-      this.$emit('loginFB')
-    },
-    loginGoogle: function () {
-      this.$emit('loginGoogle')
     }
   }
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-label.required::before {
-  content: "*";
-  color:red;
-}
-
-i.red.star::before{
-  content: "*";
-  color:red;    
-}
-
-</style>
+  </script>
+  
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
+  <style scoped>
+  
+  label.required::before {
+    content: "*";
+    color:red;
+  }
+  
+  i.red.star::before{
+    content: "*";
+    color:red;    
+  }
+  
+  </style>
+  

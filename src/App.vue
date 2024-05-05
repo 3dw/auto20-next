@@ -2,6 +2,8 @@
 nav.ui.menu
   router-link.item(to="/") Home
   router-link.item(to="/about") About
+  .right.menu
+    router-link.item(to="/profile") profile
 router-view
 </template>
 
@@ -22,4 +24,8 @@ nav a {
 nav a.router-link-exact-active {
   background-color: #42b983 !important;
 }
+
+
+
+
 </style>
