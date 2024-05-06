@@ -16,6 +16,8 @@ import { app, usersRef, placesRef, groupsRef } from './firebase';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 
+const inApp = new InApp(window.navigator.userAgent);
+
 const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider()
@@ -26,11 +28,14 @@ export default defineComponent({
   name: 'WeLearn',
   data () {
     return {
-      users: null,
-      user: null,
-      email: null,
-      uid: null,
-      photoURL: null
+      users: null as any,
+      user: null as any,
+      email: null as string | null,
+      uid: null as string | null,
+      photoURL: null as string | null,
+      isInApp: inApp.isInApp,
+      groups: null as [string] | null,
+      places: null as [string] | null,
     }
   },
   mounted () {
@@ -54,7 +59,7 @@ export default defineComponent({
     })
     // console.log(this.$localStorage.get(n))
     if (localStorage.getItem('book')) {
-      this.getLocal('book')
+    //  this.getLocal('book')
     }
   },
   watch: {
@@ -70,13 +75,21 @@ export default defineComponent({
     }
   },
   methods: {
+    /* getLocal: function (n: string) {
+      const item = localStorage.getItem(n);
+      if (item) {
+        this[n] = JSON.parse(item);
+      } else {
+        console.log(`No local storage item found for key: ${n}`);
+      }
+    }, */
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this
       auth.signOut().then(function() {
         vm.user = null
         vm.uid = null
-        vm.photoURL = null
+        vm.photoURL = ''
         console.log(vm.$router);
         vm.$router.push('/');
       })
@@ -91,14 +104,18 @@ export default defineComponent({
         signInWithPopup(auth, provider).then((result) => {
           // This gives you a Google Access Token. You can use it to access the Google API.
           const credential = GoogleAuthProvider.credentialFromResult(result)
-          const token = credential.accessToken
+          const token = (credential || {}).accessToken
           // The signed-in user info.
           const user = result.user
           vm.user = user
           vm.email = user.providerData[0].email
           // vm.token = token
           vm.uid = user.uid
-          vm.photoURL = decodeURI(user.photoURL)
+          if (user.photoURL) {
+            vm.photoURL = decodeURI(user.photoURL);
+          } else {
+            vm.photoURL = null; // or set a default value if necessary
+          }
           if (vm.uid && vm.users[vm.uid]) {
             vm.user = vm.users[vm.uid]
           }
