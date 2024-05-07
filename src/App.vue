@@ -1,10 +1,17 @@
-<template lang = "pug">
+<template lang="pug">
 nav.ui.menu
+  button.no-border.ui.item(@click="toggleSidebar")
+    i.icon.bars
   router-link.item(to="/") Home
   router-link.item(to="/about") About
-  .right.menu
+  div.right.menu
     router-link.item(to="/profile") profile
     button.no-border.ui.item(v-if="uid", @click="logout") logout
+.ui.sidebar.vertical.menu(:class="{'hidden': !sidebarVisible}")
+  router-link.item(to="/") Home
+  router-link.item(to="/about") About
+  router-link.item(to="/profile") Profile
+.ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 router-view(:uid="uid", :users="users", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle")
 </template>
 
@@ -28,7 +35,10 @@ export default defineComponent({
   name: 'WeLearn',
   data () {
     return {
+      sidebarVisible: false,
+      // eslint-disable-next-line
       users: null as any,
+      // eslint-disable-next-line
       user: null as any,
       email: null as string | null,
       uid: null as string | null,
@@ -83,6 +93,10 @@ export default defineComponent({
         console.log(`No local storage item found for key: ${n}`);
       }
     }, */
+    toggleSidebar() {
+      console.log('toggleSidebar');
+      this.sidebarVisible = !this.sidebarVisible;
+    },
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this
@@ -103,8 +117,8 @@ export default defineComponent({
         // signInWithRedirect(auth, provider)
         signInWithPopup(auth, provider).then((result) => {
           // This gives you a Google Access Token. You can use it to access the Google API.
-          const credential = GoogleAuthProvider.credentialFromResult(result)
-          const token = (credential || {}).accessToken
+          // const credential = GoogleAuthProvider.credentialFromResult(result)
+          // const token = (credential || {}).accessToken
           // The signed-in user info.
           const user = result.user
           vm.user = user
@@ -136,12 +150,20 @@ export default defineComponent({
   color: #2c3e50;
 }
 
-nav a {
+
+/* Media Query for devices wider than 768px */
+@media (min-width: 769px) {
+  .phone-only {
+    display: none; /* 在較大螢幕上隱藏 */
+  }
+}
+
+.ui.menu a.item {
   font-weight: bold;
   color: #2c3e50;
 }
 
-nav a.router-link-exact-active {
+a.router-link-exact-active {
   background-color: #42b983 !important;
 }
 
@@ -149,7 +171,33 @@ button.no-border {
   border: none;
 }
 
+/* CSS */
+.ui.sidebar {
+  transition: transform .3s ease, opacity .3s ease, visibility .3s ease !important;
+  z-index: 1000;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #fff;
+  opacity: 1;
+  visibility: visible !important;
+}
 
+.ui.sidebar.bg {
+  z-index: 2 !important; /* 設定一個低值 */
+  background-color: rgba(180, 180, 180, 0.62); /* 確保有背景色 */
+  width: 100vw;
+  cursor: pointer;
+}
+
+.ui.sidebar.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0s linear !important;
+  transform: translateX(-100%); /* 隱藏時向左滑動 */
+}
 
 
 </style>

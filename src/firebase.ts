@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app'
 import { ref, getDatabase } from 'firebase/database' 
-import { getAuth } from 'firebase/auth'
 
 // Initialize Firebase
 const fb = initializeApp({
