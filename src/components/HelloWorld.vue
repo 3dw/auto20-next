@@ -28,6 +28,7 @@ import Loader from './Loader.vue';
 
 interface UserOrPlace {
   lastUpdate?: number;
+  // eslint-disable-next-line
   [key: string]: any; // Additional properties as needed
 }
 
@@ -69,6 +70,7 @@ export default defineComponent({
     }
   },
   methods: {
+    // eslint-disable-next-line
     toList: (obj:any) => {
       if (!obj || typeof(obj) !== 'object') { 
         return []
