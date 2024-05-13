@@ -11,7 +11,15 @@
 
 ### 專案設定
 ```
-yarn install
+yarn
+```
+
+or 
+
+```
+
+npm i
+
 ```
 
 ### 編譯並熱重載以進行開發
@@ -19,15 +27,47 @@ yarn install
 yarn serve
 ```
 
+or 
+
+```
+npm run serve
+```
+
 ### 編譯並壓縮以進行生產
 ```
 yarn build
+```
+
+or 
+```
+npm run build
+```
+
+### 建構更新並上傳至網路
+
+#### Mac
+
+```
+sh deploy.sh
+```
+
+or 
+
+#### Windows
+
+```
+bash depoly.sh
 ```
 
 ### 檢查和修正檔案
 ```
 yarn lint
 ```
+or 
+```
+npm run lint
+```
+
 
 ### 自訂配置
 請參見 [配置參考](https://cli.vuejs.org/config/)。

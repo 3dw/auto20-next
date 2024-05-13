@@ -54,123 +54,100 @@ router-view(:uid="uid", :users="users", :places="places", :user="user", :email="
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import InApp from 'detect-inapp';
-import { onValue } from 'firebase/database';
-import { app, usersRef, placesRef, groupsRef } from './firebase';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
+import { onValue } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+import { app, usersRef, placesRef, groupsRef } from './firebase'; // 導入Firebase相關配置和參考
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
 
 
-const inApp = new InApp(window.navigator.userAgent);
+const inApp = new InApp(window.navigator.userAgent); // 創建InApp實例以檢測應用內瀏覽情況
 
-const auth = getAuth(app);
+const auth = getAuth(app); // 獲取Firebase身份驗證實例
 
-const provider = new GoogleAuthProvider()
-provider.addScope('https://www.googleapis.com/auth/userinfo.email')
+const provider = new GoogleAuthProvider(); // 創建Google認證提供者
+provider.addScope('https://www.googleapis.com/auth/userinfo.email'); // 要求Google提供者的電子郵件存取權限
 
 
 export default defineComponent({
-  name: 'WeLearn',
+  name: 'WeLearn', // 定義組件名稱
   data () {
     return {
-      sidebarVisible: false,
-      // eslint-disable-next-line
-      users: null as any,
-      // eslint-disable-next-line
-      user: null as any,
-      email: null as string | null,
-      uid: null as string | null,
-      photoURL: null as string | null,
-      isInApp: inApp.isInApp,
-      groups: null as [string] | null,
-      places: null as [string] | null,
+      sidebarVisible: false, // 定義側邊欄可見狀態
+      users: null as any, // 定義用戶資料變量
+      book: null as any, // 定義名簿資料變量 
+      user: null as any, // 定義當前用戶變量
+      email: null as string | null, // 定義電子郵件變量
+      uid: null as string | null, // 定義用戶ID變量
+      photoURL: null as string | null, // 定義用戶頭像URL變量
+      isInApp: inApp.isInApp, // 檢測是否在應用內部
+      groups: null as [string] | null, // 定義社團資料變量
+      places: null as [string] | null, // 定義地點資料變量
     }
   },
   mounted () {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const vm = this
-    console.log(vm.isInApp)
+    const vm = this; // 儲存當前Vue實例
+    console.log(vm.isInApp); // 輸出是否在應用內部的狀態
     onValue(usersRef, (snapshot) => {
-      const data = snapshot.val()
-      // console.log(data)
-      vm.users = data
-    })
+      const data = snapshot.val(); // 讀取用戶資料
+      vm.users = data; // 更新用戶資料狀態
+    });
     onValue(placesRef, (snapshot) => {
-      const data = snapshot.val()
-      // console.log(data)
-      vm.places = data
-    })
+      const data = snapshot.val(); // 讀取地點資料
+      vm.places = data; // 更新地點資料狀態
+    });
     onValue(groupsRef, (snapshot) => {
-      const data = snapshot.val()
-      // console.log(data)
-      vm.groups = data
-    })
-    // console.log(this.$localStorage.get(n))
+      const data = snapshot.val(); // 讀取社團資料
+      vm.groups = data; // 更新社團資料狀態
+    });
+
     if (localStorage.getItem('book')) {
-    //  this.getLocal('book')
+      console.log(localStorage.getItem('book'))
+      this.book = JSON.parse(localStorage.getItem('book') || '') // 讀取名簿資料變量 ;
     }
   },
   watch: {
     $route (to, from) {
-      console.log(from.path)
-      console.log(to.path)
-      /* this.$gtag.event('action', {
-        event_category: 'navigate',
-        event_action: 'from:' + from.path + ' to:' + to.path,
-        event_label: 'from:' + from.path + ' to:' + to.path,
-        value: 'from:' + from.path + ' to:' + to.path
-      }) */
+      console.log(from.path); // 輸出路由變更前的路徑
+      console.log(to.path); // 輸出路由變更後的路徑
     }
   },
   methods: {
-    /* getLocal: function (n: string) {
-      const item = localStorage.getItem(n);
-      if (item) {
-        this[n] = JSON.parse(item);
-      } else {
-        console.log(`No local storage item found for key: ${n}`);
-      }
-    }, */
     toggleSidebar() {
-      console.log('toggleSidebar');
-      this.sidebarVisible = !this.sidebarVisible;
+      console.log('toggleSidebar'); // 輸出切換側邊欄操作
+      this.sidebarVisible = !this.sidebarVisible; // 切換側邊欄的可見性
     },
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const vm = this
+      const vm = this; // 儲存當前Vue實例
       auth.signOut().then(function() {
-        vm.user = null
-        vm.uid = null
-        vm.photoURL = ''
-        console.log(vm.$router);
-        vm.$router.push('/');
-      })
+        vm.user = null; // 清除用戶資料
+        vm.uid = null; // 清除用戶ID
+        vm.photoURL = ''; // 清除用戶頭像URL
+        console.log(vm.$router); // 輸出路由實例
+        vm.$router.push('/'); // 導航回首頁
+      });
     },
     loginGoogle: function () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const vm = this
+      const vm = this; // 儲存當前Vue實例
       if (this.isInApp) {
-        window.alert('本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝')
+        window.alert('本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝'); // 提示不支援應用內登入
       } else {
-        // signInWithRedirect(auth, provider)
         signInWithPopup(auth, provider).then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          // const credential = GoogleAuthProvider.credentialFromResult(result)
-          // const token = (credential || {}).accessToken
-          // The signed-in user info.
-          const user = result.user
-          vm.user = user
-          vm.email = user.providerData[0].email
-          // vm.token = token
-          vm.uid = user.uid
+          const user = result.user; // 獲取登入後的用戶資訊
+          vm.user = user; // 更新用戶狀態
+          vm.email = user.providerData[0].email; // 更新電子郵件狀態
+          vm.uid = user.uid; // 更新用戶ID
           if (user.photoURL) {
-            vm.photoURL = decodeURI(user.photoURL);
+            vm.photoURL = decodeURI(user.photoURL); // 解碼並更新用戶頭像URL
           } else {
-            vm.photoURL = null; // or set a default value if necessary
+            vm.photoURL = null; // 設置用戶頭像URL為空
           }
           if (vm.uid && vm.users[vm.uid]) {
-            vm.user = vm.users[vm.uid]
+            vm.user = vm.users[vm.uid]; // 更新用戶資訊
           }
-        })
+        });
       }
     }
   }
