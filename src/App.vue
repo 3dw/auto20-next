@@ -2,17 +2,54 @@
 nav.ui.menu
   button.no-border.ui.item(@click="toggleSidebar")
     i.icon.bars
-  router-link.item(to="/") Home
-  router-link.item(to="/about") About
+  router-link.item(to="/")
+    i.home.icon
+    | 首頁
+  router-link.item.fat-only(to="/about")
+    i.info.icon
+    | 說明
+  router-link.item(to="/friends")
+    i.users.icon
+    | 朋友
+  router-link.item.fat-only(to="/groups")
+    i.globe.icon
+    | 社團
+  router-link.item.fat-only(to="/maps")
+    i.map.icon
+    | 地圖
+
+  //router-link.item.phone-only(to="/profile")
+    i.user.icon
+    | 我的
+  //button.no-border.ui.item.phone-only(v-if="uid", @click="logout") logout
+  //.fat-only
   div.right.menu
-    router-link.item(to="/profile") profile
+    router-link.item(to="/profile")
+      i.user.icon
+      | 我的
     button.no-border.ui.item(v-if="uid", @click="logout") logout
 .ui.sidebar.vertical.menu(:class="{'hidden': !sidebarVisible}")
-  router-link.item(to="/") Home
-  router-link.item(to="/about") About
-  router-link.item(to="/profile") Profile
+
+  router-link.item(to="/")
+    i.home.icon.no-float
+    | 首頁
+  router-link.item.fat-only(to="/about")
+    i.info.icon.no-float
+    | 說明
+  router-link.item(to="/friends")
+    i.users.icon.no-float
+    | 朋友
+  router-link.item(to="/groups")
+    i.globe.icon.no-float
+    | 社團
+  router-link.item(to="/maps")
+    i.map.icon.no-float
+    | 地圖
+  router-link.item(to="/profile")
+    i.user.icon.no-float
+    | 我的
 .ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
-router-view(:uid="uid", :users="users", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle")
+router-view(:uid="uid", :users="users", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle")
 </template>
 
 <script lang="ts">
@@ -154,7 +191,13 @@ export default defineComponent({
 /* Media Query for devices wider than 768px */
 @media (min-width: 769px) {
   .phone-only {
-    display: none; /* 在較大螢幕上隱藏 */
+    display: none !important; /* 在較大螢幕上隱藏 */
+  }
+}
+
+@media (max-width: 770px) {
+  .fat-only {
+    display: none !important;
   }
 }
 
@@ -169,6 +212,11 @@ a.router-link-exact-active {
 
 button.no-border {
   border: none;
+}
+
+.no-float {
+  float: none !important;
+  margin: .6em .6em !important;
 }
 
 /* CSS */

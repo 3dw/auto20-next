@@ -1,55 +1,82 @@
 <template lang="pug">
 .hello
-  h1 {{ msg }}
-  p
-    | For a guide and recipes on how to configure / customize this project,<br>
-    | check out the
-    a(href="https://cli.vuejs.org", target="_blank", rel="noopener") vue-cli documentation.
-  h3 Installed CLI Plugins
-  ul
-    li
-      a(href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel", target="_blank", rel="noopener") babel
-    li
-      a(href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router", target="_blank", rel="noopener") router
-    li
-      a(href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint", target="_blank", rel="noopener") eslint
-    li
-      a(href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript", target="_blank", rel="noopener") typescript
-  h3 Essential Links
-  ul
-    li
-      a(href="https://vuejs.org", target="_blank", rel="noopener") Core Docs
-    li
-      a(href="https://forum.vuejs.org", target="_blank", rel="noopener") Forum
-    li
-      a(href="https://chat.vuejs.org", target="_blank", rel="noopener") Community Chat
-    li
-      a(href="https://twitter.com/vuejs", target="_blank", rel="noopener") Twitter
-    li
-      a(href="https://news.vuejs.org", target="_blank", rel="noopener") News
-  h3 Ecosystem
-  ul
-    li
-      a(href="https://router.vuejs.org", target="_blank", rel="noopener") vue-router
-    li
-      a(href="https://vuex.vuejs.org", target="_blank", rel="noopener") vuex
-    li
-      a(href="https://github.com/vuejs/vue-devtools#vue-devtools", target="_blank", rel="noopener") vue-devtools
-    li
-      a(href="https://vue-loader.vuejs.org", target="_blank", rel="noopener") vue-loader
-    li
-      a(href="https://github.com/vuejs/awesome-vue", target="_blank", rel="noopener") awesome-vue
-
+  h4.ui.header 請先登入，升起互助旗，和
+    span {{ toList(users).length > 0 ? toList(users).length : '各' }}
+    | 位朋友相互認識
+br
+.ui.huge.buttons
+  router-link(to="/about").ui.purple.button 瞭解更多
+  router-link.ui.orange.button(to="/profile", v-if="!user", :class="{disabled: isInApp}")
+    // i.google.icon
+    | 登入
+  router-link.ui.blue.button(to="/profile", v-else)
+    | 前往我的旗幟
+.ui.divider
+p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
+  .ui.divider
+h2(v-if="users && toList(users).length > 0") 最近更新
+.ui.two.doubling.cards.container(v-if="toList(users).length > 0")
+  .ui.card(v-for="(h, index) in ordered_list.slice(0, 2)", :key="index")
+    card(:h="h", :full="true", :mySearch="mySearch", :uid="uid || ''", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook")
+loader(v-else)
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Card from './Card.vue';
+import Loader from './Loader.vue';
+
+interface UserOrPlace {
+  lastUpdate?: number;
+  [key: string]: any; // Additional properties as needed
+}
 
 export default defineComponent({
   name: 'HelloWorld',
+  components: { Card, Loader },
   props: {
-    msg: String,
+    users: {
+      type: Object,
+      required: false,
+      default: () => { 
+        return {}
+      }
+    },
+    places: {
+      type: Object,
+      required: false,
+      default: () => { 
+        return {}
+      }
+    }
   },
+  computed: {
+    ordered_list(): UserOrPlace[] { // Explicit return type
+      function toList(obj: Record<string, UserOrPlace> | undefined): UserOrPlace[] {
+        if (!obj || typeof(obj) !== 'object') { 
+          return [];
+        } else {
+          return Object.values(obj);
+        }
+      }
+
+      const l = toList(this.users).concat(toList(this.places)).slice().sort((a, b) => {
+        if (!b.lastUpdate || isNaN(b.lastUpdate)) { return -1; }
+        return (b.lastUpdate as number) - (a.lastUpdate as number);
+      });
+
+      return l || [];
+    }
+  },
+  methods: {
+    toList: (obj:any) => {
+      if (!obj || typeof(obj) !== 'object') { 
+        return []
+      } else {
+        return Object.values(obj)
+      }
+    }
+  }
 });
 </script>
 
