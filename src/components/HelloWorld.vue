@@ -49,8 +49,16 @@ export default defineComponent({
       default: () => { 
         return {}
       }
+    },
+    book: {
+      type: Array,
+      required: false,
+      default: () => { 
+        return []
+      }
     }
   },
+  emits: ['addBook', 'removeBook', 'locate'], // Declare your custom events here
   computed: {
     ordered_list(): UserOrPlace[] { // Explicit return type
       function toList(obj: Record<string, UserOrPlace> | undefined): UserOrPlace[] {
@@ -77,7 +85,19 @@ export default defineComponent({
       } else {
         return Object.values(obj)
       }
-    }
+    },
+    addBook: function (uid:string) {
+      console.log(uid)
+      this.$emit('addBook', uid)
+    },
+    removeBook: function (index:number) {
+      console.log(index)
+      this.$emit('removeBook', index)
+    },
+    // eslint-disable-next-line
+    locate: function (h:any) {
+      this.$emit('locate', h)
+    },
   }
 });
 </script>

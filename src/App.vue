@@ -27,15 +27,18 @@ nav.ui.menu
     router-link.item(to="/profile")
       i.user.icon
       | 我的
-    button.no-border.ui.item(v-if="uid", @click="logout") logout
+    button.no-border.ui.item(v-if="uid", @click="logout") 登出
 .ui.sidebar.vertical.menu(:class="{'hidden': !sidebarVisible}")
 
   router-link.item(to="/")
     i.home.icon.no-float
     | 首頁
-  router-link.item.fat-only(to="/about")
+  router-link.item(to="/about")
     i.info.icon.no-float
     | 說明
+  router-link.item(to="/privacy-policy")
+    i.save.icon.no-float
+    | 隱私權政策
   router-link.item(to="/friends")
     i.users.icon.no-float
     | 朋友
@@ -49,7 +52,7 @@ nav.ui.menu
     i.user.icon.no-float
     | 我的
 .ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
-router-view(:uid="uid", :users="users", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle")
+router-view(:zoom="zoom",center="center", :uid="uid", :users="users", :book="book", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate")
 </template>
 
 <script lang="ts">
@@ -72,9 +75,13 @@ export default defineComponent({
   name: 'WeLearn', // 定義組件名稱
   data () {
     return {
+      zoom: 7,
+      center: [22.613220, 121.219482],
       sidebarVisible: false, // 定義側邊欄可見狀態
+      // eslint-disable-next-line
       users: null as any, // 定義用戶資料變量
-      book: null as any, // 定義名簿資料變量 
+      book: [] as string[], // 定義名簿資料變量 
+      // eslint-disable-next-line
       user: null as any, // 定義當前用戶變量
       email: null as string | null, // 定義電子郵件變量
       uid: null as string | null, // 定義用戶ID變量
@@ -113,9 +120,32 @@ export default defineComponent({
     }
   },
   methods: {
+    // eslint-disable-next-line
+    locate: function (h:any) {
+      this.zoom = 13
+      this.center = h.latlngColumn.split(',')
+      this.$router.push({path: '/maps'})
+    },
     toggleSidebar() {
       console.log('toggleSidebar'); // 輸出切換側邊欄操作
       this.sidebarVisible = !this.sidebarVisible; // 切換側邊欄的可見性
+    },
+    setLocal: function (n:string) {
+      console.log('set:' + n)
+      if (n == 'book') {
+        localStorage.setItem(n, JSON.stringify(this.book))
+      }
+      // console.log(this.$localStorage.get(n))
+    },
+    addBook: function (uid:string) {
+      if (this.book.indexOf(uid) === -1) {
+        this.book.push(uid)
+        this.setLocal('book')
+      }
+    },
+    removeBook: function (index:number) {
+      this.book.splice(index, 1)
+      this.setLocal('book')
     },
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
