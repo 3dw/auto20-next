@@ -51,6 +51,9 @@ nav.ui.menu
   router-link.item(to="/profile")
     i.user.icon.no-float
     | 我的
+  router-link.item(to="/book")
+    i.book.icon.no-float
+    | 名簿
 .ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 router-view(:zoom="zoom",center="center", :uid="uid", :users="users", :book="book", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate")
 </template>
