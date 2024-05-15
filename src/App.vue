@@ -61,8 +61,8 @@ router-view(:zoom="zoom",center="center", :uid="uid", :users="users", :book="boo
 <script lang="ts">
 import { defineComponent } from 'vue';
 import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-import { onValue } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
-import { app, usersRef, placesRef, groupsRef } from './firebase'; // 導入Firebase相關配置和參考
+import { set, ref, onValue } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
 
 
@@ -87,7 +87,7 @@ export default defineComponent({
       // eslint-disable-next-line
       user: null as any, // 定義當前用戶變量
       email: null as string | null, // 定義電子郵件變量
-      uid: null as string | null, // 定義用戶ID變量
+      uid: '' as string, // 定義用戶ID變量
       photoURL: null as string | null, // 定義用戶頭像URL變量
       isInApp: inApp.isInApp, // 檢測是否在應用內部
       groups: null as [string] | null, // 定義社團資料變量
@@ -111,10 +111,10 @@ export default defineComponent({
       vm.groups = data; // 更新社團資料狀態
     });
 
-    if (localStorage.getItem('book')) {
+    /* if (localStorage.getItem('book')) {
       console.log(localStorage.getItem('book'))
       this.book = JSON.parse(localStorage.getItem('book') || '') // 讀取名簿資料變量 ;
-    }
+    } */
   },
   watch: {
     $route (to, from) {
@@ -143,19 +143,23 @@ export default defineComponent({
     addBook: function (uid:string) {
       if (this.book.indexOf(uid) === -1) {
         this.book.push(uid)
-        this.setLocal('book')
+        set(ref(db, 'books/' + this.uid), this.book)
+        // this.setLocal('book')
       }
     },
     removeBook: function (index:number) {
-      this.book.splice(index, 1)
-      this.setLocal('book')
+      if (window.prompt('確定要將這位朋友移出您的名簿嗎？')) {
+        this.book.splice(index, 1)
+        set(ref(db, 'books/' + this.uid), this.book)
+      }
+      // this.setLocal('book')
     },
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this; // 儲存當前Vue實例
       auth.signOut().then(function() {
         vm.user = null; // 清除用戶資料
-        vm.uid = null; // 清除用戶ID
+        vm.uid = ''; // 清除用戶ID
         vm.photoURL = ''; // 清除用戶頭像URL
         console.log(vm.$router); // 輸出路由實例
         vm.$router.push('/'); // 導航回首頁
@@ -179,6 +183,10 @@ export default defineComponent({
           }
           if (vm.uid && vm.users[vm.uid]) {
             vm.user = vm.users[vm.uid]; // 更新用戶資訊
+            onValue(booksRef, (snapshot) => {
+              const data = snapshot.val() || {}; // 讀取社團資料
+              vm.book = data[vm.uid]; // 更新名簿資料狀態
+            });
           }
         });
       }

@@ -12,8 +12,13 @@
       i.google.icon
       | 登入 
   .ui.container(v-if="root.name")
+    .ui.warning.message(v-show="longTimeNoSee() > 0.25")
+      .header 請立即更新
+      span(v-if="longTimeNoSee()> 0.25") 您的資料已三個月未更新，請立即更新，謝謝
+      span(v-else-if="longTimeNoSee(1)") 您的資料已一年未更新，目前已被系統隱藏，請立即更新即可恢復顯示。
+
     form#main-form.ui.form.error.warning.success
-      h2.ui.header 請填表
+      h2.ui.header 請填表 {{ longTimeNoSee() }}
       .sub.header
         | 為了讓人真的能找到夥伴
         br
@@ -200,6 +205,11 @@
         console.log(this.root.name)
         console.log(this.root)
         this.$forceUpdate()
+      },
+      longTimeNoSee () {
+        const today =  new Date().getTime()
+        // console.log((today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25)
+        return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25
       },
       checkLatLng: function(add) {
         console.log('checkLatLng:' + add);
