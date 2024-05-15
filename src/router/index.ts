@@ -16,28 +16,27 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    component: () => import(/* webpackChunkName: "privacy-policy" */ '../views/PrivacyPolicyView.vue')
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import(/* webpackChunkName: "profile" */ '../views/ProfileView.vue')
+  },
+  {
+    path: '/flag/:uid',
+    name: 'Flag',
+    component: () => import(/* webpackChunkName: "flag" */ '../views/FlagView.vue')
+  },
+  {
     path: '/book',
     name: 'book',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/BookView.vue')
-  },
-  {
-    path: '/privacy-policy',
-    name: 'privacy-policy',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/PrivacyPolicyView.vue')
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/ProfileView.vue')
   }
 ]
 

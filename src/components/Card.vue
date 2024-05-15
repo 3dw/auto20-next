@@ -64,7 +64,40 @@ import mix from '../mixins/mix.js'
 export default defineComponent({
   name: 'NameCard',
   mixins: [mix],
-  props: ['h', 'mySearch', 'full', 'uid', 'book'],
+  props: {
+    h: {
+      type: Object,
+      required: true,
+    },
+    mySearch: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+    full: {
+      type: Boolean,
+      required: false,
+      default: () => { 
+        return false
+      }
+    },
+    uid: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+    book: {
+      type: Array,
+      required: false,
+      default: () => { 
+        return []
+      }
+    }
+  },
   data () {
     return {
     }
