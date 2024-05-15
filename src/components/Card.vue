@@ -51,7 +51,7 @@
     router-link.ui.blue.basic.button(to="/profile" v-else)
       i.book.icon
       | 註冊帳號以建立名簿
-    .ui.pink.basic.button(@click="locate(h)")
+    .ui.pink.basic.button(@click="locate(h, true)")
       i.map.icon
       | 地圖檢視
 </template>

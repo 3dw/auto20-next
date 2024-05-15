@@ -56,7 +56,7 @@ export default defineComponent({
     },
     logic: function (newL) {
       console.log(newL)
-      if (newL == 'nearest') {
+      if (newL == 'nearest' && (!this.user || !this.user.latlngColumn )) {
         // 使用 emit 向外發送 getUserLocation 事件
         this.$emit('getUserLocation')
       }

@@ -6,7 +6,7 @@
 br
 .ui.huge.buttons
   router-link(to="/about").ui.purple.button 瞭解更多
-  router-link.ui.orange.button(to="/profile", v-if="!user", :class="{disabled: isInApp}")
+  router-link.ui.orange.button(to="/profile", v-if="!user || !user.uid", :class="{disabled: isInApp}")
     // i.google.icon
     | 登入
   router-link.ui.blue.button(to="/profile", v-else)
@@ -43,6 +43,13 @@ export default defineComponent({
         return ''
       }
     },
+    user: {
+      type: Object,
+      required: false,
+      default: () => { 
+        return {}
+      }
+    },
     users: {
       type: Object,
       required: false,
@@ -63,7 +70,18 @@ export default defineComponent({
       default: () => { 
         return []
       }
-    }
+    },
+    mySearch: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+    isInApp: {
+      type: Boolean,
+      required: true
+    },
   },
   emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
   computed: {

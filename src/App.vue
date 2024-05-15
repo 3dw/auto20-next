@@ -56,7 +56,7 @@ nav.ui.menu
     | 名簿
 .ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 
-router-view(:zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", 
+router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", 
   @getUserLocation="getUserLocation")
 </template>
 
@@ -130,10 +130,17 @@ export default defineComponent({
   },
   methods: {
     // eslint-disable-next-line
-    locate: function (h:any) {
+    locate: function (h:any, gotoMap: boolean) {
       this.zoom = 13
       this.center = h.latlngColumn.split(',')
-      this.$router.push({path: '/maps'})
+      console.log("Updated location:", this.center);
+      // 使用 nextTick 確保子組件接收到最新的 props
+      this.$nextTick(() => {
+        console.log('Center updated and propagated to children');
+      });
+      if (gotoMap) {
+        this.$router.push({path: '/maps'})
+      }
     },
     getUserLocation: function () {
       console.log('try getUserLocation');
@@ -214,6 +221,9 @@ export default defineComponent({
               const data = snapshot.val() || {}; // 讀取社團資料
               vm.book = data[vm.uid]; // 更新名簿資料狀態
             });
+          }
+          if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn ) {
+            this.locate(vm.users[vm.uid], false)
           }
         });
       }

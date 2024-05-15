@@ -1,6 +1,6 @@
 <template lang="pug">
 .home
-  HelloWorld(:uid="uid", :users = "users", :places = "places", :book="book", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
+  HelloWorld(:uid="uid", :users = "users", :places = "places", :book="book", :isInApp="isInApp", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
 
 </template>
 
@@ -42,6 +42,17 @@ export default defineComponent({
         return []
       }
     },
+    mySearch: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+    isInApp: {
+      type: Boolean,
+      required: true
+    }
   },
   emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
   methods: {
