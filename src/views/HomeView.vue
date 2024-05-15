@@ -1,6 +1,6 @@
 <template lang="pug">
 .home
-  HelloWorld(:users = "users", :places = "places", :book="book", @addBook="addBook", @removeBook="removeBook")
+  HelloWorld(:uid="uid", :users = "users", :places = "places", :book="book", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
 
 </template>
 
@@ -14,6 +14,13 @@ export default defineComponent({
     HelloWorld,
   },
   props: {
+    uid: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
     users: {
       type: Object,
       required: false,
@@ -34,9 +41,9 @@ export default defineComponent({
       default: () => { 
         return []
       }
-    }
+    },
   },
-  emits: ['addBook', 'removeBook', 'locate'], // Declare your custom events here
+  emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
   methods: {
     addBook: function (uid:string) {
       console.log(uid)
@@ -49,6 +56,9 @@ export default defineComponent({
     // eslint-disable-next-line
     locate: function (h:any) {
       this.$emit('locate', h)
+    },
+    loginGoogle: function () {
+      this.$emit('loginGoogle')
     }
   }
 });

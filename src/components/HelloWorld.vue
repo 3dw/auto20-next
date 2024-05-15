@@ -17,7 +17,7 @@ p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一
 h2(v-if="users && toList(users).length > 0") 最近更新
 .ui.two.doubling.cards.container(v-if="toList(users).length > 0")
   .ui.card(v-for="(h, index) in ordered_list.slice(0, 2)", :key="index")
-    card(:h="h", :full="true", :mySearch="mySearch", :uid="uid || ''", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook")
+    card(:h="h", :full="true", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
 loader(v-else)
 </template>
 
@@ -36,6 +36,13 @@ export default defineComponent({
   name: 'HelloWorld',
   components: { Card, Loader },
   props: {
+    uid: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
     users: {
       type: Object,
       required: false,
@@ -58,7 +65,7 @@ export default defineComponent({
       }
     }
   },
-  emits: ['addBook', 'removeBook', 'locate'], // Declare your custom events here
+  emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
   computed: {
     ordered_list(): UserOrPlace[] { // Explicit return type
       function toList(obj: Record<string, UserOrPlace> | undefined): UserOrPlace[] {
@@ -98,6 +105,9 @@ export default defineComponent({
     locate: function (h:any) {
       this.$emit('locate', h)
     },
+    loginGoogle: function () {
+      this.$emit('loginGoogle')
+    }
   }
 });
 </script>

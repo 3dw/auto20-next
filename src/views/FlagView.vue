@@ -1,0 +1,96 @@
+<template lang="pug">
+  .hello
+    loader(v-show="!users")
+    .ui.segment.container
+      .ui.fluid.card(v-for="(h, index) in toList(users)" v-show="h.uid == $route.params.uid")
+        card(:h="h", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
+
+        // ShareNetwork.ui.huge.blue.button(network="facebook", :url="'https://we.alearn.org.tw/#/flag/' + h.uid", :title="h.name", :description="h.name + ': ' + h.note", :quote="h.name + ': ' + h.note")
+          i.facebook.icon
+          | 臉書分享
+      
+</template>
+
+<script>
+
+import { defineComponent } from 'vue';
+
+import mix from '../mixins/mix.js'
+import Card from '../components/Card'
+import Loader from '../components/Loader'
+
+export default defineComponent({
+  name: 'FlagView',
+  components: { Card, Loader },
+  mixins: [mix],props: {
+    users: {
+      type: Object,
+      required: false,
+      default: () => { 
+        return {}
+      }
+    },
+    book: {
+      type: Array,
+      required: false,
+      default: () => { 
+        return []
+      }
+    },
+    mySearch: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+  },
+  data () {
+    return {
+    }
+  },
+  computed: {
+    // a computed getter
+    myT() {
+      if (Object.keys(this.users).length > 0 && this.$route.params.uid) {
+        return this.users[this.$route.params.uid].name
+      }
+      // `this` points to the component instance
+      return [{ name: '旗幟' }][0].name
+    }
+  },
+  methods: {
+    // eslint-disable-next-line
+    toList: function (obj) {
+      if (!obj || typeof(obj) !== 'object') { 
+        return []
+      } else {
+        return Object.values(obj)
+      }
+    },
+    locate: function (h) {
+      this.$emit('locate', h)
+    },
+    addBook: function (uid) {
+      console.log(uid)
+      this.$emit('addBook', uid)
+    },
+    loginGoogle: function () {
+      this.$emit('loginGoogle')
+    }
+  }
+})
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+a {
+  color: #35495E;
+}
+
+.card {
+  min-height: 80vh;
+}
+
+</style>

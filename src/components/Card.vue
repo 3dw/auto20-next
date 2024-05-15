@@ -42,12 +42,15 @@
         span.text(v-html="highlight(h.note, mySearch)")
   .filler
   .ui.bottom.attached.buttons
-    .ui.green.basic.button(@click="addBook(h.uid || h.idx)" v-if="!book || book.indexOf(h.uid || h.idx) == -1")
+    .ui.green.basic.button(@click="addBook(h.uid || h.idx)" v-if="uid && (!book || book.indexOf(h.uid || h.idx) == -1)")
       i.book.icon
       | 加入名簿
-    .ui.red.basic.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else)
+    .ui.red.basic.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else-if = "uid && book && book.indexOf(h.uid || h.idx) > -1")
       i.book.icon
       | 從名簿移除
+    router-link.ui.blue.basic.button(to="/profile" v-else)
+      i.book.icon
+      | 註冊帳號以建立名簿
     .ui.pink.basic.button(@click="locate(h)")
       i.map.icon
       | 地圖檢視
@@ -61,7 +64,40 @@ import mix from '../mixins/mix.js'
 export default defineComponent({
   name: 'NameCard',
   mixins: [mix],
-  props: ['h', 'mySearch', 'full', 'uid', 'book'],
+  props: {
+    h: {
+      type: Object,
+      required: true,
+    },
+    mySearch: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+    full: {
+      type: Boolean,
+      required: false,
+      default: () => { 
+        return false
+      }
+    },
+    uid: {
+      type: String,
+      required: false,
+      default: () => { 
+        return ''
+      }
+    },
+    book: {
+      type: Array,
+      required: false,
+      default: () => { 
+        return []
+      }
+    }
+  },
   data () {
     return {
     }
@@ -81,6 +117,9 @@ export default defineComponent({
     removeBook: function (index) {
       console.log(index)
       this.$emit('removeBook', index)
+    },
+    loginGoogle: function () {
+      this.$emit('loginGoogle')
     }
   }
 })
