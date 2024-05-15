@@ -12,18 +12,14 @@
 import { defineComponent } from 'vue';
 
 import mix from '../mixins/mix.js';
-import Loader from '../Loader';
-import Card from '../Card';
+import Loader from '../components/Loader.vue';
+import Card from '../components/Card';
 
 export default defineComponent({
-  name: 'FrindCards',
+  name: 'FrindCars',
   mixins: [mix],
   props: ['mySearch', 'id', 'book', 'users', 'places'],
   components: { Loader, Card },
-  metaInfo: {
-    // if no subcomponents specify a metaInfo.title, this title will be used
-    title: '自主學習朋友',
-  },
   data () {
     return {
       n: 20,
