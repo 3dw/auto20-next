@@ -55,7 +55,9 @@ nav.ui.menu
     i.book.icon.no-float
     | 名簿
 .ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
-router-view(:zoom="zoom",center="center", :uid="uid", :users="users", :book="book", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate")
+
+router-view(:zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", 
+  @getUserLocation="getUserLocation")
 </template>
 
 <script lang="ts">
@@ -120,7 +122,11 @@ export default defineComponent({
     $route (to, from) {
       console.log(from.path); // 輸出路由變更前的路徑
       console.log(to.path); // 輸出路由變更後的路徑
-    }
+    },
+    center(newVal, oldVal) {
+      console.log('Center updated from', oldVal, 'to', newVal);
+      // 可以在這裡進一步確認子組件是否應該被更新
+    },
   },
   methods: {
     // eslint-disable-next-line
@@ -128,6 +134,27 @@ export default defineComponent({
       this.zoom = 13
       this.center = h.latlngColumn.split(',')
       this.$router.push({path: '/maps'})
+    },
+    getUserLocation: function () {
+      console.log('try getUserLocation');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            // 這裡確保整個賦值是一次性的，以維持反應性
+            this.center = [position.coords.latitude, position.coords.longitude];
+            console.log("Updated location:", this.center);
+            // 使用 nextTick 確保子組件接收到最新的 props
+            this.$nextTick(() => {
+              console.log('Center updated and propagated to children');
+            });
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
     },
     toggleSidebar() {
       console.log('toggleSidebar'); // 輸出切換側邊欄操作
