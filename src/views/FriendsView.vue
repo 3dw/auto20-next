@@ -34,7 +34,13 @@ export default defineComponent({
   emit: ['getUserLocation'],
   computed: {
     visibleCards() {
-      return this.allCards.slice(0, this.n);  // 只返回當前應顯示的卡片
+      return this.allCards.filter((h) => {
+        const today = new Date().getTime()
+        if (isNaN(h.lastUpdate)) {
+          return false
+        }
+        return (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 1
+      }).slice(0, this.n);  // 只返回當前應顯示的卡片
     },
     list() {
       return this.processData(this.users).concat(this.processData(this.places))
