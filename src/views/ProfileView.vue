@@ -18,7 +18,8 @@
       span(v-else-if="longTimeNoSee(1)") 您的資料已一年未更新，目前已被系統隱藏，請立即更新即可恢復顯示。
 
     form#main-form.ui.form.error.warning.success
-      h2.ui.header 請填表 {{ longTimeNoSee() }}
+      h2.ui.header 請填表
+      // {{ longTimeNoSee() }}
       .sub.header
         | 為了讓人真的能找到夥伴
         br
