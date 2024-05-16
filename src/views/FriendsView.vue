@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import mix from '../mixins/mix.js';
 import Loader from '../components/Loader.vue';
 import Card from '../components/Card';
 
 export default defineComponent({
-  name: 'FrindCars',
+  name: 'FrindCards',
   mixins: [mix],
   props: ['mySearch', 'id', 'book', 'users', 'places', 'center','user'],
   components: { Loader, Card },
@@ -31,32 +31,53 @@ export default defineComponent({
       logic: 'newest'  // 初始排序邏輯
     }
   },
+  emit: ['getUserLocation'],
   computed: {
     visibleCards() {
-      return this.list.slice(0, this.n);  // 只返回當前應顯示的卡片
+      return this.allCards.filter((h) => {
+        const today = new Date().getTime()
+        if (isNaN(h.lastUpdate)) {
+          return false
+        }
+        return (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 1
+      }).slice(0, this.n);  // 只返回當前應顯示的卡片
     },
     list() {
       return this.processData(this.users).concat(this.processData(this.places))
     }
   },
   mounted() {
+    console.log('Initial center in child component:');
+    console.log(this.center);
     this.allCards = this.list;  // 初始化所有卡片數據
   },
   watch: {
-    users: function (newU, oldU) {
+    center: function (newC) {
+    console.log('Child component received new center:', newC);
+      this.allCards = this.processData(this.users).concat(this.processData(this.places))
+      this.$forceUpdate()
+    },
+    users: function (newU) {
       this.allCards = this.processData(newU).concat(this.processData(this.places))
+    },
+    logic: function (newL) {
+      console.log(newL)
+      if (newL == 'nearest' && (!this.user || !this.user.latlngColumn )) {
+        // 使用 emit 向外發送 getUserLocation 事件
+        this.$emit('getUserLocation')
+      }
     }
   },
   methods: {
     processData(obj) {
       const data = Object.keys(obj || {}).map(key => obj[key]);
-      console.log("原始資料:", data);  // 輸出原始資料檢查
+      //console.log("原始資料:", data);  // 輸出原始資料檢查
       if (this.logic === 'newest') {
         const sorted = data.sort(function(a,b) {
           if (!b.lastUpdate || isNaN(b.lastUpdate)) { return -1}
           return b.lastUpdate - a.lastUpdate
         });
-        console.log("按時間排序後的資料:", sorted);  // 輸出排序後的資料檢查
+        //console.log("按時間排序後的資料:", sorted);  // 輸出排序後的資料檢查
         return sorted;
       } else if (this.logic === 'nearest') {
         const sorted = data.sort((a, b) => 
@@ -65,31 +86,33 @@ export default defineComponent({
             return this.distanceToCenter(b.latlngColumn) - this.distanceToCenter(a.latlngColumn);
           })
         
-        console.log("按距離排序後的資料:", sorted);  // 輸出排序後的資料檢查
+        // console.log("按距離排序後的資料:", sorted);  // 輸出排序後的資料檢查
         return sorted;
       }
       return data;  // Fallback if no sorting logic is defined
     },
     distanceToCenter(latlngColumn) {
+      if (!latlngColumn || latlngColumn.split(',').length !== 2) {
+        console.error('Invalid latlngColumn format:', latlngColumn);
+        return Number.MAX_VALUE;  // 或其他錯誤處理方式
+      }
+
+      let [lat, lng] = latlngColumn.split(',').map(Number);
+
       var latlng;
-      if (!latlngColumn) {
-        latlng = { lat: this.center[0] + 90, lng: this.center[1] + 180 }
-        ;
+
+      if (isNaN(lat) || isNaN(lng)) {
+        console.error('Cannot parse lat or lng from latlngColumn:', latlngColumn);
+        return Number.MAX_VALUE; 
       } else {
         latlng = {
-          lat: parseFloat(latlngColumn.split(',')[0]),
-          lng: parseFloat(latlngColumn.split(',')[1])
+          lat: lat,
+          lng: lng
         };
       }
 
       let center = { lat: this.center[0], lng: this.center[1] };
-
-      if (this.user && this.user.latlngColumn) {
-        center = {
-          lat: parseFloat(this.user.latlngColumn.split(',')[0]),
-          lng: parseFloat(this.user.latlngColumn.split(',')[1])
-        };
-      }
+      console.log(center);
 
       const rad = x => x * Math.PI / 180;
       const dLat = rad(latlng.lat - center.lat);
@@ -98,7 +121,7 @@ export default defineComponent({
                 Math.cos(rad(center.lat)) * Math.cos(rad(latlng.lat)) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      const distance = 6371 * c; // Earth's radius in kilometers
+      const distance = 6371 * c;  // 地球半徑約 6371 公里
       return distance;
     },
     handleScroll() {
