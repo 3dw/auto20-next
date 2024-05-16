@@ -6,9 +6,12 @@
 </template>
   
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "vue";
-import "leaflet/dist/leaflet.css";
+
+import { defineComponent, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';  // Import useRouter
+import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import mix from '../mixins/mix.js';
@@ -30,6 +33,7 @@ export default defineComponent({
   setup(props) {
     const map = ref(null);
     const markerClusterGroup = ref<L.MarkerClusterGroup | null>(null);
+    const router = useRouter();  // Get the router instance
 
     function toList(obj: Record<string, UserOrPlace> | undefined): UserOrPlace[] {
       if (!obj || typeof(obj) !== 'object') { 
@@ -80,6 +84,9 @@ export default defineComponent({
         toList(props.users).forEach((h) => {
           const marker = L.marker(countLatLng(h), {icon: getAnIcon(h)})
             .bindPopup(h.name);
+          marker.on('click', () => {
+            router.push('/flag/' + h.uid);  // Use the router to navigate
+          });
           markerClusterGroup.value?.addLayer(marker);
         });
       }
@@ -92,6 +99,9 @@ export default defineComponent({
           toList(newU).forEach((h) => {
             const marker = L.marker(countLatLng(h), {icon: getAnIcon(h)})
               .bindPopup(h.name);
+            marker.on('click', () => {
+              router.push('/flag/' + h.uid);  // Use the router to navigate
+            });
             markerClusterGroup.value.addLayer(marker);
           });
         }
