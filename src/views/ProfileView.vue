@@ -180,9 +180,7 @@
         local: {}
       }
     },
-    // firebase: {
-    //  users: usersRef
-    // },
+    emit: ['loginGoogle', 'locate'],
     methods: {
       setMe () {
         console.log(this.users)
@@ -297,6 +295,7 @@
             alert('登錄成功!')
           )
         }
+        this.$emit('locate', this.root, false)
       },
       loginFB: function () {
         this.$emit('loginFB')

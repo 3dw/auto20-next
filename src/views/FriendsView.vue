@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import mix from '../mixins/mix.js';
 import Loader from '../components/Loader.vue';
 import Card from '../components/Card';
@@ -51,7 +51,7 @@ export default defineComponent({
       this.allCards = this.processData(this.users).concat(this.processData(this.places))
       this.$forceUpdate()
     },
-    users: function (newU, oldU) {
+    users: function (newU) {
       this.allCards = this.processData(newU).concat(this.processData(this.places))
     },
     logic: function (newL) {
