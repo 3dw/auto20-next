@@ -8,10 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
     "detect-inapp": "^1.4.0",
     "firebase": "^10.11.1",
+    "leaflet": "^1.9.4",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
     "semantic-ui-css": "^2.5.0",
