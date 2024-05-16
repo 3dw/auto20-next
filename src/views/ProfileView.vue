@@ -10,7 +10,8 @@
     //.or
     button.ui.orange.button(@click="loginGoogle")
       i.google.icon
-      | 登入 
+      | 登入
+
   .ui.container(v-if="root.name")
     .ui.warning.message(v-show="longTimeNoSee() > 0.25")
       .header 請立即更新
@@ -36,7 +37,6 @@
 
         span(v-show="root.address && root.latlngColumn !== 'undefined,undefined' && root.latlngColumn !== '36.778261,-119.4179324'")
           span(v-html='root.latlngColumn')
-          a(:href="'https://www.google.com.tw/maps/search/' + root.address" target="_blank") &nbsp;&nbsp;看地圖測試
 
         .ui.error.message(v-show="(root.address && (root.latlngColumn == 'undefined,undefined' || root.latlngColumn == '36.778261,-119.4179324'))")
           .header 無法定位
@@ -52,7 +52,8 @@
         .ui.warning.message(v-show="tooDetail(root.address)")
           .header 地址太詳細了
           p 這是公開資料，最細寫到路段即可，請不要寫出門牌號碼。
-
+      
+      #map(style="height: 300px;")
       .ui.divider
       .field
         label 網址
@@ -162,7 +163,9 @@
   //  import Loader from './Loader'
   import { db } from '../firebase'
   import { set, ref } from 'firebase/database'
-  
+  import 'leaflet/dist/leaflet.css';
+  import * as L from 'leaflet';
+
   import axios from 'axios'
 
   export default {
@@ -177,12 +180,53 @@
     data () {
       return {
         myIndex: -1,
-        root: {},
-        local: {}
+        root: {
+          latlngColumn: '25.0330,121.5654' // Default to Taipei 101 coordinates
+        },
+        local: {},
+        map: null,
+        marker: null
       }
     },
     emit: ['loginGoogle', 'locate'],
+    mounted() {
+      this.$nextTick(() => {
+        if (this.root.name) { // 確保 root.name 存在時才初始化地圖
+          L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+          setTimeout(this.initMap, 500);
+        }
+      });
+    },
+    watch: {
+      root (newR) {
+        if (newR.name) { // 確保 root.name 存在時才初始化地圖
+          setTimeout(this.initMap, 500);
+        }
+      }
+    },
     methods: {
+      initMap() {
+        // Initialize the map
+        this.map = L.map('map').setView(this.root.latlngColumn.split(','), 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(this.map);
+
+        // Set the correct path for marker icons
+        L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+
+        // Add a non-draggable marker at the map center
+        this.marker = L.marker(this.map.getCenter(), {draggable: false}).addTo(this.map);
+
+        // Update root.latlngColumn when the map center changes
+        this.map.on('moveend', () => {
+          const {lat, lng} = this.map.getCenter();
+          this.marker.setLatLng({lat, lng}); // Move the marker to the new center
+          this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+          this.$forceUpdate(); // Ensure Vue updates the data binding
+        });
+      },
       setMe () {
         console.log(this.users)
         const keys = Object.keys(this.users)
