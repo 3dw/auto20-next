@@ -5,7 +5,7 @@
   .ui.container#map(style="width: 100%; height: 600px;")
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';  
 import 'leaflet/dist/leaflet.css';
@@ -16,12 +16,6 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 //import mix from '../mixins/mix.js';
 import Loader from '../components/Loader.vue';
 
-interface UserOrPlace {
-  lastUpdate?: number;
-  //eslint-disable-nextline
-  [key: string]: any;
-}
-
 export default defineComponent({
   name: 'MapsView',
   // mixins: [mix],
@@ -31,11 +25,11 @@ export default defineComponent({
     title: '地圖',
   },
   setup(props) {
-    const map = ref<L.Map | null>(null); 
-    const markerClusterGroup = ref<L.MarkerClusterGroup | null>(null); 
+    const map = ref(null); 
+    const markerClusterGroup = ref(null); 
     const router = useRouter();
 
-    function toList(obj: Record<string, UserOrPlace> | undefined): UserOrPlace[] {
+    function toList(obj) {
       if (!obj || typeof(obj) !== 'object') { 
         return [];
       } else {
@@ -43,13 +37,13 @@ export default defineComponent({
       }
     }
 
-    function countLatLng(h: UserOrPlace): { lat: number; lng: number } {
+    function countLatLng(h) {
       if (!h.latlngColumn) { return {lat: 0, lng: 0}; }
       const [lat, lng] = h.latlngColumn.split(',').map(Number);
       return {lat, lng};
     }
 
-    function getIcon(h: UserOrPlace): string {
+    function getIcon(h) {
       if (h && h.photoURL) {
         return h.photoURL;
       } else {
@@ -57,7 +51,7 @@ export default defineComponent({
       }
     }
 
-    function getAnIcon(h: UserOrPlace): L.Icon {
+    function getAnIcon(h) {
       return L.icon({
         iconUrl: getIcon(h),
         shadowUrl: '',
@@ -90,7 +84,7 @@ export default defineComponent({
             marker.on('click', () => {
               router.push('/flag/' + h.uid);
             });
-            markerClusterGroup.value?.addLayer(marker);
+            markerClusterGroup.value.addLayer(marker);
           });
         }
       }
@@ -106,7 +100,7 @@ export default defineComponent({
             marker.on('click', () => {
               router.push('/flag/' + h.uid);
             });
-            markerClusterGroup.value?.addLayer(marker);
+            markerClusterGroup.value.addLayer(marker);
           });
         }
       }
