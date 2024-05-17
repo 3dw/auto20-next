@@ -32,7 +32,7 @@ export default defineComponent({
   },
   setup(props) {
     const map = ref<L.Map | null>(null); 
-    const markerClusterGroup = ref<L.MarkerClusterGroup | null>(null); 
+    const markerClusterGroup = ref<L.MarkerClusterGroup>(L.markerClusterGroup()); 
     const router = useRouter();
 
     function toList(obj: Record<string, UserOrPlace> | undefined): UserOrPlace[] {
@@ -78,10 +78,8 @@ export default defineComponent({
         attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map.value);
 
-      markerClusterGroup.value = L.markerClusterGroup();
-
       if (map.value && markerClusterGroup.value) {
-        map.value.addLayer(markerClusterGroup.value as unknown as L.Layer);
+        map.value.addLayer(markerClusterGroup.value);
 
         if (props.users && toList(props.users).length > 0) {
           toList(props.users).forEach((h) => {
@@ -90,7 +88,7 @@ export default defineComponent({
             marker.on('click', () => {
               router.push('/flag/' + h.uid);
             });
-            markerClusterGroup.value?.addLayer(marker);
+            markerClusterGroup.value.addLayer(marker);
           });
         }
       }
@@ -106,7 +104,7 @@ export default defineComponent({
             marker.on('click', () => {
               router.push('/flag/' + h.uid);
             });
-            markerClusterGroup.value?.addLayer(marker);
+            markerClusterGroup.value.addLayer(marker);
           });
         }
       }
