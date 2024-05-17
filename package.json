@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/detect-inapp": "^1.4.3",
+    "@types/leaflet": "^1.9.12",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
