@@ -145,6 +145,11 @@ export default defineComponent({
     uid(newUid) {
       if (newUid) {
         this.book = this.books[newUid]
+        console.log(this.book)
+        // 使用 nextTick 確保子組件接收到最新的 props
+        this.$nextTick(() => {
+          console.log('Book updated and propagated to children');
+        });
       }
     }
   },
