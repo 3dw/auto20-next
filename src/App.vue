@@ -27,6 +27,10 @@ nav.ui.menu
           i.flag.icon
           | 我的旗幟
 
+        .ui.divider(v-show = "myGroupIdx().length > 0")
+
+        router-link.item(v-for="i in myGroupIdx()", :key="i", :to="'/group/' + i") {{ groups[i].n }}
+
         button.no-border.ui.item(v-if="uid", @click="logout")
           i.sign-out.icon
           | 登出
@@ -53,7 +57,7 @@ nav.ui.menu
   router-link.item(to="/profile")
     i.user.icon.no-float
     | 我的
-  router-link.item(to="/book")
+  router-link.item(to="/book", v-if="uid")
     i.book.icon.no-float
     | 名簿
 
@@ -95,7 +99,7 @@ export default defineComponent({
       uid: '' as string, // 定義用戶ID變量
       photoURL: null as string | null, // 定義用戶頭像URL變量
       isInApp: inApp.isInApp, // 檢測是否在應用內部
-      groups: null as [string] | null, // 定義社團資料變量
+      groups: null as [any] | null, // 定義社團資料變量
       places: null as [string] | null, // 定義地點資料變量
     }
   },
@@ -132,6 +136,13 @@ export default defineComponent({
     },
   },
   methods: {
+    myGroupIdx () {
+      return (this.groups || []).filter((g) => {
+        return (g.members || []).indexOf(this.uid || '') > -1
+      }).map(function (g) {
+        return g.idx
+      })
+    },
     // eslint-disable-next-line
     locate: function (h:any, gotoMap: boolean) {
       this.zoom = 13
@@ -310,6 +321,11 @@ button.no-border {
   width: 28px; /* 調整圖片寬度 */
   height: 28px; /* 調整圖片高度 */
   border-radius: 50%; /* 圓形圖片 */
+}
+
+.left.aligned {
+  text-align: left;
+  margin-left: .6em;
 }
 
 

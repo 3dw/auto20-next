@@ -41,17 +41,21 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/maps',
     name: 'maps',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "maps" */ '../views/MapsView.vue')
+  },
+  {
+    path: '/groups',
+    name: 'groups',
+    component: () => import(/* webpackChunkName: "groups" */ '../views/GroupsView.vue')
+  },
+  {
+    path: '/group/:idx',
+    name: 'group',
+    component: () => import(/* webpackChunkName: "groups" */ '../views/GroupView.vue')
   },
   {
     path: '/book',
     name: 'book',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/BookView.vue')
   }
 ]
