@@ -4,7 +4,7 @@
     router-link(v-if="book && uid && book.length == 0", to="/friends") 您的名簿目前沒有人，按此找朋友
   loader(v-show="!users")
   .ui.divider
-  .ui.two.doubling.cards.container(v-if="toList(places).length > 0 && toList(users).length > 0")
+  .ui.four.doubling.cards.container(v-if="toList(places).length > 0 && toList(users).length > 0")
     .ui.card(
       v-for="(h, index) in searchBy(places, mySearch)",
       :key="index",
@@ -22,7 +22,7 @@
     .ui.card(
       v-for="(h, index) in searchBy(users, mySearch)",
       :key="index",
-      v-if="book && h && book.indexOf(h.uid) > -1"
+      v-show="book && h && book.indexOf(h.uid) > -1"
     )
       card(
         :h="h",

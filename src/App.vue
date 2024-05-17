@@ -61,7 +61,7 @@ nav.ui.menu
     i.book.icon.no-float
     | 名簿
 
-.ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
+.ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 
 router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
 
