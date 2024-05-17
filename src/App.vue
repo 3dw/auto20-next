@@ -92,13 +92,16 @@ export default defineComponent({
       sidebarVisible: false, // 定義側邊欄可見狀態
       // eslint-disable-next-line
       users: null as any, // 定義用戶資料變量
-      book: [] as string[], // 定義名簿資料變量 
+      book: [] as string[], // 定義個人名簿資料變量 
+      // eslint-disable-next-line
+      books: [] as any[], // 定義所有名簿資料變量 
       // eslint-disable-next-line
       user: null as any, // 定義當前用戶變量
       email: null as string | null, // 定義電子郵件變量
       uid: '' as string, // 定義用戶ID變量
       photoURL: null as string | null, // 定義用戶頭像URL變量
       isInApp: inApp.isInApp, // 檢測是否在應用內部
+      // eslint-disable-next-line
       groups: null as [any] | null, // 定義社團資料變量
       places: null as [string] | null, // 定義地點資料變量
     }
@@ -119,6 +122,11 @@ export default defineComponent({
       const data = snapshot.val(); // 讀取社團資料
       vm.groups = data; // 更新社團資料狀態
     });
+    onValue(booksRef, (snapshot) => {
+      console.log('get books')
+      const data = snapshot.val() || {}; // 讀取社團資料
+      vm.books = data; // 更新名簿資料狀態
+    });
 
     /* if (localStorage.getItem('book')) {
       console.log(localStorage.getItem('book'))
@@ -134,6 +142,11 @@ export default defineComponent({
       console.log('Center updated from', oldVal, 'to', newVal);
       // 可以在這裡進一步確認子組件是否應該被更新
     },
+    uid(newUid) {
+      if (newUid) {
+        this.book = this.books[newUid]
+      }
+    }
   },
   methods: {
     myGroupIdx () {
@@ -231,11 +244,6 @@ export default defineComponent({
           }
           if (vm.uid && vm.users[vm.uid]) {
             vm.user = vm.users[vm.uid]; // 更新用戶資訊
-            onValue(booksRef, (snapshot) => {
-              console.log('get books')
-              const data = snapshot.val() || {}; // 讀取社團資料
-              vm.book = data[vm.uid]; // 更新名簿資料狀態
-            });
           }
           if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn ) {
             this.locate(vm.users[vm.uid], false)
