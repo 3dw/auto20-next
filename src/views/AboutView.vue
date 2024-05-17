@@ -22,7 +22,7 @@
         h2.ui.header 我的互助旗會是公開的嗎？能不能保密？
         p 互助旗是完全公開的，您可以只留下願意公開的資訊
         h2.ui.header 升起互助旗後可以修改嗎？
-        p 可以，只要再次登入，點選[我的]即可修改
+        p 可以，只要再次登入，點選「我的旗幟」即可修改
         h2.ui.header 升起互助旗後可以移除嗎？
         p 可以，您可以
           a(href="mailto:bestian@gmail.com") e-mail給管理員bestian@gmail.com

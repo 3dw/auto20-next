@@ -18,18 +18,20 @@ nav.ui.menu
     i.map.icon
     | 地圖
 
-  //router-link.item.phone-only(to="/profile")
-    i.user.icon
-    | 我的
-  //button.no-border.ui.item.phone-only(v-if="uid", @click="logout") logout
-  //.fat-only
   div.right.menu
-    router-link.item(to="/profile")
-      i.user.icon
-      | 我的
-    button.no-border.ui.item(v-if="uid", @click="logout") 登出
-.ui.sidebar.vertical.menu(:class="{'hidden': !sidebarVisible}")
+    .ui.simple.dropdown.item
+      img.ui.avatar.image(v-if="photoURL" :src="photoURL")
+      i.user.icon(v-else)
+      .menu
+        router-link.item(to="/profile")
+          i.flag.icon
+          | 我的旗幟
 
+        button.no-border.ui.item(v-if="uid", @click="logout")
+          i.sign-out.icon
+          | 登出
+
+.ui.sidebar.vertical.menu(:class="{'hidden': !sidebarVisible}")
   router-link.item(to="/")
     i.home.icon.no-float
     | 首頁
@@ -54,10 +56,11 @@ nav.ui.menu
   router-link.item(to="/book")
     i.book.icon.no-float
     | 名簿
+
 .ui.sidebar.bg.phone-only(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 
-router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", 
-  @getUserLocation="getUserLocation")
+router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
+
 </template>
 
 <script lang="ts">
@@ -300,6 +303,13 @@ button.no-border {
   visibility: hidden;
   transition: all 0s linear !important;
   transform: translateX(-100%); /* 隱藏時向左滑動 */
+}
+
+
+.ui.avatar.image {
+  width: 28px; /* 調整圖片寬度 */
+  height: 28px; /* 調整圖片高度 */
+  border-radius: 50%; /* 圓形圖片 */
 }
 
 
