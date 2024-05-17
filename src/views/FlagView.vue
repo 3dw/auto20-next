@@ -3,12 +3,7 @@
     loader(v-show="!users")
     .ui.segment.container
       .ui.fluid.card(v-for="(h, index) in toList(users)" v-show="h.uid == $route.params.uid")
-        card(:h="h", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
-
-        // ShareNetwork.ui.huge.blue.button(network="facebook", :url="'https://we.alearn.org.tw/#/flag/' + h.uid", :title="h.name", :description="h.name + ': ' + h.note", :quote="h.name + ': ' + h.note")
-          i.facebook.icon
-          | 臉書分享
-      
+        card(:h="h", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")      
 </template>
 
 <script>

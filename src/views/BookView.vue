@@ -1,24 +1,14 @@
-<template lang="pug">.template
+<template lang="pug">
 .hello
   h1
-    router-link(v-if="book && book.length == 0", to="/friends") 您的名簿目前沒有人，按此找朋友
+    router-link(v-if="book && uid && book.length == 0", to="/friends") 您的名簿目前沒有人，按此找朋友
   loader(v-show="!users")
-  //vue-excel-xlsx(
-    :data="toArray()",
-    :columns="toColumns()",
-    :file-name="'auto20-mybook-export-' + today()",
-    :file-type="'xlsx'",
-    :sheet-name="'book'",
-    class="down ui blue button"
-  //)
-    | 下載資料
-    i.download.icon
   .ui.divider
-  .ui.two.doubling.cards.container(v-if="toList(places).length > 0 && toList(users).length > 0")
+  .ui.four.doubling.cards.container(v-if="toList(places).length > 0 && toList(users).length > 0")
     .ui.card(
       v-for="(h, index) in searchBy(places, mySearch)",
       :key="index",
-      v-if="book && h && book.indexOf(h.idx) > -1"
+      v-show="book && book.indexOf(h.uid) > -1"
     )
       card(
         :h="h",
@@ -32,7 +22,7 @@
     .ui.card(
       v-for="(h, index) in searchBy(users, mySearch)",
       :key="index",
-      v-if="book && h && book.indexOf(h.uid) > -1"
+      v-show="book && h && book.indexOf(h.uid) > -1"
     )
       card(
         :h="h",
@@ -68,6 +58,10 @@ export default defineComponent({
     book: {
       type: Array,
       default: () => { return [] },
+    },
+    uid: {
+      type: String,
+      default: () => { return '' },
     },
     users: {
       type: Object,
