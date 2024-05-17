@@ -79,7 +79,7 @@ export default defineComponent({
       }).addTo(map.value);
 
       if (map.value && markerClusterGroup.value) {
-        map.value.addLayer(markerClusterGroup.value);
+        map.value.addLayer(markerClusterGroup.value as L.LayerGroup<any>);
 
         if (props.users && toList(props.users).length > 0) {
           toList(props.users).forEach((h) => {
