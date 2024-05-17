@@ -15,7 +15,6 @@ const fb = initializeApp({
 export const app = fb
 export const db = getDatabase(fb)
 export const placesRef = ref(db, 'places')
-// export const handsRef = ref(db, 'hands')
 export const usersRef = ref(db, 'users')
 export const chatsRef = ref(db, 'chats')
 export const groupsRef = ref(db, 'groups')

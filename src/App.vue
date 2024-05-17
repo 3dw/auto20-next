@@ -232,6 +232,7 @@ export default defineComponent({
           if (vm.uid && vm.users[vm.uid]) {
             vm.user = vm.users[vm.uid]; // 更新用戶資訊
             onValue(booksRef, (snapshot) => {
+              console.log('get books')
               const data = snapshot.val() || {}; // 讀取社團資料
               vm.book = data[vm.uid]; // 更新名簿資料狀態
             });
