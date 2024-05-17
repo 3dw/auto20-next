@@ -56,10 +56,13 @@ nav.ui.menu
     | 地圖
   router-link.item(to="/profile")
     i.user.icon.no-float
-    | 我的
+    | 我的旗幟
+  router-link.item(to="/my_place")
+    i.marker.icon.no-float
+    | 自學場地登錄
   router-link.item(to="/book", v-if="uid")
     i.book.icon.no-float
-    | 名簿
+    | 我的名簿
 
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 
@@ -340,6 +343,10 @@ button.no-border {
 .left.aligned {
   text-align: left;
   margin-left: .6em;
+}
+
+.ui.sidebar {
+  z-index: 99999 !important;
 }
 
 
