@@ -181,7 +181,7 @@
       return {
         myIndex: -1,
         root: {
-          latlngColumn: '25.0330,121.5654' // Default to Taipei 101 coordinates
+          latlngColumn: '23.5330, 121.0654' // Default to Taipei 101 coordinates
         },
         local: {},
         map: null,
@@ -207,7 +207,7 @@
     methods: {
       initMap() {
         // Initialize the map
-        this.map = L.map('map').setView(this.root.latlngColumn.split(','), 13);
+        this.map = L.map('map').setView(this.root.latlngColumn.split(','), 7);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 18,
           attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

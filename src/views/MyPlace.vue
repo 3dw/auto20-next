@@ -11,7 +11,7 @@
         | 的欄位為必填
       h4.ui.dividing.header 關於場地
       .field
-        label.required 名字
+        label.required 地名
         input(type='text' v-model='root.name', placeholder='場地名稱')
       .field
         label.required 概略地址
@@ -19,7 +19,6 @@
         #map(style="height: 300px;")  // Add the map container
         span(v-show="root.latlngColumn")
           span(v-html='root.latlngColumn')
-          a(:href="'https://www.google.com.tw/maps/search/' + root.address" target="_blank") &nbsp;&nbsp;看地圖測試
         .ui.error.message(v-show="!root.latlngColumn")
           .header 無法定位
           p 如果地場有不只一個位置，請填寫一個就好，其他可寫進介紹中。
@@ -53,103 +52,102 @@
     .ui.divider
     a.ui.large.blue.button(@click="updatePlace")
       span 升起旗幟!!
-  </template>
+</template>
   
-  <script>
-  import { defineComponent, onMounted } from 'vue';
-  import L from 'leaflet';
-  import 'leaflet/dist/leaflet.css';
-  import { db } from '../firebase';
-  import mix from '../mixins/mix.js';
-  import { set, ref } from 'firebase/database';
-  
-  export default defineComponent({
-    name: 'MyPlace',
-    mixins: [mix],
-    props: ['uid', 'user', 'mySearch', 'photoURL', 'users', 'places'],
-    data() {
-      return {
-        myIndex: -1,
-        root: {
-          latlngColumn: ''  // Initialize without a default value
-        },
-        local: {},
-        map: null,
-        marker: null,
-      };
-    },
-    mounted() {
-      this.$nextTick(() => {
-        if (this.uid) { // 確保 root.name 存在時才初始化地圖
-          L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-          setTimeout(this.initMap, 500);
-        }
-      });
-    },
-    watch: {
-      uid: function (newUid) {
-        if (newUid) {
-          L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-          setTimeout(this.initMap, 500);
-        }
-      }
-    },
-    methods: {
-      initMap() {
-        // Default coordinates (example: Taipei 101)
-        const defaultCoords = [25.0330, 121.5654];
-        this.map = L.map('map').setView(defaultCoords, 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 18,
-          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(this.map);
-  
+<script>
+import { defineComponent, onMounted } from 'vue';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { db } from '../firebase';
+import mix from '../mixins/mix.js';
+import { set, ref } from 'firebase/database';
+
+export default defineComponent({
+  name: 'MyPlace',
+  mixins: [mix],
+  props: ['uid', 'user', 'mySearch', 'photoURL', 'users', 'places'],
+  data() {
+    return {
+      myIndex: -1,
+      root: {
+        latlngColumn: ''  // Initialize without a default value
+      },
+      local: {},
+      map: null,
+      marker: null,
+    };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.uid) { // Initialize the map only if uid is available
         L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-          
-        // Add a draggable marker to the map
-        this.marker = L.marker(defaultCoords, {draggable: true}).addTo(this.map);
-        this.root.latlngColumn = `${defaultCoords[0]},${defaultCoords[1]}`;  // Update latlngColumn initially
-  
-        // Update latlngColumn when the marker is dragged
-        this.marker.on('moveend', () => {
-          const { lat, lng } = this.marker.getLatLng();
-          this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-        });
-      },
-      usedAddr(hand) {
-        const keys = Object.keys(this.users || {});
-        const usersList = keys.map(k => this.users[k]);
-        var ans = false;
-        for (let h of usersList) {
-          if (h.latlngColumn === hand.latlngColumn) {
-            ans = true;
-            break;
-          }
-        }
-        return ans;
-      },
-      tooDetail(addr) {
-        return addr.match(/(號|樓|F|f)/) ? true : false;
-      },
-      updatePlace() {
-        if (window.prompt('場地一旦登錄後無法手動更新和移除，確定要登錄嗎？')) {
-          this.root.lastUpdate = (new Date()).getTime();
-          set(ref(db, 'places/' + this.places.length), this.root).then(
-            () => alert('登錄成功!')
-          );
-        }
-      },
-      loginFB() {
-        this.$emit('loginFB');
-      },
-      loginGoogle() {
-        this.$emit('loginGoogle');
+        setTimeout(this.initMap, 500);
+      }
+    });
+  },
+  watch: {
+    uid: function (newUid) {
+      if (newUid) {
+        L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+        setTimeout(this.initMap, 500);
       }
     }
-  })
-  </script>
+  },
+  methods: {
+    initMap() {
+      // Default coordinates
+      const defaultCoords = [23.5330, 121.0654];
+      this.map = L.map('map').setView(defaultCoords, 7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+
+      // Set the marker at the initial center of the map without making it draggable
+      this.marker = L.marker(this.map.getCenter(), {draggable: false}).addTo(this.map);
+      this.root.latlngColumn = `${defaultCoords[0]},${defaultCoords[1]}`;  // Update latlngColumn initially
   
-  <style scoped>
+      // Update latlngColumn when the map center changes after user interaction
+      this.map.on('moveend', () => {
+        const { lat, lng } = this.map.getCenter();
+        this.marker.setLatLng(new L.LatLng(lat, lng));  // Keep the marker centered
+        this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+      });
+    },
+    usedAddr(hand) {
+      const keys = Object.keys(this.users || {});
+      const usersList = keys.map(k => this.users[k]);
+      var ans = false;
+      for (let h of usersList) {
+        if (h.latlngColumn === hand.latlngColumn) {
+          ans = true;
+          break;
+        }
+      }
+      return ans;
+    },
+    tooDetail(addr) {
+      return addr.match(/(號|樓|F|f)/) ? true : false;
+    },
+    updatePlace() {
+      if (window.prompt('場地一旦登錄後無法手動更新和移除，確定要登錄嗎？')) {
+        this.root.lastUpdate = (new Date()).getTime();
+        set(ref(db, 'places/' + this.places.length), this.root).then(
+          () => alert('登錄成功!')
+        );
+      }
+    },
+    loginFB() {
+      this.$emit('loginFB');
+    },
+    loginGoogle() {
+      this.$emit('loginGoogle');
+    }
+  }
+})
+</script>
+  
+<style scoped>
   label.required::before {
     content: "*";
     color:red;
