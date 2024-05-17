@@ -21,7 +21,8 @@
     "semantic-ui-css": "^2.5.0",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vue3-carousel": "^0.3.3"
   },
   "devDependencies": {
     "@types/detect-inapp": "^1.4.3",

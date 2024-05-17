@@ -34,6 +34,12 @@ nav.ui.menu#main-menu
         button.no-border.ui.item(v-if="uid", @click="logout")
           i.sign-out.icon
           | 登出
+carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000")
+  slide(v-for="slide in news", :key="slide")
+    span(v-html="slide")
+  template(#addons)
+    navigation
+    pagination
 
 .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
   router-link.item(to="/")
@@ -66,6 +72,8 @@ nav.ui.menu#main-menu
 
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 
+br
+
 router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
 
 </template>
@@ -78,6 +86,11 @@ import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; 
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
 
 
+
+// If you are using PurgeCSS, make sure to whitelist the carousel CSS classes
+import 'vue3-carousel/dist/carousel.css'
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+
 const inApp = new InApp(window.navigator.userAgent); // 創建InApp實例以檢測應用內瀏覽情況
 
 const auth = getAuth(app); // 獲取Firebase身份驗證實例
@@ -87,9 +100,19 @@ provider.addScope('https://www.googleapis.com/auth/userinfo.email'); // 要求Go
 
 
 export default defineComponent({
-  name: 'WeLearn', // 定義組件名稱
+  name: 'WeLearn', // 定義組件名稱,
+  components: {
+    Carousel,
+    Slide
+  },
   data () {
     return {
+      news: [
+        '自學2.0更新中',
+        '請定期更新您的互助旗',
+        '兩年以上未更新之旗幟將被系統移除',
+        '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
+      ],
       zoom: 7,
       center: [22.613220, 121.219482],
       sidebarVisible: false, // 定義側邊欄可見狀態
@@ -347,6 +370,17 @@ button.no-border {
 
 .ui.sidebar {
   z-index: 99999 !important;
+}
+
+nav.ui.menu, .ui.virtical.sidebar {
+  background-color: #E6E6FA; /* Lavender */
+  margin-bottom: 0;
+}
+
+.carousel {
+  padding: .6em;
+  background-color: #f39c04;
+  font-weight: bold
 }
 
 </style>
