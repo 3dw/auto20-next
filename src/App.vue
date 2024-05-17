@@ -1,5 +1,5 @@
 <template lang="pug">
-nav.ui.menu
+nav.ui.menu#main-menu
   button.no-border.ui.item(@click="toggleSidebar")
     i.icon.bars
   router-link.item(to="/")
@@ -35,7 +35,7 @@ nav.ui.menu
           i.sign-out.icon
           | 登出
 
-.ui.sidebar.vertical.menu(:class="{'hidden': !sidebarVisible}")
+.ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
   router-link.item(to="/")
     i.home.icon.no-float
     | 首頁
@@ -348,6 +348,5 @@ button.no-border {
 .ui.sidebar {
   z-index: 99999 !important;
 }
-
 
 </style>
