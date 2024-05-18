@@ -34,12 +34,12 @@ nav.ui.menu#main-menu
         button.no-border.ui.item(v-if="uid", @click="logout")
           i.sign-out.icon
           | 登出
-carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000")
+carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000", :pauseAutoplayOnHover="true")
   slide(v-for="slide in news", :key="slide")
     span(v-html="slide")
   template(#addons)
-    navigation
-    pagination
+    // navigation
+    // pagination
 
 .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
   router-link.item(to="/")
@@ -76,6 +76,8 @@ br
 
 router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
 
+chatbox#ch(@loginGoogle = "loginGoogle", :uid = "uid", :user="user", :photoURL="photoURL")
+
 </template>
 
 <script lang="ts">
@@ -103,7 +105,9 @@ export default defineComponent({
   name: 'WeLearn', // 定義組件名稱,
   components: {
     Carousel,
-    Slide
+    Slide,
+    Pagination,
+    Navigation
   },
   data () {
     return {
@@ -380,7 +384,22 @@ nav.ui.menu, .ui.virtical.sidebar {
 .carousel {
   padding: .6em;
   background-color: #f39c04;
-  font-weight: bold
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.carousel_item {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#ch {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  height: 1em;
+  width: 1em;
 }
 
 </style>

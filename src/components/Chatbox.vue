@@ -25,11 +25,9 @@
             a(@click = "key = c.l" v-bind:class = "c.l") [{{c.l}}]
             a(@click = "edit = c", v-show="c.uid == uid")
               i.edit.icon(title = "edit")
-            vue-markdown
               | {{c.n}} : {{c.t}}
             span.gray(v-show="isFull") &nbsp;&nbsp;-
-              vue-markdown 
-                |{{ countDateDiff(c.time) }}
+              | {{ countDateDiff(c.time) }}
         .ui.form(v-show="edit == c")
           .ui.input
             input.input(v-model="c.t", placeholder="更新")
@@ -47,7 +45,7 @@
       .item(v-if="uid")
         .ui.form
           .field
-            img.ui.avatar(:src="photoURL || 'http://graph.facebook.com/' + uid + '/picture'")
+            img.ui.avatar(:src="photoURL")
             input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
           .inline.fields
             .field(v-for = "l in labels")
@@ -59,11 +57,7 @@
               a.ui.blue.small.button(@click="preview") 預覽
               a.ui.green.small.button(@click="addChat") 留言
       .item(v-else) 
-        .ui.big.buttons(v-if="!user")
-          //button.ui.blue.button(@click="loginFB")
-            i.facebook.icon
-            | 登入以留言 
-          //.or
+        .ui.big.buttons(v-if="!uid")
           button.ui.orange.button(@click="loginGoogle()")
             i.google.icon
             | 登入以留言 
@@ -75,12 +69,10 @@ import { defineComponent } from 'vue';
 import { onValue, set, ref } from 'firebase/database'
 import { db, chatsRef } from '../firebase'
 import mix from '../mixins/mix.js'
-import VueMarkdown from 'vue-markdown'
 
 export default defineComponent({
-  name: 'chats',
+  name: 'ChatBox',
   mixins: [mix],
-  components: { VueMarkdown },
   props: ['uid', 'user', 'photoURL'],
   data () {
     return {
