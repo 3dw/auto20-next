@@ -10,10 +10,10 @@
       .ui.padded.segment.column
         h2.ui.header 自學2.0是什麼？
         p 自學2.0是一個公益的尋友平台，可以依地圖的地理位置尋友，也可依照孩子的年紀，升旗者的興趣和可分享的專長來尋友
-        h2.ui.header 這是什麼單位在設計維護的？
-        p 本平台由
-          a(href="http://www.alearn.org.tw", target="_blank") 自主學習促進會
-          | 設計維護
+        h2.ui.header 這是什麼單位在設計及維護的？
+        p 本平台由非營利組織
+          a(href="http://www.alearn.org.tw", target="_blank") 中華民國自主學習促進會
+          | 設計及維護
         h2.ui.header 互助旗是什麼？
         p 互助旗是一個帶有概略地理位置的自我介紹，讓人在和您碰面之前，先對您有初步的瞭解和認識
         h2.ui.header 互助旗需更新嗎？
