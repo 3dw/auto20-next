@@ -74,7 +74,9 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
 br
 
 .ui.form.container(v-if="doSearch($route.path)")
-  input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
+  .search-input
+    input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
+    i.search.icon
 
 br
 
@@ -432,4 +434,20 @@ nav.ui.menu, .ui.virtical.sidebar {
   background-color: yellow;
 }
 
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input input {
+  width: 100%;
+  padding-right: 30px; /* 確保圖示不會覆蓋到文字 */
+}
+
+.search-input .search.icon {
+  position: absolute;
+  right: 10px;
+  color: #888;
+}
 </style>
