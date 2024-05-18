@@ -16,7 +16,7 @@ p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一
   .ui.divider
 h2(v-if="users && toList(users).length > 0") 最近更新
 .ui.two.doubling.cards.container(v-if="toList(users).length > 0")
-  .ui.card(v-for="(h, index) in ordered_list.slice(0, 2)", :key="index")
+  .ui.card(v-for="(h, index) in ordered_list.slice(0, 6)", :key="index")
     card(:h="h", :full="true", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
 loader(v-else)
 </template>

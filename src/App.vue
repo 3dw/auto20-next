@@ -11,12 +11,12 @@ nav.ui.menu#main-menu
   router-link.item(to="/friends")
     i.users.icon
     | 朋友
+  router-link.item(to="/maps")
+    i.map.icon
+    | 地圖
   router-link.item.fat-only(to="/groups")
     i.globe.icon
     | 社團
-  router-link.item.fat-only(to="/maps")
-    i.map.icon
-    | 地圖
 
   div.right.menu
     .ui.simple.dropdown.item

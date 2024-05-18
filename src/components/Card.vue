@@ -9,7 +9,7 @@
           | -
           span(v-html='toAge(h.learner_birth)')
           | 歲
-        span(v-if="h.child_birth") (孩子
+        span(v-if="h.child_birth") (孩子約
         span(v-if="h.child_birth2") {{toAge(h.child_birth2)}} ~
         span(v-if="h.child_birth") {{toAge(h.child_birth)}} 歲)
     .content
