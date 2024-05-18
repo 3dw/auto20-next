@@ -12,32 +12,32 @@
       a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
         | 聊聊
-        .red.note(v-show = "fil(chats).length > read") {{ fil(chats).length - read }}
+        .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
       a.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | 縮小
   #box
     .ui.list
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
-        .ui(v-show = "edit !== c") 
-            router-link(:to="'/flag/'+c.uid")
-              img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
-            a(@click = "key = c.l" v-bind:class = "c.l") [{{c.l}}]
-            a(@click = "edit = c", v-show="c.uid == uid")
-              i.edit.icon(title = "edit")
-              | {{c.n}} : {{c.t}}
-            span.gray(v-show="isFull") &nbsp;&nbsp;-
-              | {{ countDateDiff(c.time) }}
+        .ui(v-show="edit !== c") 
+          router-link(:to="'/flag/' + c.uid")
+            img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
+          a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
+          a(@click="edit = c" v-show="c.uid == uid")
+            i.edit.icon(title="edit")
+          | {{ c.n }} : {{ c.t }}
+          span.gray(v-show="isFull") &nbsp;&nbsp;-
+            | {{ countDateDiff(c.time) }}
         .ui.form(v-show="edit == c")
           .ui.input
             input.input(v-model="c.t", placeholder="更新")
             a.ui.green.small.button(@click="edit = ''; updateChat(c)") 更新
 
       .item.preview(v-if="p.t")
-        router-link(:to="'/flag/'+p.uid")
-          img.ui.avatar(:src="photoURL || '/static/img/handshake0.png'")
-        a(@click = "key = p.l" v-bind:class = "p.l") [{{p.l}}] (預覽)
-          | {{p.n}} : {{p.t}}
+        router-link(:to="'/flag/' + p.uid")
+          img.ui.avatar(:src="p.photoURL || '/static/img/handshake0.png'")
+        a(@click="key = p.l" v-bind:class="p.l") [{{p.l}}] (預覽)
+        | {{ p.n }} : {{ p.t }}
         span.gray(v-show="isFull") &nbsp;&nbsp;-
           | {{ countDateDiff(p.time) }}
       .item(v-if="uid")
@@ -48,9 +48,9 @@
           .inline.fields
             .field(v-for="l in labels")
               .ui.radio.checkbox
-                input(type='radio', name='l', v-model="label", :value="l")
+                input(type="radio", name="l", v-model="label", :value="l")
                 label
-                  a(@click="label=l", v-bind:class="l") {{l}}
+                  a(@click="label=l" v-bind:class="l") {{ l }}
             .ui.button.group
               a.ui.blue.small.button(@click="preview") 預覽
               a.ui.green.small.button(@click="addChat") 留言
