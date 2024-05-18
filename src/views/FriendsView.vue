@@ -14,7 +14,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import mix from '../mixins/mix.js';
+import mix from '../mixins/mix.ts';
 import Loader from '../components/Loader.vue';
 import Card from '../components/Card';
 
@@ -139,8 +139,8 @@ export default defineComponent({
         this.busy = false;
       }, 1000);  // 模擬加載延遲
     },
-    locate(h) {
-      this.$emit('locate', h);
+    locate(h, bool) {
+      this.$emit('locate', h, bool);
     },
     addBook(id) {
       console.log(id);

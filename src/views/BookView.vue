@@ -43,7 +43,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import mix from '../mixins/mix.js';
+import mix from '../mixins/mix.ts';
 import Loader from '../components/Loader.vue';
 import Card from '../components/Card.vue';
 

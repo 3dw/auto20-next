@@ -59,7 +59,7 @@ import { defineComponent } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { db } from '../firebase';
-import mix from '../mixins/mix.js';
+import mix from '../mixins/mix.ts';
 import { set, ref } from 'firebase/database';
 
 export default defineComponent({

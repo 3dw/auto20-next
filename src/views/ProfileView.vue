@@ -159,7 +159,7 @@
   
   <script>
   
-  import mix from '../mixins/mix.js'
+  import mix from '../mixins/mix.ts'
   //  import Loader from './Loader'
   import { db } from '../firebase'
   import { set, ref } from 'firebase/database'

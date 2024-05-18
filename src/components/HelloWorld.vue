@@ -120,8 +120,8 @@ export default defineComponent({
       this.$emit('removeBook', index)
     },
     // eslint-disable-next-line
-    locate: function (h:any) {
-      this.$emit('locate', h)
+    locate: function (h:any, bool:Boolean) {
+      this.$emit('locate', h, bool)
     },
     loginGoogle: function () {
       this.$emit('loginGoogle')

@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
+    "noImplicitAny": false, // 允許隱式的 any 類型
     "jsx": "preserve",
     "moduleResolution": "node",
     "skipLibCheck": true,

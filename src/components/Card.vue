@@ -59,7 +59,7 @@
 <script>
 
 import { defineComponent } from 'vue';
-import mix from '../mixins/mix.js'
+import mix from '../mixins/mix.ts'
 
 export default defineComponent({
   name: 'NameCard',
@@ -106,9 +106,9 @@ export default defineComponent({
     goto (h) {
       window.open(h)
     },
-    locate: function (h) {
+    locate: function (h, bool) {
       console.log(h)
-      this.$emit('locate', h)
+      this.$emit('locate', h, bool)
     },
     addBook: function (uid) {
       console.log(uid)

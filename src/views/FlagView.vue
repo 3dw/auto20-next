@@ -10,7 +10,7 @@
 
 import { defineComponent } from 'vue';
 
-import mix from '../mixins/mix.js'
+import mix from '../mixins/mix.ts'
 import Card from '../components/Card'
 import Loader from '../components/Loader'
 
@@ -63,8 +63,8 @@ export default defineComponent({
         return Object.values(obj)
       }
     },
-    locate: function (h) {
-      this.$emit('locate', h)
+    locate: function (h, bool) {
+      this.$emit('locate', h, bool)
     },
     addBook: function (uid) {
       console.log(uid)

@@ -85,23 +85,29 @@ export default {
         [min, max] = k.split(/[~-]/);
         if (k.match(/(\d+)[~-](\d+)/)) {
           ans = ans.filter(o => 
-            (this.toAge(o.learner_birth) <= max && this.toAge(o.learner_birth)) >= min ||
-            (this.toAge(o.child_birth) <= max && this.toAge(o.child_birth) >= min) ||
-            (this.toAge(o.child_birth2) <= max && this.toAge(o.child_birth2) >= min)
+            
+            (this.toAge(o.learner_birth) <= Number(max) && this.toAge(o.learner_birth)) >= min ||
+            
+            (this.toAge(o.child_birth) <= Number(max) && this.toAge(o.child_birth) >= min) ||
+      
+            (this.toAge(o.child_birth2) <= Number(max) && this.toAge(o.child_birth2) >= min)
           );
         } else if (k.match(/(\d+)\+/)) {
           min = k.split('+')[0];
           ans = ans.filter(o => 
-            this.toAge(o.learner_birth) >= min ||
-            this.toAge(o.child_birth) >= min ||
-            this.toAge(o.child_birth2) >= min
+            this.toAge(o.learner_birth) >= Number(min) ||
+            this.toAge(o.child_birth) >= Number(min) ||
+            this.toAge(o.child_birth2) >= Number(min)
           );
         } else if (k.match(/(\d+)-/)) {
           max = k.split('-')[0];
           ans = ans.filter(o => 
-            this.toAge(o.learner_birth) <= max ||
-            this.toAge(o.child_birth) <= max ||
-            this.toAge(o.child_birth2) <= max
+
+            this.toAge(o.learner_birth) <= Number(max) ||
+            
+            this.toAge(o.child_birth) <= Number(max) ||
+
+            this.toAge(o.child_birth2) <= Number(max)
           );
         } else {
           ans = ans.filter(o => {

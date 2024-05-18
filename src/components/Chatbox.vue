@@ -65,7 +65,7 @@
 import { defineComponent } from 'vue';
 import { onValue, set, ref } from 'firebase/database';
 import { db, chatsRef } from '../firebase';
-import mix from '../mixins/mix.js';
+import mix from '../mixins/mix.ts';
 
 export default defineComponent({
   name: 'ChatBox',
