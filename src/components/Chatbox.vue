@@ -3,8 +3,8 @@
   #menu.ui.inverted.big.menu
     .item.ui.form(v-show="isFull")
       .ui.input
-        input(v-model="key", placeholder="搜索")
-      .ui.buttons(v-if="!user")
+        input(v-model="key", placeholder="搜尋")
+      // .ui.buttons(v-if="!user")
         button.ui.orange.button(@click="loginGoogle()")
           i.google.icon
           | 登入
@@ -185,6 +185,14 @@ export default defineComponent({
     background-color: white;
   }
 
+  .ui.list {
+    margin-top: .8em !important;
+  }
+
+  .item {
+    text-align: left;
+  }
+
   .item.preview {
     opacity: 0.86;
   }
@@ -203,6 +211,8 @@ export default defineComponent({
     float: left;
     width: 50px;
     height: 50px;
+    margin-right: .6em;
+    border-radius: 50%;
   }
 
   .input {
