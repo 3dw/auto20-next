@@ -28,6 +28,12 @@
           |，以了解如何更好地保護您的隱私。
         h2.ui.header 升起互助旗後可以修改嗎？
         p 當然可以！只需再次登入平台，點選「我的旗幟」，即可隨時修改您的互助旗內容，保持信息的最新和準確。
+        h2.ui.header 升起互助旗後可以下載備份嗎？
+        p 當然可以！只需再次登入平台，點選「隱私權政策」，點擊下方「下載備份」按鈕，即可下載您的資料備份
+        p
+          router-link(to="privacy-policy") 前往隱私權政策
+            i.chevron.right.icon
+
         h2.ui.header 升起互助旗後可以移除嗎？
         p 可以，您只需發送e-mail至管理員的郵箱(
           a(href="mailto:bestian@gmail.com") bestian@gmail.com
