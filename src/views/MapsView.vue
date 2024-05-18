@@ -7,7 +7,7 @@
 
 <script>
 import { defineComponent, onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';  
+import { useRouter } from 'vue-router';
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -31,7 +31,7 @@ export default defineComponent({
 
     // 將對象轉換為列表
     function toList(obj) {
-      if (!obj || typeof(obj) !== 'object') { 
+      if (!obj || typeof(obj) !== 'object') {
         return [];
       } else {
         return Object.values(obj);
@@ -40,9 +40,9 @@ export default defineComponent({
 
     // 根據經緯度欄位返回位置
     function countLatLng(h) {
-      if (!h.latlngColumn) { return {lat: 0, lng: 0}; }
+      if (!h.latlngColumn) { return { lat: 0, lng: 0 }; }
       const [lat, lng] = h.latlngColumn.split(',').map(Number);
-      return {lat, lng};
+      return { lat, lng };
     }
 
     // 獲取圖標 URL
@@ -67,6 +67,17 @@ export default defineComponent({
       });
     }
 
+    // 過濾符合 mySearch 關鍵字的使用者
+    function filteredUsers(users, search) {
+      if (!search) return users;
+      const searchLower = search.toLowerCase();
+      return users.filter(h =>
+        [h.name, h.learner_habit, h.share, h.ask, h.note].some(field =>
+          field && field.toLowerCase().includes(searchLower)
+        )
+      );
+    }
+
     // 當組件掛載時初始化地圖
     onMounted(() => {
       const initialZoom = props.zoom || 7;
@@ -85,8 +96,8 @@ export default defineComponent({
 
         // 如果有用戶數據，則添加標記到地圖
         if (props.users && toList(props.users).length > 0) {
-          toList(props.users).forEach((h) => {
-            const marker = L.marker(countLatLng(h), {icon: getAnIcon(h)})
+          filteredUsers(toList(props.users), props.mySearch).forEach((h) => {
+            const marker = L.marker(countLatLng(h), { icon: getAnIcon(h) })
               .bindPopup(h.name);
             marker.on('click', () => {
               router.push('/flag/' + h.uid);
@@ -97,13 +108,13 @@ export default defineComponent({
       }
     });
 
-    // 監聽用戶數據的變化
-    watch(() => props.users, (newU) => {
+    // 監聽用戶數據和 mySearch 的變化
+    watch([() => props.users, () => props.mySearch], ([newUsers, newSearch]) => {
       if (markerClusterGroup.value) {
         markerClusterGroup.value.clearLayers(); // 清除現有標記
-        if (newU && toList(newU).length > 0) {
-          toList(newU).forEach((h) => {
-            const marker = L.marker(countLatLng(h), {icon: getAnIcon(h)})
+        if (newUsers && toList(newUsers).length > 0) {
+          filteredUsers(toList(newUsers), newSearch).forEach((h) => {
+            const marker = L.marker(countLatLng(h), { icon: getAnIcon(h) })
               .bindPopup(h.name);
             marker.on('click', () => {
               router.push('/flag/' + h.uid);
@@ -117,8 +128,8 @@ export default defineComponent({
     return { map, toList, countLatLng, getIcon, getAnIcon };
   }
 });
-
 </script>
+
 
 <style>
 .leaflet-marker-icon {

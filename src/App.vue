@@ -448,6 +448,7 @@ nav.ui.menu, .ui.virtical.sidebar {
 .search-input .search.icon {
   position: absolute;
   right: 10px;
+  top: 9px;
   color: #888;
 }
 </style>
