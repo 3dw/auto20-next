@@ -71,10 +71,14 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
     | 我的名簿
 
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
+br
+
+.ui.form.container(v-if="doSearch($route.path)")
+  input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
 
 br
 
-router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
+router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
 
 chatbox#ch(@loginGoogle = "loginGoogle", :uid = "uid", :user="user", :photoURL="photoURL")
 
@@ -113,6 +117,7 @@ export default defineComponent({
   },
   data () {
     return {
+      mySearch: '',
       news: [
         '自學2.0更新中',
         '請定期更新您的互助旗',
@@ -186,6 +191,9 @@ export default defineComponent({
     }
   },
   methods: {
+    doSearch: function (p) {
+      return !(p.match(/(^\/$|myPlace|outer|myFlag|group\/|place|about|faq|flag\/\d+|ans\/\d+)/))
+    },
     myGroupIdx () {
       return (this.groups || []).filter((g) => {
         return (g.members || []).indexOf(this.uid || '') > -1
@@ -414,6 +422,14 @@ nav.ui.menu, .ui.virtical.sidebar {
   padding: .4em !important;
   border-radius: 50%;
   background-color: red;
+}
+
+.invisible {
+  color: transparent !important;
+}
+
+.highlightedText {
+  background-color: yellow;
 }
 
 </style>

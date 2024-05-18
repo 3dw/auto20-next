@@ -21,7 +21,7 @@ import Card from '../components/Card';
 export default defineComponent({
   name: 'FrindCards',
   mixins: [mix],
-  props: ['mySearch', 'id', 'book', 'users', 'places', 'center','user'],
+  props: ['mySearch', 'id', 'book', 'users', 'places', 'center', 'user'],
   components: { Loader, Card },
   data () {
     return {
@@ -34,16 +34,25 @@ export default defineComponent({
   emit: ['getUserLocation'],
   computed: {
     visibleCards() {
-      return this.allCards.filter((h) => {
-        const today = new Date().getTime()
+      const filteredCards = this.allCards.filter((h) => {
+        const today = new Date().getTime();
         if (isNaN(h.lastUpdate)) {
-          return false
+          return false;
         }
-        return (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 1
-      }).slice(0, this.n);  // 只返回當前應顯示的卡片
+        const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 1;
+        
+        const mySearch = this.mySearch.toLowerCase();
+        const containsSearchKeyword = [h.name, h.learner_habit, h.share, h.ask, h.note].some(field => 
+          field && field.toLowerCase().includes(mySearch)
+        );
+
+        return updatedWithinAYear && containsSearchKeyword;
+      });
+
+      return filteredCards.slice(0, this.n);  // 只返回當前應顯示的卡片
     },
     list() {
-      return this.processData(this.users).concat(this.processData(this.places))
+      return this.processData(this.users).concat(this.processData(this.places));
     }
   },
   mounted() {
@@ -53,18 +62,18 @@ export default defineComponent({
   },
   watch: {
     center: function (newC) {
-    console.log('Child component received new center:', newC);
-      this.allCards = this.processData(this.users).concat(this.processData(this.places))
-      this.$forceUpdate()
+      console.log('Child component received new center:', newC);
+      this.allCards = this.processData(this.users).concat(this.processData(this.places));
+      this.$forceUpdate();
     },
     users: function (newU) {
-      this.allCards = this.processData(newU).concat(this.processData(this.places))
+      this.allCards = this.processData(newU).concat(this.processData(this.places));
     },
     logic: function (newL) {
-      console.log(newL)
+      console.log(newL);
       if (newL == 'nearest' && (!this.user || !this.user.latlngColumn )) {
         // 使用 emit 向外發送 getUserLocation 事件
-        this.$emit('getUserLocation')
+        this.$emit('getUserLocation');
       }
     }
   },
@@ -73,19 +82,17 @@ export default defineComponent({
       const data = Object.keys(obj || {}).map(key => obj[key]);
       //console.log("原始資料:", data);  // 輸出原始資料檢查
       if (this.logic === 'newest') {
-        const sorted = data.sort(function(a,b) {
-          if (!b.lastUpdate || isNaN(b.lastUpdate)) { return -1}
-          return b.lastUpdate - a.lastUpdate
+        const sorted = data.sort((a, b) => {
+          if (!b.lastUpdate || isNaN(b.lastUpdate)) { return -1; }
+          return b.lastUpdate - a.lastUpdate;
         });
         //console.log("按時間排序後的資料:", sorted);  // 輸出排序後的資料檢查
         return sorted;
       } else if (this.logic === 'nearest') {
-        const sorted = data.sort((a, b) => 
-
-          { if (!b.latlngColumn || isNaN(b.latlngColumn)) { return -1 }
-            return this.distanceToCenter(b.latlngColumn) - this.distanceToCenter(a.latlngColumn);
-          })
-        
+        const sorted = data.sort((a, b) => { 
+          if (!b.latlngColumn || isNaN(b.latlngColumn)) { return -1; }
+          return this.distanceToCenter(b.latlngColumn) - this.distanceToCenter(a.latlngColumn);
+        });
         // console.log("按距離排序後的資料:", sorted);  // 輸出排序後的資料檢查
         return sorted;
       }
