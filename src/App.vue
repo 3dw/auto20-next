@@ -88,6 +88,7 @@ import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; 
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
 
 
+import Chatbox from './components/Chatbox.vue';
 
 // If you are using PurgeCSS, make sure to whitelist the carousel CSS classes
 import 'vue3-carousel/dist/carousel.css'
@@ -107,7 +108,8 @@ export default defineComponent({
     Carousel,
     Slide,
     Pagination,
-    Navigation
+    Navigation,
+    Chatbox
   },
   data () {
     return {
@@ -398,8 +400,20 @@ nav.ui.menu, .ui.virtical.sidebar {
   position: fixed;
   right: 0;
   bottom: 0;
-  height: 1em;
-  width: 1em;
+  z-index: 9999;
+}
+
+.red.note {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  top: -10px;
+  font-size: 16px;
+  padding: .4em !important;
+  border-radius: 50%;
+  background-color: red;
 }
 
 </style>

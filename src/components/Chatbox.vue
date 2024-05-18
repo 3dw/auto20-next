@@ -37,11 +37,9 @@
         router-link(:to="'/flag/'+p.uid")
           img.ui.avatar(:src="photoURL || '/static/img/handshake0.png'")
         a(@click = "key = p.l" v-bind:class = "p.l") [{{p.l}}] (預覽)
-        vue-markdown
           | {{p.n}} : {{p.t}}
         span.gray(v-show="isFull") &nbsp;&nbsp;-
-          vue-markdown 
-            |{{ countDateDiff(p.time) }}
+          | {{ countDateDiff(p.time) }}
       .item(v-if="uid")
         .ui.form
           .field
@@ -153,16 +151,15 @@ export default defineComponent({
     },
     reCount() {
       this.read = this.fil(this.chats).length;
-      this.$localStorage.set('read', this.read);
+      localStorage.setItem('read', this.read);
     }
   },
   mounted() {
-    const vm = this;
     onValue(chatsRef, (snapshot) => {
       const data = snapshot.val();
-      vm.chats = data;
+      this.chats = data;
     });
-    this.read = this.$localStorage.get('read') || 0;
+    this.read = localStorage.getItem('read') || 0;
     if (this.read === 'undefined') {
       this.read = 0;
     }
