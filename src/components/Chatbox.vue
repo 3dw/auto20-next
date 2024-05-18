@@ -11,7 +11,7 @@
     .right.menu
       a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
-        | 聊聊
+        | 群聊
         .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
       a.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
