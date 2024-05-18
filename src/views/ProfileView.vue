@@ -33,10 +33,7 @@
         input(type='text' v-model='root.name', placeholder='您的大名')
       .field(v-bind:class="{error: root.address && (root.latlngColumn == 'undefined,undefined' || root.latlngColumn == '36.778261,-119.4179324')} ")
         label.required 概略地址
-        input(v-model.trim='root.address', @keyup='checkLatLng(root.address)', placeholder='地址愈詳細，別人愈好認識你的所在')
-
-        span(v-show="root.address && root.latlngColumn !== 'undefined,undefined' && root.latlngColumn !== '36.778261,-119.4179324'")
-          span(v-html='root.latlngColumn')
+        input(v-model.trim='root.address', placeholder='地址愈詳細，別人愈好認識你的所在')
 
         .ui.error.message(v-show="(root.address && (root.latlngColumn == 'undefined,undefined' || root.latlngColumn == '36.778261,-119.4179324'))")
           .header 無法定位
@@ -53,6 +50,8 @@
           .header 地址太詳細了
           p 這是公開資料，最細寫到路段即可，請不要寫出門牌號碼。
       
+      h4.ui.header 手動拖拉地圖讓標記移到您的位置附近
+        .sub.header 經緯座標： {{root.latlngColumn}}
       #map(style="height: 300px;")
       .ui.divider
       .field
@@ -82,7 +81,6 @@
       .field
         label 您的身份
         select.selectpicker(v-model='root.learner_role')
-          // TODO : NG-OPTION
           option(value='')  -- 選擇一種自學身份 -- 
           option(v-for="t in ['自學生', '自學家長', '獨立教育工作者','自學家長 + 獨立教育工作者', '自學生 + 獨立教育工作者', '自學生 + 自學家長','自學生 + 自學家長 + 獨立教育工作者']", :selected='root.learner_role == t', :value="t") {{t}}
       .field
@@ -165,9 +163,6 @@
   import { set, ref } from 'firebase/database'
   import 'leaflet/dist/leaflet.css';
   import * as L from 'leaflet';
-
-  import axios from 'axios'
-
   export default {
     name: 'MyFlag',
     mixins: [mix],
@@ -181,7 +176,7 @@
       return {
         myIndex: -1,
         root: {
-          latlngColumn: '23.5330, 121.0654' // Default to Taipei 101 coordinates
+          latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
         },
         local: {},
         map: null,
@@ -242,6 +237,7 @@
             uid: this.uid,
             email: this.email,
             photoURL: this.photoURL || '',
+            latlngColumn: '23.5330,121.0654',
             note: ''
           }
         }
@@ -254,44 +250,6 @@
         // console.log((today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25)
         return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25
       },
-      checkLatLng: function(add) {
-        console.log('checkLatLng:' + add);
-        
-        // 將 Vue 實例存儲到變量中
-
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        var vm = this;
-
-        axios.get('https://api.opencagedata.com/geocode/v1/json?q=' + encodeURIComponent(add) + '&key=ee2340e9a9e146e090943337d14a76d4&language=zh&pretty=1')
-          .then(response => {
-            var d = response.body;
-            console.log(d);
-            var lat, lng;
-            try {
-              lat = d.results[0].bounds.northeast.lat;
-              lng = d.results[0].bounds.northeast.lng;
-            } catch (e$) {
-              console.log(e$);
-            }
-            if (!lat || !lng) {
-              try {
-                lat = d.query.results.Result.latitude;
-                lng = d.query.results.Result.longitude;
-              } catch (e$) {
-                console.log(e$);
-              }
-            }
-            
-            // 使用存儲的 Vue 實例變量來設置資料
-            vm.root.latlngColumn = lat + ',' + lng;
-            vm.local.lat = parseFloat(lat);
-            vm.local.lng = parseFloat(lng);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      },
-
       usedAddr: function (hand) {
         console.log(this.users)
         

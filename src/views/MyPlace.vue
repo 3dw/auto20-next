@@ -16,9 +16,10 @@
       .field
         label.required 概略地址
         input(v-model.trim='root.address', placeholder='地址愈詳細，別人愈好認識你的所在')
+
+        h4.ui.header 手動拖拉地圖讓標記移到位置附近
+          .sub.header 經緯座標： {{root.latlngColumn}}
         #map(style="height: 300px;")  // Add the map container
-        span(v-show="root.latlngColumn")
-          span(v-html='root.latlngColumn')
         .ui.error.message(v-show="!root.latlngColumn")
           .header 無法定位
           p 如果地場有不只一個位置，請填寫一個就好，其他可寫進介紹中。
@@ -70,7 +71,7 @@ export default defineComponent({
     return {
       myIndex: -1,
       root: {
-        latlngColumn: ''  // Initialize without a default value
+        latlngColumn: '23.5330,121.0654'  // Initialize with a default value
       },
       local: {},
       map: null,

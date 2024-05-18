@@ -120,7 +120,7 @@ export default defineComponent({
         '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
       ],
       zoom: 7,
-      center: [22.613220, 121.219482],
+      center: [23.5330, 121.0654],
       sidebarVisible: false, // 定義側邊欄可見狀態
       // eslint-disable-next-line
       users: null as any, // 定義用戶資料變量
