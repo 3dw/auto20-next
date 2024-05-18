@@ -8,8 +8,8 @@
   .ui.grid.container
     .ui.two.column.stackable.row
       .ui.padded.segment.column
-        h2.ui.header 自主學習2.0是什麼？
-        p 自主學習2.0是一個公益的尋友平台，可以依地圖的地理位置尋友，也可依照孩子的年紀，升旗者的興趣和可分享的專長來尋友
+        h2.ui.header 自學2.0是什麼？
+        p 自學2.0是一個公益的尋友平台，可以依地圖的地理位置尋友，也可依照孩子的年紀，升旗者的興趣和可分享的專長來尋友
         h2.ui.header 這是什麼單位在設計維護的？
         p 本平台由
           a(href="http://www.alearn.org.tw", target="_blank") 自主學習促進會
