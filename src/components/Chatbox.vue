@@ -48,15 +48,15 @@
             img.ui.avatar(:src="photoURL")
             input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
           .inline.fields
-            .field(v-for = "l in labels")
+            .field(v-for="l in labels")
               .ui.radio.checkbox
-                input(type='radio', name='l', v-model="label", :value="l" checked='checked == l')
+                input(type='radio', name='l', v-model="label", :value="l")
                 label
                   a(@click="label=l", v-bind:class="l") {{l}}
             .ui.button.group
               a.ui.blue.small.button(@click="preview") 預覽
               a.ui.green.small.button(@click="addChat") 留言
-      .item(v-else) 
+      .item(v-else)
         .ui.big.buttons(v-if="!uid")
           button.ui.orange.button(@click="loginGoogle()")
             i.google.icon
@@ -65,16 +65,15 @@
 
 <script>
 import { defineComponent } from 'vue';
-
-import { onValue, set, ref } from 'firebase/database'
-import { db, chatsRef } from '../firebase'
-import mix from '../mixins/mix.js'
+import { onValue, set, ref } from 'firebase/database';
+import { db, chatsRef } from '../firebase';
+import mix from '../mixins/mix.js';
 
 export default defineComponent({
   name: 'ChatBox',
   mixins: [mix],
   props: ['uid', 'user', 'photoURL'],
-  data () {
+  data() {
     return {
       p: '',
       msg: '',
@@ -86,10 +85,10 @@ export default defineComponent({
       isMini: true,
       label: '閒聊',
       labels: ['諮詢', '故障', '找伴', '閒聊']
-    }
+    };
   },
   methods: {
-    preview: function () {
+    preview() {
       var o = {
         uid: this.uid,
         n: this.user.providerData[0].displayName,
@@ -98,10 +97,10 @@ export default defineComponent({
         edit: false,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
-      }
-      this.p = o
+      };
+      this.p = o;
     },
-    updateChat: function (c) {
+    updateChat(c) {
       var o = {
         uid: c.uid,
         n: c.n,
@@ -109,13 +108,13 @@ export default defineComponent({
         l: c.l,
         photoURL: c.photoURL || '',
         time: (new Date()).getTime()
-      }
-      this.chats[c['.key']] = o
+      };
+      this.chats[c['.key']] = o;
       set(ref(db, 'chats'), this.chats).then(
         console.log('chats更新成功')
-      )
+      );
     },
-    addChat: function () {
+    addChat() {
       var o = {
         uid: this.uid,
         n: this.user.providerData[0].displayName,
@@ -123,64 +122,59 @@ export default defineComponent({
         l: this.label,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
-      }
+      };
       if (this.msg) {
-        const rid = (Math.random() + '').substr(0, 8).replace('.', '')
-        this.chats[rid] = o
-        this.msg = ''
-        this.p = ''
+        const rid = (Math.random() + '').substr(0, 8).replace('.', '');
+        this.chats[rid] = o;
+        this.msg = '';
+        this.p = '';
       }
       set(ref(db, 'chats'), this.chats).then(
         console.log('chats更新成功')
-      )
+      );
     },
-    loginGoogle: function () {
-      this.$emit('loginGoogle')
+    loginGoogle() {
+      this.$emit('loginGoogle');
     },
-    fil: function (list) {
-      // console.log(list)
-      var k = this.key
-      const ks = Object.keys(list)
-      var l = []
+    fil(list) {
+      var k = this.key;
+      const ks = Object.keys(list);
+      var l = [];
       for (var i = 0; i < ks.length; i++) {
-        l.push(list[ks[i]])
+        l.push(list[ks[i]]);
       }
-      l =  l.filter(function (o) { return (o.t + o.l).indexOf(k) > -1 || !k }).map(function (o) {
-        o.edit = false; return o
-      })
-      l.sort(function (a, b) {
-        return a.time - b.time
-      })
-      return l
+      l = l.filter(function(o) { return (o.t + o.l).indexOf(k) > -1 || !k }).map(function(o) {
+        o.edit = false; return o;
+      });
+      l.sort(function(a, b) {
+        return a.time - b.time;
+      });
+      return l;
     },
-    reCount: function () {
-      this.read = this.fil(this.chats).length
-      this.$localStorage.set('read', this.read)
+    reCount() {
+      this.read = this.fil(this.chats).length;
+      this.$localStorage.set('read', this.read);
     }
   },
-  mounted () {
-    const vm = this
+  mounted() {
+    const vm = this;
     onValue(chatsRef, (snapshot) => {
-      const data = snapshot.val()
-      // console.log(data)
-      vm.chats = data
-    })
-    console.log(this.read)
-    this.read = this.$localStorage.get('read') || 0
+      const data = snapshot.val();
+      vm.chats = data;
+    });
+    this.read = this.$localStorage.get('read') || 0;
     if (this.read === 'undefined') {
-      this.read = 0
+      this.read = 0;
     }
   }
-})
+});
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-  .諮詢 { background-color: yellow }
-  .找伴 { background-color: lightgreen }
-  .故障 { background-color: pink }
-  .閒聊 { background-color: white }
+  .諮詢 { background-color: yellow; }
+  .找伴 { background-color: lightgreen; }
+  .故障 { background-color: pink; }
+  .閒聊 { background-color: white; }
 
   .chats {
     position: fixed;
@@ -264,13 +258,12 @@ export default defineComponent({
   .ui.list {
     position: absolute;
     top: 1em;
-/*    bottom: 0; */
     left: 0;
     width: 100%;
     padding-left: 1em; 
   }
 
   input {
-    width: 110px !important
+    width: 110px !important;
   }
 </style>
