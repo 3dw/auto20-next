@@ -277,7 +277,7 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this; // 儲存當前Vue實例
       if (this.isInApp) {
-        window.alert('本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝'); // 提示不支援應用內登入
+        window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝'); // 提示不支援應用內登入
       } else {
         signInWithPopup(auth, provider).then((result) => {
           const user = result.user; // 獲取登入後的用戶資訊
