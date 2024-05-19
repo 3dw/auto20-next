@@ -4,6 +4,7 @@
   select.ui.dropdown(v-model="logic")
     option(value="newest") 最近更新
     option(value="nearest") 離我最近
+    option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") 孩子年齡相近
   br
   .ui.divider
   br
@@ -21,7 +22,7 @@ import Card from '../components/Card';
 export default defineComponent({
   name: 'FrindCards',
   mixins: [mix],
-  props: ['mySearch', 'id', 'book', 'users', 'places', 'center', 'user'],
+  props: ['mySearch', 'id', 'book', 'users', 'places', 'center', 'user', 'uid'],
   components: { Loader, Card },
   data() {
     return {
@@ -39,7 +40,7 @@ export default defineComponent({
         if (isNaN(h.lastUpdate)) {
           return false;
         }
-        const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 2; // 應該是 1
+        const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 2; //應該是1
 
         const mySearch = this.mySearch.toLowerCase();
         const containsSearchKeyword = [h.name, h.learner_habit, h.share, h.ask, h.note].some(field =>
@@ -72,7 +73,7 @@ export default defineComponent({
     },
     logic(newL) {
       console.log(newL);
-      if (newL == 'nearest' && !this.userLocation) {
+      if (newL === 'nearest' && !this.userLocation) {
         // 使用者未登入，使用導航 API 獲取位置
         this.getUserLocation();
       } else {
@@ -87,6 +88,13 @@ export default defineComponent({
         return data.sort((a, b) => (b.lastUpdate || 0) - (a.lastUpdate || 0));
       } else if (this.logic === 'nearest') {
         return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn));
+      } else if (this.logic === 'age_nearest' && this.users[this.uid] && this.users[this.uid].child_birth) {
+        const userChildBirth = new Date(this.users[this.uid].child_birth).getTime();
+        return data.sort((a, b) => {
+          const aChildBirth = a.child_birth ? new Date(a.child_birth).getTime() : Infinity;
+          const bChildBirth = b.child_birth ? new Date(b.child_birth).getTime() : Infinity;
+          return Math.abs(aChildBirth - userChildBirth) - Math.abs(bChildBirth - userChildBirth);
+        });
       }
       return data;
     },
