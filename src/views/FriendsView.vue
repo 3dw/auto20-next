@@ -39,7 +39,7 @@ export default defineComponent({
         if (isNaN(h.lastUpdate)) {
           return false;
         }
-        const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 1;
+        const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 2; // 應該是 1
 
         const mySearch = this.mySearch.toLowerCase();
         const containsSearchKeyword = [h.name, h.learner_habit, h.share, h.ask, h.note].some(field =>
