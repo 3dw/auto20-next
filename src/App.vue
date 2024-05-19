@@ -63,7 +63,7 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
   router-link.item(to="/profile")
     i.user.icon.no-float
     | 我的旗幟
-  router-link.item(to="/my_place")
+  router-link.item(to="/my_place", v-if="uid")
     i.marker.icon.no-float
     | 自學場地登錄
   router-link.item(to="/book", v-if="uid")

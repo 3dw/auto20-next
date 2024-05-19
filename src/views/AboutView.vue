@@ -46,6 +46,15 @@
           router-link(to="/maps") 前往地圖介面
             i.chevron.right.icon
 
+        h2.ui.header 自學場地功能的概念？
+
+        p 自學場地登錄功能，讓使用者不只可以登錄個人，也可以登錄額外的「自學場地」。
+
+        p 填寫必填的地名和地址，並手動調整地圖標記以確定準確位置。提供有效的聯絡方式和簡短的介紹，並可選擇填寫網站網址。這個功能確保場地資訊清晰且易於他人找到，幫助自學者更方便地找到合適的學習場所。
+
+        p 您需要先登入，才能插場地旗。
+
+
         h2.ui.header 名簿是什麼？
         p
           b 名簿
@@ -71,6 +80,24 @@
           | 位於視窗的
           b 右下角
           | ，點擊即可放大查看，登入後可參與群聊，提升互動。
+
+        h2.ui.header 如何提出錯誤回報或功能請求？
+        p
+          b 自學2.0有位於Github的專案議題區。請上Github的專案議題區提出錯誤回報與功能請求，謝謝。若您還沒有Github帳號，請先註冊一個Github帳號再留言。
+
+        p
+          a(href="https://github.com/3dw/auto20-next/issues") 前往專案議題區
+            i.chevron.right.icon
+
+
+        h2.ui.header Github平台是什麼？
+        p
+          b 如果有70個人要協作一份重要文件，每個人都有不同的想法但都希望文件更好，可以把他們分成七組，每組10人。每組使用便利貼、布告板等工具集思廣益。然而，整合所有小組意見時，會發現每組都有優缺點，難以完全整合。使用Google Docs協作，當人數多時，單一版本控制常常不夠用。若只有兩三人，可以保留所有不同意見並整合到新版本。GitHub 提供一種更強大的協作平台，基於Git版本控制系統，有效解決這些問題。
+
+        p
+          a(href="https://github.com/3dw/github-tutorial/blob/main/README.md") 前往Github入門介紹
+            i.chevron.right.icon
+
 
 </template>
 
