@@ -194,7 +194,7 @@ export default defineComponent({
   },
   methods: {
     doSearch: function (p) {
-      return !(p.match(/(^\/$|myPlace|outer|myFlag|group\/|place|about|faq|flag\/\d+|ans\/\d+)/))
+      return !(p.match(/(^\/$|myPlace|outer|myFlag|group\/|place|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
     },
     myGroupIdx () {
       return (this.groups || []).filter((g) => {

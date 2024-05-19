@@ -145,6 +145,8 @@
         i.red.star
         | 必填項目尚未填寫
     .ui.divider
+    p(v-show="!users[uid]") 請先詳閱我們的
+      router-link(target="_blank", to="/privacy-policy") 隱私權政策
     a.ui.large.blue.button(v-bind:class="{disabled: !isValid(root)}" @click="updateFlag")
       span(v-show='!users[uid]') 升起旗幟!!
       span(v-show='users[uid]') 更新旗幟!!
