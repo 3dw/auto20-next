@@ -3,67 +3,59 @@
   #menu.ui.inverted.big.menu
     .item.ui.form(v-show="isFull")
       .ui.input
-        input(v-model="key", placeholder="搜索")
-      .ui.buttons(v-if="!user")
+        input(v-model="key", placeholder="搜尋")
+      // .ui.buttons(v-if="!user")
         button.ui.orange.button(@click="loginGoogle()")
           i.google.icon
           | 登入
     .right.menu
       a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
-        | 聊聊
-        .red.note(v-show = "fil(chats).length > read") {{ fil(chats).length - read }}
+        | 群聊
+        .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
       a.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | 縮小
   #box
     .ui.list
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
-        .ui(v-show = "edit !== c") 
-            router-link(:to="'/flag/'+c.uid")
-              img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
-            a(@click = "key = c.l" v-bind:class = "c.l") [{{c.l}}]
-            a(@click = "edit = c", v-show="c.uid == uid")
-              i.edit.icon(title = "edit")
-            vue-markdown
-              | {{c.n}} : {{c.t}}
-            span.gray(v-show="isFull") &nbsp;&nbsp;-
-              vue-markdown 
-                |{{ countDateDiff(c.time) }}
+        .ui(v-show="edit !== c") 
+          router-link(:to="'/flag/' + c.uid")
+            img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
+          a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
+          a(@click="edit = c" v-show="c.uid == uid")
+            i.edit.icon(title="edit")
+          | {{ c.n }} : {{ c.t }}
+          span.gray(v-show="isFull") &nbsp;&nbsp;-
+            | {{ countDateDiff(c.time) }}
         .ui.form(v-show="edit == c")
           .ui.input
             input.input(v-model="c.t", placeholder="更新")
             a.ui.green.small.button(@click="edit = ''; updateChat(c)") 更新
 
       .item.preview(v-if="p.t")
-        router-link(:to="'/flag/'+p.uid")
-          img.ui.avatar(:src="photoURL || '/static/img/handshake0.png'")
-        a(@click = "key = p.l" v-bind:class = "p.l") [{{p.l}}] (預覽)
-        vue-markdown
-          | {{p.n}} : {{p.t}}
+        router-link(:to="'/flag/' + p.uid")
+          img.ui.avatar(:src="p.photoURL || '/static/img/handshake0.png'")
+        a(@click="key = p.l" v-bind:class="p.l") [{{p.l}}] (預覽)
+        | {{ p.n }} : {{ p.t }}
         span.gray(v-show="isFull") &nbsp;&nbsp;-
-          vue-markdown 
-            |{{ countDateDiff(p.time) }}
+          | {{ countDateDiff(p.time) }}
       .item(v-if="uid")
         .ui.form
           .field
-            img.ui.avatar(:src="photoURL || 'http://graph.facebook.com/' + uid + '/picture'")
+            img.ui.avatar(:src="photoURL")
             input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
           .inline.fields
-            .field(v-for = "l in labels")
+            .field(v-for="l in labels")
               .ui.radio.checkbox
-                input(type='radio', name='l', v-model="label", :value="l" checked='checked == l')
+                input(type="radio", name="l", v-model="label", :value="l")
                 label
-                  a(@click="label=l", v-bind:class="l") {{l}}
+                  a(@click="label=l" v-bind:class="l") {{ l }}
             .ui.button.group
               a.ui.blue.small.button(@click="preview") 預覽
               a.ui.green.small.button(@click="addChat") 留言
-      .item(v-else) 
-        .ui.big.buttons(v-if="!user")
-          //button.ui.blue.button(@click="loginFB")
-            i.facebook.icon
-            | 登入以留言 
-          //.or
+      .item(v-else)
+        .ui.big.buttons(v-if="!uid")
           button.ui.orange.button(@click="loginGoogle()")
             i.google.icon
             | 登入以留言 
@@ -71,18 +63,15 @@
 
 <script>
 import { defineComponent } from 'vue';
-
-import { onValue, set, ref } from 'firebase/database'
-import { db, chatsRef } from '../firebase'
-import mix from '../mixins/mix.js'
-import VueMarkdown from 'vue-markdown'
+import { onValue, set, ref } from 'firebase/database';
+import { db, chatsRef } from '../firebase';
+import mix from '../mixins/mix.ts';
 
 export default defineComponent({
-  name: 'chats',
+  name: 'ChatBox',
   mixins: [mix],
-  components: { VueMarkdown },
   props: ['uid', 'user', 'photoURL'],
-  data () {
+  data() {
     return {
       p: '',
       msg: '',
@@ -94,10 +83,10 @@ export default defineComponent({
       isMini: true,
       label: '閒聊',
       labels: ['諮詢', '故障', '找伴', '閒聊']
-    }
+    };
   },
   methods: {
-    preview: function () {
+    preview() {
       var o = {
         uid: this.uid,
         n: this.user.providerData[0].displayName,
@@ -106,10 +95,10 @@ export default defineComponent({
         edit: false,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
-      }
-      this.p = o
+      };
+      this.p = o;
     },
-    updateChat: function (c) {
+    updateChat(c) {
       var o = {
         uid: c.uid,
         n: c.n,
@@ -117,13 +106,13 @@ export default defineComponent({
         l: c.l,
         photoURL: c.photoURL || '',
         time: (new Date()).getTime()
-      }
-      this.chats[c['.key']] = o
+      };
+      this.chats[c['.key']] = o;
       set(ref(db, 'chats'), this.chats).then(
         console.log('chats更新成功')
-      )
+      );
     },
-    addChat: function () {
+    addChat() {
       var o = {
         uid: this.uid,
         n: this.user.providerData[0].displayName,
@@ -131,64 +120,58 @@ export default defineComponent({
         l: this.label,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
-      }
+      };
       if (this.msg) {
-        const rid = (Math.random() + '').substr(0, 8).replace('.', '')
-        this.chats[rid] = o
-        this.msg = ''
-        this.p = ''
+        const rid = (Math.random() + '').substr(0, 8).replace('.', '');
+        this.chats[rid] = o;
+        this.msg = '';
+        this.p = '';
       }
       set(ref(db, 'chats'), this.chats).then(
         console.log('chats更新成功')
-      )
+      );
     },
-    loginGoogle: function () {
-      this.$emit('loginGoogle')
+    loginGoogle() {
+      this.$emit('loginGoogle');
     },
-    fil: function (list) {
-      // console.log(list)
-      var k = this.key
-      const ks = Object.keys(list)
-      var l = []
+    fil(list) {
+      var k = this.key;
+      const ks = Object.keys(list);
+      var l = [];
       for (var i = 0; i < ks.length; i++) {
-        l.push(list[ks[i]])
+        l.push(list[ks[i]]);
       }
-      l =  l.filter(function (o) { return (o.t + o.l).indexOf(k) > -1 || !k }).map(function (o) {
-        o.edit = false; return o
-      })
-      l.sort(function (a, b) {
-        return a.time - b.time
-      })
-      return l
+      l = l.filter(function(o) { return (o.t + o.l).indexOf(k) > -1 || !k }).map(function(o) {
+        o.edit = false; return o;
+      });
+      l.sort(function(a, b) {
+        return a.time - b.time;
+      });
+      return l;
     },
-    reCount: function () {
-      this.read = this.fil(this.chats).length
-      this.$localStorage.set('read', this.read)
+    reCount() {
+      this.read = this.fil(this.chats).length;
+      localStorage.setItem('read', this.read);
     }
   },
-  mounted () {
-    const vm = this
+  mounted() {
     onValue(chatsRef, (snapshot) => {
-      const data = snapshot.val()
-      // console.log(data)
-      vm.chats = data
-    })
-    console.log(this.read)
-    this.read = this.$localStorage.get('read') || 0
+      const data = snapshot.val();
+      this.chats = data;
+    });
+    this.read = localStorage.getItem('read') || 0;
     if (this.read === 'undefined') {
-      this.read = 0
+      this.read = 0;
     }
   }
-})
+});
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-  .諮詢 { background-color: yellow }
-  .找伴 { background-color: lightgreen }
-  .故障 { background-color: pink }
-  .閒聊 { background-color: white }
+  .諮詢 { background-color: yellow; }
+  .找伴 { background-color: lightgreen; }
+  .故障 { background-color: pink; }
+  .閒聊 { background-color: white; }
 
   .chats {
     position: fixed;
@@ -200,6 +183,14 @@ export default defineComponent({
     overflow: visible;
     border: 1px solid black;
     background-color: white;
+  }
+
+  .ui.list {
+    margin-top: .8em !important;
+  }
+
+  .item {
+    text-align: left;
   }
 
   .item.preview {
@@ -220,6 +211,8 @@ export default defineComponent({
     float: left;
     width: 50px;
     height: 50px;
+    margin-right: .6em;
+    border-radius: 50%;
   }
 
   .input {
@@ -272,13 +265,12 @@ export default defineComponent({
   .ui.list {
     position: absolute;
     top: 1em;
-/*    bottom: 0; */
     left: 0;
     width: 100%;
     padding-left: 1em; 
   }
 
   input {
-    width: 110px !important
+    width: 110px !important;
   }
 </style>

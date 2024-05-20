@@ -9,7 +9,7 @@
           | -
           span(v-html='toAge(h.learner_birth)')
           | 歲
-        span(v-if="h.child_birth") (孩子
+        span(v-if="h.child_birth") (孩子約
         span(v-if="h.child_birth2") {{toAge(h.child_birth2)}} ~
         span(v-if="h.child_birth") {{toAge(h.child_birth)}} 歲)
     .content
@@ -44,13 +44,13 @@
   .ui.bottom.attached.buttons
     .ui.green.basic.button(@click="addBook(h.uid || h.idx)" v-if="uid && (!book || book.indexOf(h.uid || h.idx) == -1)")
       i.book.icon
-      | 加入名簿
+      | 登入名簿
     .ui.red.basic.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else-if = "uid && book && book.indexOf(h.uid || h.idx) > -1")
       i.book.icon
       | 從名簿移除
-    router-link.ui.blue.basic.button(to="/profile" v-else)
-      i.book.icon
-      | 註冊帳號以建立名簿
+    // router-link.ui.blue.basic.button(to="/profile" v-else)
+      i.user.icon
+      | 登入
     .ui.pink.basic.button(@click="locate(h, true)")
       i.map.icon
       | 地圖檢視
@@ -59,7 +59,7 @@
 <script>
 
 import { defineComponent } from 'vue';
-import mix from '../mixins/mix.js'
+import mix from '../mixins/mix.ts'
 
 export default defineComponent({
   name: 'NameCard',
@@ -106,9 +106,9 @@ export default defineComponent({
     goto (h) {
       window.open(h)
     },
-    locate: function (h) {
+    locate: function (h, bool) {
       console.log(h)
-      this.$emit('locate', h)
+      this.$emit('locate', h, bool)
     },
     addBook: function (uid) {
       console.log(uid)

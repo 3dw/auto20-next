@@ -4,21 +4,27 @@ nav.ui.menu#main-menu
     i.icon.bars
   router-link.item(to="/")
     i.home.icon
-    | 首頁
+    span.fat-only 首頁
   router-link.item.fat-only(to="/about")
     i.info.icon
     | 說明
   router-link.item(to="/friends")
     i.users.icon
     | 朋友
+  router-link.item(to="/maps")
+    i.map.icon
+    | 地圖
   router-link.item.fat-only(to="/groups")
     i.globe.icon
     | 社團
-  router-link.item.fat-only(to="/maps")
-    i.map.icon
-    | 地圖
 
   div.right.menu
+    .ui.simple.dropdown.item
+      i.share.square.icon
+      .menu
+        router-link.item(to="/qr") 分享QR碼
+        button.no-border.item(@click="copyLink()") 複製當前網址
+
     .ui.simple.dropdown.item
       img.ui.avatar.image(v-if="photoURL" :src="photoURL")
       i.user.icon(v-else)
@@ -34,12 +40,12 @@ nav.ui.menu#main-menu
         button.no-border.ui.item(v-if="uid", @click="logout")
           i.sign-out.icon
           | 登出
-carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000")
+carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000", :pauseAutoplayOnHover="true")
   slide(v-for="slide in news", :key="slide")
     span(v-html="slide")
   template(#addons)
-    navigation
-    pagination
+    // navigation
+    // pagination
 
 .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
   router-link.item(to="/")
@@ -63,7 +69,7 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
   router-link.item(to="/profile")
     i.user.icon.no-float
     | 我的旗幟
-  router-link.item(to="/my_place")
+  router-link.item(to="/my_place", v-if="uid")
     i.marker.icon.no-float
     | 自學場地登錄
   router-link.item(to="/book", v-if="uid")
@@ -71,10 +77,18 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
     | 我的名簿
 
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
+br
+
+.ui.form.container(v-if="doSearch($route.path)")
+  .search-input
+    input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
+    i.search.icon
 
 br
 
-router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
+router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation")
+
+chatbox#ch(@loginGoogle = "loginGoogle", :uid = "uid", :user="user", :photoURL="photoURL")
 
 </template>
 
@@ -86,6 +100,7 @@ import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; 
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
 
 
+import Chatbox from './components/Chatbox.vue';
 
 // If you are using PurgeCSS, make sure to whitelist the carousel CSS classes
 import 'vue3-carousel/dist/carousel.css'
@@ -103,10 +118,14 @@ export default defineComponent({
   name: 'WeLearn', // 定義組件名稱,
   components: {
     Carousel,
-    Slide
+    Slide,
+    Pagination,
+    Navigation,
+    Chatbox
   },
   data () {
     return {
+      mySearch: '',
       news: [
         '自學2.0更新中',
         '請定期更新您的互助旗',
@@ -114,7 +133,7 @@ export default defineComponent({
         '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
       ],
       zoom: 7,
-      center: [22.613220, 121.219482],
+      center: [23.5330, 121.0654],
       sidebarVisible: false, // 定義側邊欄可見狀態
       // eslint-disable-next-line
       users: null as any, // 定義用戶資料變量
@@ -180,6 +199,9 @@ export default defineComponent({
     }
   },
   methods: {
+    doSearch: function (p) {
+      return !(p.match(/(^\/$|myPlace|qr|outer|myFlag|group\/|place|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
+    },
     myGroupIdx () {
       return (this.groups || []).filter((g) => {
         return (g.members || []).indexOf(this.uid || '') > -1
@@ -246,6 +268,22 @@ export default defineComponent({
       }
       // this.setLocal('book')
     },
+    copyLink () {
+      if (!document.hasFocus()) {
+        alert("Document does not have focus, cannot copy link.");
+        return;
+      }
+      console.log(this.$route);
+      const copyText = 'https://auto20-next.pages.dev/#/' + this.$route.path;
+      navigator.clipboard.writeText(copyText)
+        .then(() => {
+          window.alert("已複製當前網址: " + copyText);
+        })
+        .catch(err => {
+          console.error('無法複製當前網址: ', err);
+        });
+      this.$forceUpdate();
+    },
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this; // 儲存當前Vue實例
@@ -261,7 +299,7 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this; // 儲存當前Vue實例
       if (this.isInApp) {
-        window.alert('本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝'); // 提示不支援應用內登入
+        window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝'); // 提示不支援應用內登入
       } else {
         signInWithPopup(auth, provider).then((result) => {
           const user = result.user; // 獲取登入後的用戶資訊
@@ -380,7 +418,59 @@ nav.ui.menu, .ui.virtical.sidebar {
 .carousel {
   padding: .6em;
   background-color: #f39c04;
-  font-weight: bold
+  font-weight: bold;
+  font-size: 16px;
 }
 
+.carousel_item {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#ch {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.red.note {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  top: -10px;
+  font-size: 16px;
+  padding: .4em !important;
+  border-radius: 50%;
+  background-color: red;
+}
+
+.invisible {
+  color: transparent !important;
+}
+
+.highlightedText {
+  background-color: yellow;
+}
+
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input input {
+  width: 100%;
+  padding-right: 30px; /* 確保圖示不會覆蓋到文字 */
+}
+
+.search-input .search.icon {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  color: #888;
+}
 </style>

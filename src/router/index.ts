@@ -8,6 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
+    path: '/qr',
+    name: 'qr',
+    component: () => import(/* webpackChunkName: "qr" */ '../views/QR.vue')
+  },
+  {
     path: '/about',
     name: 'about',
     // route level code-splitting
