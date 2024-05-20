@@ -3,8 +3,9 @@
   loader(v-show="!users")
   select.ui.dropdown(v-model="logic")
     option(value="newest") 最近更新
-    option(value="nearest") 離我最近
+    option(value="nearest", v-show="userLocation || (uid && users[uid])") 離我最近
     option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") 孩子年齡相近
+    option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}附近
   br
   .ui.divider
   br
@@ -30,7 +31,21 @@ export default defineComponent({
       busy: false,
       allCards: [], // 所有卡片的數據
       logic: 'newest', // 初始排序邏輯
-      userLocation: null // 使用者位置
+      userLocation: null, // 使用者位置
+      cities: [
+        {t: '臺北市', c: [25.046337, 121.517444]},
+        {t: '新北市', c: [25.011709, 121.465881], z: 10},
+        {t: '桃園市', c: [24.993923, 121.301680]},
+        {t: '臺中市', c: [24.163162, 120.647828]},
+        {t: '臺南市', c: [22.991235, 120.184982]},
+        {t: '高雄市', c: [22.627277, 120.301437]},
+        {t: '宜蘭縣', c: [24.69295, 121.7195], z: 10},
+        {t: '南投縣', c: [23.83876, 120.9876], z: 10},
+        {t: '嘉義市', c: [23.47545, 120.4473], z: 10},
+        {t: '花蓮縣', c: [23.7569, 121.3542], z: 10},
+        {t: '臺東縣', c: [22.98461, 120.9876], z: 10},
+        {t: '澎湖縣', c: [23.56548, 119.6151], z: 9}
+      ]
     };
   },
   computed: {
@@ -40,14 +55,14 @@ export default defineComponent({
         if (isNaN(h.lastUpdate)) {
           return false;
         }
-        const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 2; //應該是1
+        // const updatedWithinAYear = (today - h.lastUpdate) / 1000 / 3600 / 24 / 365.25 <= 1;
 
         const mySearch = this.mySearch.toLowerCase();
         const containsSearchKeyword = [h.name, h.learner_habit, h.share, h.ask, h.note].some(field =>
           field && field.toLowerCase().includes(mySearch)
         );
 
-        return updatedWithinAYear && containsSearchKeyword;
+        return containsSearchKeyword; // && updatedWithinAYear
       });
 
       return filteredCards.slice(0, this.n); // 只返回當前應顯示的卡片
@@ -60,7 +75,7 @@ export default defineComponent({
     console.log('Initial center in child component:');
     console.log(this.center);
     this.allCards = this.list; // 初始化所有卡片數據
-    // this.getUserLocation(); // 獲取使用者位置
+    this.getUserLocation(); // 獲取使用者位置
   },
   watch: {
     center(newC) {
@@ -73,9 +88,17 @@ export default defineComponent({
     },
     logic(newL) {
       console.log(newL);
+      const nearMatch = newL.match(/^near_(\d+\.\d+),(\d+\.\d+)$/);
       if (newL === 'nearest' && !this.userLocation) {
         // 使用者未登入，使用導航 API 獲取位置
         this.getUserLocation();
+      } else if (nearMatch) {
+        // 更新使用者位置並依據新的位置排序卡片
+        const lat = parseFloat(nearMatch[1]);
+        const lng = parseFloat(nearMatch[2]);
+        this.userLocation = { lat, lng };
+        console.log('Updated user location to:', this.userLocation);
+        this.allCards = this.processData(this.users).concat(this.processData(this.places));
       } else {
         this.allCards = this.processData(this.users).concat(this.processData(this.places));
       }
@@ -86,7 +109,7 @@ export default defineComponent({
       const data = Object.keys(obj || {}).map(key => obj[key]);
       if (this.logic === 'newest') {
         return data.sort((a, b) => (b.lastUpdate || 0) - (a.lastUpdate || 0));
-      } else if (this.logic === 'nearest') {
+      } else if (this.logic === 'nearest' || this.logic.match(/^near_(\d+\.\d+),(\d+\.\d+)$/)) {
         return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn));
       } else if (this.logic === 'age_nearest' && this.users[this.uid] && this.users[this.uid].child_birth) {
         const userChildBirth = new Date(this.users[this.uid].child_birth).getTime();
