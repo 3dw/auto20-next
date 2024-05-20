@@ -4,7 +4,7 @@ nav.ui.menu#main-menu
     i.icon.bars
   router-link.item(to="/")
     i.home.icon
-    | 首頁
+    span.fat-only 首頁
   router-link.item.fat-only(to="/about")
     i.info.icon
     | 說明
@@ -19,6 +19,12 @@ nav.ui.menu#main-menu
     | 社團
 
   div.right.menu
+    .ui.simple.dropdown.item
+      i.share.square.icon
+      .menu
+        router-link.item(to="/qr-code") 分享QR碼
+        button.no-border.item(@click="copyLink()") 複製當前網址
+
     .ui.simple.dropdown.item
       img.ui.avatar.image(v-if="photoURL" :src="photoURL")
       i.user.icon(v-else)
@@ -261,6 +267,22 @@ export default defineComponent({
         set(ref(db, 'books/' + this.uid), this.book)
       }
       // this.setLocal('book')
+    },
+    copyLink () {
+      if (!document.hasFocus()) {
+        alert("Document does not have focus, cannot copy link.");
+        return;
+      }
+      console.log(this.$route);
+      const copyText = 'https://auto20-next.pages.dev/#/' + this.$route.path;
+      navigator.clipboard.writeText(copyText)
+        .then(() => {
+          window.alert("已複製當前網址: " + copyText);
+        })
+        .catch(err => {
+          console.error('無法複製當前網址: ', err);
+        });
+      this.$forceUpdate();
     },
     logout () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias

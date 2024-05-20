@@ -132,6 +132,7 @@ export default defineComponent({
     },
     updatePlace() {
       if (window.prompt('場地一旦登錄後無法手動更新和移除，確定要登錄嗎？')) {
+        this.root.upload_by = this.uid;
         this.root.lastUpdate = (new Date()).getTime();
         set(ref(db, 'places/' + this.places.length), this.root).then(
           () => alert('登錄成功!')

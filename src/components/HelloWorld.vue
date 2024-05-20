@@ -6,7 +6,8 @@
 br
 .ui.huge.buttons
   router-link(to="/about").ui.purple.button 瞭解更多
-  router-link.ui.orange.button(to="/profile", v-if="!user || !user.uid", :class="{disabled: isInApp}")
+  .or
+  router-link.ui.basic.orange.button(to="/profile", v-if="!user || !user.uid", :class="{disabled: isInApp}")
     // i.google.icon
     | 登入
   router-link.ui.blue.button(to="/profile", v-else)
