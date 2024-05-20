@@ -44,13 +44,13 @@
   .ui.bottom.attached.buttons
     .ui.green.basic.button(@click="addBook(h.uid || h.idx)" v-if="uid && (!book || book.indexOf(h.uid || h.idx) == -1)")
       i.book.icon
-      | 加入名簿
+      | 登入名簿
     .ui.red.basic.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else-if = "uid && book && book.indexOf(h.uid || h.idx) > -1")
       i.book.icon
       | 從名簿移除
-    router-link.ui.blue.basic.button(to="/profile" v-else)
-      i.book.icon
-      | 註冊帳號以建立名簿
+    // router-link.ui.blue.basic.button(to="/profile" v-else)
+      i.user.icon
+      | 登入
     .ui.pink.basic.button(@click="locate(h, true)")
       i.map.icon
       | 地圖檢視
