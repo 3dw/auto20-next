@@ -60,7 +60,7 @@ export default defineComponent({
     console.log('Initial center in child component:');
     console.log(this.center);
     this.allCards = this.list; // 初始化所有卡片數據
-    this.getUserLocation(); // 獲取使用者位置
+    // this.getUserLocation(); // 獲取使用者位置
   },
   watch: {
     center(newC) {
