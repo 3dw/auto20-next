@@ -22,7 +22,8 @@
       p.description(v-if="h.price" v-html="'可支付： ' + highlight(h.price, mySearch)")
     .content(v-if="h.connect_me && full")
       .ui.divider
-      p.descrtpion 連絡方式： {{h.connect_me}}
+      p.descrtpion(v-if="h.connect_me.includes('@')") 可點擊的email連絡方式： <a :href="`mailto:${h.connect_me}`">{{h.connect_me}}</a>
+      p.descrtpion(v-else) 連絡方式： {{h.connect_me}}
       p.descrtpion(v-if="h.freetime") 有空時間： {{h.freetime}}
     .content
       .ui.divider
