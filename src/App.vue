@@ -22,7 +22,7 @@ nav.ui.menu#main-menu
     .ui.simple.dropdown.item
       i.share.square.icon
       .menu
-        router-link.item(to="/qr-code") 分享QR碼
+        router-link.item(to="/qr") 分享QR碼
         button.no-border.item(@click="copyLink()") 複製當前網址
 
     .ui.simple.dropdown.item
@@ -200,7 +200,7 @@ export default defineComponent({
   },
   methods: {
     doSearch: function (p) {
-      return !(p.match(/(^\/$|myPlace|outer|myFlag|group\/|place|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
+      return !(p.match(/(^\/$|myPlace|qr|outer|myFlag|group\/|place|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
     },
     myGroupIdx () {
       return (this.groups || []).filter((g) => {
