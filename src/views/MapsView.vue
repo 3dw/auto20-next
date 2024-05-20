@@ -26,6 +26,14 @@ export default defineComponent({
     const markerClusterGroup = ref(null);
     const router = useRouter();
 
+    function noHTML (s) {
+      return s.replace(/</g, '&gt;').replace(/>/g, '%lt;')
+    }
+
+    function toPopUp (h) {
+      return !h.child_birth ? `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0.60)}...</div>` : `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲，孩子約${toAge(h.child_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0.60)}...</div>`
+    }
+
     function toAge(y) {
       const currentYear = (new Date()).getFullYear();
       return currentYear - parseInt(y);
@@ -88,7 +96,7 @@ export default defineComponent({
         if (props.users && toList(props.users).length > 0) {
           filteredUsers(toList(props.users), props.mySearch).forEach((h) => {
             const marker = L.marker(countLatLng(h), { icon: getAnIcon(h) })
-              .bindPopup(`<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0.60)}...</div>`);
+              .bindPopup(toPopUp(h));
             
             marker.on('dblclick', () => {
               router.push('/flag/' + h.uid);
@@ -113,7 +121,7 @@ export default defineComponent({
         if (newUsers && toList(newUsers).length > 0) {
           filteredUsers(toList(newUsers), newSearch).forEach((h) => {
             const marker = L.marker(countLatLng(h), { icon: getAnIcon(h) })
-              .bindPopup(`<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0.60)}...</div>`);
+              .bindPopup(toPopUp(h));
             
             marker.on('dblclick', () => {
               router.push('/flag/' + h.uid);
