@@ -151,6 +151,8 @@ export default defineComponent({
 p {
   white-space: pre-line;
   font-size: 16px;
+  text-align: left;
+  padding: .6em;
 }
 
 .ui.bottom.attached.buttons {
