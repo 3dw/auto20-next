@@ -20,9 +20,9 @@ select.ui.dropdown(v-show="users && toList(users).length > 0", v-model="logic" )
   option(value="newest") 最近更新
 br
 br
-.ui.four.doubling.cards.container(v-if="toList(users).length > 0")
+.ui.four.doubling.stackable.cards.container(v-if="toList(users).length > 0")
   .ui.card(v-for="(h, index) in ordered_list.slice(0, 4)", :key="index")
-    card(:h="h", :full="true", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
+    card(:h="h", :full="false", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
 loader(v-else)
 
 </template>

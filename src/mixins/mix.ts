@@ -1,7 +1,7 @@
 export default {
   methods: {
     part(str: string): string {
-      return String(str).substring(0, 50);
+      return String(str).substring(0, 60);
     },
     toAge(y: string | number): number {
       const currentYear = (new Date()).getFullYear();
