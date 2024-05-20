@@ -13,23 +13,24 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-//import mix from '../mixins/mix.js';
 import Loader from '../components/Loader.vue';
+import mix from '../mixins/mix.ts';
 
 export default defineComponent({
   name: 'MapsView',
-  // mixins: [mix], // 混合進來的功能，暫時註解掉
   props: ['mySearch', 'zoom', 'center', 'cities', 'users', 'places'],
   components: { Loader },
-  metaInfo: {
-    title: '地圖',
-  },
+  mixins: [mix],
   setup(props) {
-    const map = ref(null); // 用來存放地圖實例的變數
-    const markerClusterGroup = ref(null); // 用來存放標記群組的變數
-    const router = useRouter(); // Vue Router 用來導航
+    const map = ref(null);
+    const markerClusterGroup = ref(null);
+    const router = useRouter();
 
-    // 將對象轉換為列表
+    function toAge(y) {
+      const currentYear = (new Date()).getFullYear();
+      return currentYear - parseInt(y);
+    }
+
     function toList(obj) {
       if (!obj || typeof(obj) !== 'object') {
         return [];
@@ -38,14 +39,12 @@ export default defineComponent({
       }
     }
 
-    // 根據經緯度欄位返回位置
     function countLatLng(h) {
       if (!h.latlngColumn) { return { lat: 0, lng: 0 }; }
       const [lat, lng] = h.latlngColumn.split(',').map(Number);
       return { lat, lng };
     }
 
-    // 獲取圖標 URL
     function getIcon(h) {
       if (h && h.photoURL) {
         return h.photoURL;
@@ -54,20 +53,14 @@ export default defineComponent({
       }
     }
 
-    // 創建 Leaflet 的圖標
     function getAnIcon(h) {
-      return L.icon({
-        iconUrl: getIcon(h),
-        shadowUrl: '',
+      return L.divIcon({
+        html: `<div><img src="${getIcon(h)}" style="width: 50px; height: 50px; border-radius: 50%;"><br><span class="marker-label">${h.name}</span></div>`,
         iconSize: [50, 50],
-        shadowSize: [0, 0],
-        iconAnchor: [25, 25],
-        shadowAnchor: [0, 0],
-        popupAnchor: [0, 0]
+        className: 'custom-icon'
       });
     }
 
-    // 過濾符合 mySearch 關鍵字的使用者
     function filteredUsers(users, search) {
       if (!search) return users;
       const searchLower = search.toLowerCase();
@@ -78,47 +71,61 @@ export default defineComponent({
       );
     }
 
-    // 當組件掛載時初始化地圖
     onMounted(() => {
       const initialZoom = props.zoom || 7;
       const initialCenter = props.center || [22.613220, 121.219482];
 
-      // 創建地圖並設定初始視圖
       map.value = L.map('map').setView(initialCenter, initialZoom);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map.value);
 
-      markerClusterGroup.value = L.markerClusterGroup(); // 創建標記群組
+      markerClusterGroup.value = L.markerClusterGroup();
 
       if (map.value && markerClusterGroup.value) {
         map.value.addLayer(markerClusterGroup.value);
 
-        // 如果有用戶數據，則添加標記到地圖
         if (props.users && toList(props.users).length > 0) {
           filteredUsers(toList(props.users), props.mySearch).forEach((h) => {
             const marker = L.marker(countLatLng(h), { icon: getAnIcon(h) })
-              .bindPopup(h.name);
-            marker.on('click', () => {
+              .bindPopup(`<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0.60)}...</div>`);
+            
+            marker.on('dblclick', () => {
               router.push('/flag/' + h.uid);
             });
+
+            marker.on('popupopen', () => {
+              const popup = marker.getPopup();
+              popup.getElement().addEventListener('click', () => {
+                router.push('/flag/' + h.uid);
+              });
+            });
+
             markerClusterGroup.value.addLayer(marker);
           });
         }
       }
     });
 
-    // 監聽用戶數據和 mySearch 的變化
     watch([() => props.users, () => props.mySearch], ([newUsers, newSearch]) => {
       if (markerClusterGroup.value) {
-        markerClusterGroup.value.clearLayers(); // 清除現有標記
+        markerClusterGroup.value.clearLayers();
         if (newUsers && toList(newUsers).length > 0) {
           filteredUsers(toList(newUsers), newSearch).forEach((h) => {
             const marker = L.marker(countLatLng(h), { icon: getAnIcon(h) })
-              .bindPopup(h.name);
-            marker.on('click', () => {
+              .bindPopup(`<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0.60)}...</div>`);
+            
+            marker.on('dblclick', () => {
               router.push('/flag/' + h.uid);
             });
+
+            marker.on('popupopen', () => {
+              const popup = marker.getPopup();
+              popup.getElement().addEventListener('click', () => {
+                router.push('/flag/' + h.uid);
+              });
+            });
+
             markerClusterGroup.value.addLayer(marker);
           });
         }
@@ -130,9 +137,24 @@ export default defineComponent({
 });
 </script>
 
-
 <style>
 .leaflet-marker-icon {
-  border-radius: 50%;  
+  border-radius: 50%;
+}
+
+.custom-icon span {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.marker-label {
+  font-weight: bold;
+  font-size: 14px !important;
+}
+
+.marker-popup {
+  cursor: pointer;
 }
 </style>
