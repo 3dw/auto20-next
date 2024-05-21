@@ -176,4 +176,8 @@ export default defineComponent({
   cursor: pointer;
   white-space: pre-line;
 }
+
+.leaflet-container a.leaflet-popup-close-button {
+  display: none;
+}
 </style>
