@@ -22,7 +22,7 @@
       p.description(v-if="h.price" v-html="'可支付： ' + highlight(h.price, mySearch)")
     .content(v-if="h.connect_me && full")
       .ui.divider
-      p.descrtpion(v-if="h.connect_me.includes('@')") 可點擊的email連絡方式： 
+      p.descrtpion(v-if="isEmail(h.connect_me)") 可點擊的email連絡方式： 
         //a(@click.stop="goto(h.connect_me)") {{h.connect_me}}
         a(@click.stop="gotoMail(h.connect_me)") {{h.connect_me}}
       p.descrtpion(v-else) 連絡方式： {{h.connect_me}}
@@ -106,6 +106,10 @@ export default defineComponent({
     }
   },
   methods: {
+    isEmail(s) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(s);
+    },
     goto (h) {
       window.open(h)
     },
