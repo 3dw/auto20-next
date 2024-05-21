@@ -120,6 +120,9 @@ if (/Android/.test(window.navigator.userAgent) && /Chrome|Google/.test(window.na
 const auth = getAuth(app); // 獲取Firebase身份驗證實例
 
 const provider = new GoogleAuthProvider(); // 創建Google認證提供者
+
+provider.addScope('profile');
+provider.addScope('email');
 provider.addScope('https://www.googleapis.com/auth/userinfo.email'); // 要求Google提供者的電子郵件存取權限
 
 
@@ -307,26 +310,27 @@ export default defineComponent({
     },
     loginGoogle: function () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const vm = this; // 儲存當前Vue實例
+      const vm = this;
       if (this.isInApp) {
-        window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝'); // 提示不支援應用內登入
+        window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
       } else {
         signInWithPopup(auth, provider).then((result) => {
-          const user = result.user; // 獲取登入後的用戶資訊
-          vm.user = user; // 更新用戶狀態
-          vm.email = user.providerData[0].email; // 更新電子郵件狀態
-          vm.uid = user.uid; // 更新用戶ID
-          if (user.photoURL) {
-            vm.photoURL = decodeURI(user.photoURL); // 解碼並更新用戶頭像URL
-          } else {
-            vm.photoURL = null; // 設置用戶頭像URL為空
-          }
+          const user = result.user;
+          vm.user = user;
+          vm.email = user.providerData[0].email;
+          vm.uid = user.uid;
+          
+          // 使用新的預設圖片位置
+          vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://auto20-next.pages.dev/logo-new.png";
+
           if (vm.uid && vm.users[vm.uid]) {
-            vm.user = vm.users[vm.uid]; // 更新用戶資訊
+            vm.user = vm.users[vm.uid];
           }
           if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn ) {
-            this.locate(vm.users[vm.uid], false)
+            this.locate(vm.users[vm.uid], false);
           }
+        }).catch((error) => {
+          console.error("Login error:", error);
         });
       }
     }
