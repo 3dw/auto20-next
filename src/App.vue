@@ -106,7 +106,16 @@ import Chatbox from './components/Chatbox.vue';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 
-const inApp = new InApp(window.navigator.userAgent); // 創建InApp實例以檢測應用內瀏覽情況
+// 1. 擴展 isInApp 的偵測邏輯
+const inApp = new InApp(window.navigator.userAgent);
+// 初始假設為 InApp 庫的偵測結果
+let actualInApp = inApp.isInApp;
+
+// 2. 加入額外的條件來修正誤判情況
+// 檢查 userAgent 是否包含特定的 Android 瀏覽器標誌
+if (/Android/.test(window.navigator.userAgent) && /Chrome|Google/.test(window.navigator.userAgent)) {
+  actualInApp = false;
+}
 
 const auth = getAuth(app); // 獲取Firebase身份驗證實例
 
@@ -145,7 +154,8 @@ export default defineComponent({
       email: null as string | null, // 定義電子郵件變量
       uid: '' as string, // 定義用戶ID變量
       photoURL: null as string | null, // 定義用戶頭像URL變量
-      isInApp: inApp.isInApp, // 檢測是否在應用內部
+      // 使用修正後的 actualInApp
+      isInApp: actualInApp, // 檢測是否在應用內部
       // eslint-disable-next-line
       groups: null as [any] | null, // 定義社團資料變量
       places: null as [string] | null, // 定義地點資料變量

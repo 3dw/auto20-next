@@ -1,7 +1,7 @@
 <template lang="pug">
 .hello
   // loader(v-show="!users")
-  p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
+  p(v-if="isInApp") 本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
   .ui.massive.blue.button(v-if="uid && !root.name && users" @click="setMe()") 按此開始
   .ui.huge.buttons(v-if="!user")
     //button.ui.blue.button(@click="loginFB")
