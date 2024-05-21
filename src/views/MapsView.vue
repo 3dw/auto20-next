@@ -31,7 +31,15 @@ export default defineComponent({
     }
 
     function toPopUp (h) {
-      return !h.child_birth ? `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0,100)}...</div>` : `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲，孩子約${toAge(h.child_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0,100)}...</div>`
+      var p = ''
+      if (!h.child_birth) {
+        p = `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0,100)}...</div>`
+      } else if (h.child_birth && ! h.child_birth2) {
+        p = `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲，孩子約${toAge(h.child_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0,100)}...</div>`
+      } else {
+        p = `<div class="marker-popup"><b>${h.name}<b>(${toAge(h.learner_birth)}歲，孩子約${toAge(h.child_birth2)} ~ ${toAge(h.child_birth)}歲)<br>分享：${h.share}<br>尋找：${h.ask || '無'}<div class="ui divider"></div>${(h.note || '').slice(0,100)}...</div>`
+      }
+      return p
     }
 
     function toAge(y) {
