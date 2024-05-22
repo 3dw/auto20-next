@@ -248,16 +248,17 @@ export default {
       console.log(this.users)
       const keys = Object.keys(this.users)
       this.root = this.users[this.uid] || {}
-      this.root.email = this.email
-      console.log(this.root.email)
+      this.root.email = this.email;
+      // console.log(this.root.email)
       this.myIndex = keys.indexOf(this.uid)
       if (this.uid && this.myIndex === -1) {
-        console.log('new')
+        console.log('welcome to 自學2.0')
         this.myIndex = this.uid
         this.root = {
           name: this.user.providerData[0].displayName || '新朋友',
           uid: this.uid,
           email: this.email,
+          connect_me: this.email,
           photoURL: this.photoURL || '',
           latlngColumn: '23.5330,121.0654',
           note: ''
