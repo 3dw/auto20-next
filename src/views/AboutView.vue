@@ -50,6 +50,7 @@
           a(href="mailto:bestian@gmail.com") bestian@gmail.com
           | )請求手動移除您的互助旗，我們會盡快為您處理。
       .ui.padded.segment.column
+        img(src="../assets/map1.webp")
         h2.ui.header 地圖介面有什麼用意？
         p 地圖介面讓您能夠根據地理位置就近尋找夥伴。例如，您可以查看「宜蘭附近有沒有自學朋友呢？」透過地圖，您可以一目了然地找到附近的學習夥伴，增進彼此的互動和交流。
 

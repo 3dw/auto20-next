@@ -1,7 +1,7 @@
 <template lang="pug">
   .hello
     loader(v-show="!users")
-    .ui.segment.container
+    .ui.segment.container#flag
       .ui.fluid.card(v-for="(h, index) in toList(users)" v-show="h.uid == $route.params.uid")
         card(:h="h", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")      
 </template>
@@ -85,7 +85,14 @@ a {
 }
 
 .card {
-  min-height: 80vh;
+  min-height: 0;
+  min-width: 300px;
+  width: 82% !important;
+  margin: 0 auto;
+}
+
+#flag {
+  background-color: #E6E6FA; /* Lavender */;
 }
 
 </style>

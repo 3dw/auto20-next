@@ -157,12 +157,11 @@ p {
   font-size: 16px;
   text-align: left;
   padding: .6em;
+  color: #333;
+  cursor: text;
 }
 
 .ui.bottom.attached.buttons {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100% !important;
 }
 
