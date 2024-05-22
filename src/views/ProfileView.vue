@@ -146,17 +146,21 @@
     .ui.divider
     p(v-show="!users[uid]") 請先詳閱我們的
       router-link(target="_blank", to="/privacy-policy") 隱私權政策
-    a.ui.large.blue.button(v-bind:class="{disabled: !isValid(root)}" @click="updateFlag")
-      span(v-show='!users[uid]')
-        i.flag.icon
-        | 升起旗幟!!
-      span(v-show='users[uid]')
-        i.flag.icon
-        | 更新旗幟!!
-    br
-    .ui.large.red.button(v-if="users[uid]" @click="confirmDelete")
-      i.delete.icon
-      | 刪除旗幟
+    .ui.vertical.buttons
+      a.ui.large.blue.button(v-bind:class="{disabled: !isValid(root)}" @click="updateFlag")
+        span(v-show='!users[uid]')
+          i.flag.icon
+          | 升起旗幟!!
+        span(v-show='users[uid]')
+          i.flag.icon
+          | 更新旗幟!!
+      router-link.ui.large.green.button(v-if="users[uid]", :to="'/flag/' + uid")
+        i.user.icon
+        | 查看專屬名片
+        i.chevron.right.icon
+      .ui.large.red.button(v-if="users[uid]" @click="confirmDelete")
+        i.delete.icon
+        | 刪除旗幟
     br
     br
     br
