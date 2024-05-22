@@ -19,19 +19,19 @@
   #box
     .ui.list
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
-        .ui(v-show="edit !== c") 
+        p(v-show="edit !== c") 
           router-link(:to="'/flag/' + c.uid")
             img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
           a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
           a(@click="edit = c" v-show="c.uid == uid")
             i.edit.icon(title="edit")
-          | {{ c.n }} : {{ c.t }}
+          span.text | {{ c.n }} : {{ c.t }}
           span.gray(v-show="isFull") &nbsp;&nbsp;-
             | {{ countDateDiff(c.time) }}
         .ui.form(v-show="edit == c")
           .ui.input
             input.input(v-model="c.t", placeholder="更新")
-            a.ui.green.small.button(@click="edit = ''; updateChat(c)") 更新
+            a.ui.green.small.button(@click.stop="edit = ''; updateChat(c)") 更新
 
       .item.preview(v-if="p.t")
         router-link(:to="'/flag/' + p.uid")
@@ -75,7 +75,7 @@ export default defineComponent({
     return {
       p: '',
       msg: '',
-      key: '',
+      key: '閒聊',
       edit: '',
       chats: [],
       read: 0,
@@ -84,6 +84,11 @@ export default defineComponent({
       label: '閒聊',
       labels: ['諮詢', '故障', '找伴', '閒聊']
     };
+  },
+  watch: {
+    label (newL) {
+      this.key = newL
+    }
   },
   methods: {
     preview() {
@@ -108,10 +113,14 @@ export default defineComponent({
         time: (new Date()).getTime()
       };
       this.chats[c['.key']] = o;
+      this.edit = ''; // 清除編輯狀態
       set(ref(db, 'chats'), this.chats).then(
-        console.log('chats更新成功')
+        () => {
+          console.log('chats更新成功');
+          this.edit = ''; // 確保編輯狀態被清除
+        }
       );
-    },
+    }
     addChat() {
       var o = {
         uid: this.uid,
@@ -272,5 +281,24 @@ export default defineComponent({
 
   input {
     width: 110px !important;
+  }
+
+  p {
+    font-size: 16px !important;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 4em;
+    overflow-y: auto;
+    padding: 1em;
+  }
+
+  p .text {
+    position: relative;
+    top: .5em;
+  }
+
+  p a {
+    min-width: 3em;
   }
 </style>
