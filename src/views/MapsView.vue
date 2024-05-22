@@ -177,6 +177,11 @@ export default defineComponent({
   white-space: pre-line;
 }
 
+.marker-popup b {
+  color: blue;
+  font-size: 14px;
+}
+
 .leaflet-container a.leaflet-popup-close-button {
   display: none;
 }
