@@ -8,7 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
-    path: '/qr',
+    path: '/qr/:uid',
     name: 'qr',
     component: () => import(/* webpackChunkName: "qr" */ '../views/QR.vue')
   },

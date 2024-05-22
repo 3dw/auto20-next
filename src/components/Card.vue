@@ -41,25 +41,30 @@
       .ui.divider
       p.descrtpion(v-if="!full")
         span.text(v-html="highlight(part(h.note), mySearch) + '...'")
+        br
       p.descrtpion(v-else)
         span.text(v-html="highlight(h.note, mySearch)")
+        br
   .filler
-  .ui.bottom.attached.vertical.buttons
-    .ui.green.basic.button(@click="addBook(h.uid || h.idx)" v-if="uid && (!book || book.indexOf(h.uid || h.idx) == -1)")
+  .ui.bottom.attached.stackable.buttons(:class="{vertical: !full || thin}")
+    .ui.green.button(@click="addBook(h.uid || h.idx)" v-if="uid && (!book || book.indexOf(h.uid || h.idx) == -1)")
       i.book.icon
       | 登入名簿
-    .ui.red.basic.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else-if = "uid && book && book.indexOf(h.uid || h.idx) > -1")
+    .ui.red.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else-if = "uid && book && book.indexOf(h.uid || h.idx) > -1")
       i.book.icon
       | 從名簿移除
     // router-link.ui.blue.basic.button(to="/profile" v-else)
       i.user.icon
       | 登入
-    .ui.pink.basic.button(@click="locate(h, true)")
+    .ui.purple.button(@click="locate(h, true)")
       i.map.icon
       | 地圖檢視
-    .ui.blue.basic.button(@click="copyFlagURL(h.uid)")
+    .ui.blue.button(@click="copyFlagURL(h.uid)")
       i.share.square.icon
       | 分享名片
+    router-link.ui.teal.button(:to="'/qr/' + h.uid")
+      i.qrcode.icon
+      | 顯示QR碼
 </template>
 
 <script>
@@ -106,6 +111,7 @@ export default defineComponent({
   },
   data () {
     return {
+      thin: window.innerWidth < 720
     }
   },
   methods: {
@@ -158,8 +164,10 @@ export default defineComponent({
 
 .hello {
   position: relative;
+  z-index: 999;
   height: 100%;
   min-height: 300px;
+  background-color: #E6E6FA; /* Lavender */;
 }
 
 .image {
@@ -187,7 +195,9 @@ p {
 }
 
 .filler {
-  height: 100px;
+  display: block;
+  height: 120px;
+  flex-grow: 1;
 }
 
 </style>
