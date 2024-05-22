@@ -290,7 +290,7 @@ export default defineComponent({
         return;
       }
       console.log(this.$route);
-      const copyText = 'https://auto20-next.pages.dev/#/' + this.$route.path;
+      const copyText = 'https://auto20-next.pages.dev/#' + this.$route.path;
       navigator.clipboard.writeText(copyText)
         .then(() => {
           window.alert("已複製當前網址: " + copyText);
