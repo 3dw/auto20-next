@@ -120,7 +120,7 @@ export default defineComponent({
           this.edit = ''; // 確保編輯狀態被清除
         }
       );
-    }
+    },
     addChat() {
       var o = {
         uid: this.uid,
@@ -288,7 +288,7 @@ export default defineComponent({
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    max-height: 4em;
+    max-height: 6.5em;
     overflow-y: auto;
     padding: 1em;
   }
