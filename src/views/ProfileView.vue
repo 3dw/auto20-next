@@ -2,6 +2,12 @@
 .hello
   // loader(v-show="!users")
   p(v-if="isInApp") 本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
+
+  p(v-show="!users[uid]") 請先詳閱我們的
+    router-link(target="_blank", to="/privacy-policy") 隱私權政策
+
+  .ui.divider
+
   .ui.massive.blue.button(v-if="uid && !root.name && users" @click="setMe()") 按此開始
   .ui.huge.buttons(v-if="!user")
     //button.ui.blue.button(@click="loginFB")
@@ -143,9 +149,13 @@
         | note: 您還有
         i.red.star
         | 必填項目尚未填寫
-    .ui.divider
-    p(v-show="!users[uid]") 請先詳閱我們的
+
+
+    p(v-show="!users[uid]") 
+      input.ui.checkbox(type="checkbox", v-model="agree")
+      | 我同意自學2.0的
       router-link(target="_blank", to="/privacy-policy") 隱私權政策
+
     .ui.vertical.buttons
       a.ui.large.blue.button(v-bind:class="{disabled: !isValid(root)}" @click="updateFlag")
         span(v-show='!users[uid]')
@@ -185,6 +195,7 @@ export default {
   },
   data () {
     return {
+      agree: false,
       myIndex: -1,
       root: {
         latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
@@ -299,7 +310,10 @@ export default {
     },
     updateFlag: function () {
       this.root.lastUpdate = (new Date()).getTime()
-      if (this.myIndex > -1) {
+      if (!this.agree) {
+        window.alert('請先勾選「我同意自學2.0的隱私權政策」')
+        return
+      } else if (this.myIndex > -1) {
         set(ref(db, 'users/' + this.uid), this.root).then(
           alert('更新成功!')
         )
@@ -346,6 +360,10 @@ label.required::before {
 i.red.star::before{
   content: "*";
   color:red;    
+}
+
+.ui.checkbox {
+  top: 3px;
 }
 
 </style>
