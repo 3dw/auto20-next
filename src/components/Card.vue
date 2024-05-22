@@ -44,7 +44,7 @@
       p.descrtpion(v-else)
         span.text(v-html="highlight(h.note, mySearch)")
   .filler
-  .ui.bottom.attached.buttons
+  .ui.bottom.attached.vertical.buttons
     .ui.green.basic.button(@click="addBook(h.uid || h.idx)" v-if="uid && (!book || book.indexOf(h.uid || h.idx) == -1)")
       i.book.icon
       | 登入名簿
@@ -57,6 +57,9 @@
     .ui.pink.basic.button(@click="locate(h, true)")
       i.map.icon
       | 地圖檢視
+    .ui.blue.basic.button(@click="copyFlagURL(h.uid)")
+      i.share.square.icon
+      | 分享名片
 </template>
 
 <script>
@@ -130,7 +133,22 @@ export default defineComponent({
     },
     loginGoogle: function () {
       this.$emit('loginGoogle')
-    }
+    },
+    copyFlagURL (uid) {
+      if (!document.hasFocus()) {
+        alert("Document does not have focus, cannot copy link.");
+        return;
+      }
+      const copyText = 'https://auto20-next.pages.dev/#/flag/' + uid;
+      navigator.clipboard.writeText(copyText)
+        .then(() => {
+          window.alert("已複製該名片");
+        })
+        .catch(err => {
+          console.error('無法複製該名片', err);
+        });
+      this.$forceUpdate();
+    },
   }
 })
 </script>
@@ -162,6 +180,9 @@ p {
 }
 
 .ui.bottom.attached.buttons {
+  position: absolute;
+  bottom: 0;
+  right: 1px;
   width: 100% !important;
 }
 
