@@ -48,9 +48,7 @@
             i.chevron.right.icon
 
         h2.ui.header 升起互助旗後可以移除嗎？
-        p 可以，您只需發送e-mail至管理員的郵箱(
-          a(href="mailto:bestian@gmail.com") bestian@gmail.com
-          | )請求手動移除您的互助旗，我們會盡快為您處理。
+        p 可以，您只在「我的旗幟」頁面點選「刪除旗幟」來刪除旗幟並退出自學2.0的服務。
       .ui.padded.segment.column
         img(src="../assets/map1.webp")
         h2.ui.header 地圖介面有什麼用意？

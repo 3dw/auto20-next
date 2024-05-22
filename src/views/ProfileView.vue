@@ -86,10 +86,9 @@
       .field
         label 主要的自學型態
         select.selectpicker(v-model='root.learner_type')
-          option(value='')  -- 選擇一種自學型態 -- 
+          option(value='')  -- 遇擇一種自學型態 -- 
           option(v-for="t in ['個人','三五好友','團體共學','類學校機構']", :selected='root.learner_type == t', :value="t") {{t}}
       .field(v-bind:class="{error:badAge(root.learner_birth), warning:!root.learner_birth}")
-
         label.required 您的出生年次(西元)
         input(v-model='root.learner_birth', type='text', placeholder='您自己的年次，如1976')
 
@@ -148,182 +147,201 @@
     p(v-show="!users[uid]") 請先詳閱我們的
       router-link(target="_blank", to="/privacy-policy") 隱私權政策
     a.ui.large.blue.button(v-bind:class="{disabled: !isValid(root)}" @click="updateFlag")
-      span(v-show='!users[uid]') 升起旗幟!!
-      span(v-show='users[uid]') 更新旗幟!!
+      span(v-show='!users[uid]')
+        i.flag.icon
+        | 升起旗幟!!
+      span(v-show='users[uid]')
+        i.flag.icon
+        | 更新旗幟!!
+    br
+    .ui.large.red.button(v-if="users[uid]" @click="confirmDelete")
+      i.delete.icon
+      | 刪除旗幟
     br
     br
     br
     br
-    br
-  </template>
-  
-  <script>
-  
-  import mix from '../mixins/mix.ts'
-  //  import Loader from './Loader'
-  import { db } from '../firebase'
-  import { set, ref } from 'firebase/database'
-  import 'leaflet/dist/leaflet.css';
-  import * as L from 'leaflet';
-  export default {
-    name: 'MyFlag',
-    mixins: [mix],
-    props: ['uid', 'user', 'email', 'mySearch', 'provider', 'photoURL', 'users', 'isInApp'],
-    // components: { Loader },
-    metaInfo: {
-      // if no subcomponents specify a metaInfo.title, this title will be used
-      title: '我的旗幟',
-    },
-    data () {
-      return {
-        myIndex: -1,
-        root: {
-          latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
-        },
-        local: {},
-        map: null,
-        marker: null
-      }
-    },
-    emit: ['loginGoogle', 'locate'],
-    mounted() {
-      this.$nextTick(() => {
-        if (this.root.name) { // 確保 root.name 存在時才初始化地圖
-          L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-          setTimeout(this.initMap, 500);
-        }
-      });
-    },
-    watch: {
-      root (newR) {
-        if (newR.name) { // 確保 root.name 存在時才初始化地圖
-          setTimeout(this.initMap, 500);
-        }
-      }
-    },
-    methods: {
-      initMap() {
-        // Initialize the map
-        this.map = L.map('map').setView(this.root.latlngColumn.split(','), 7);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 18,
-          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(this.map);
+</template>
 
-        // Set the correct path for marker icons
+<script>
+import mix from '../mixins/mix.ts'
+// import Loader from './Loader'
+import { db } from '../firebase'
+import { set, ref, remove } from 'firebase/database'
+import 'leaflet/dist/leaflet.css';
+import * as L from 'leaflet';
+export default {
+  name: 'MyFlag',
+  mixins: [mix],
+  props: ['uid', 'user', 'email', 'mySearch', 'provider', 'photoURL', 'users', 'isInApp'],
+  // components: { Loader },
+  metaInfo: {
+    // if no subcomponents specify a metaInfo.title, this title will be used
+    title: '我的旗幟',
+  },
+  data () {
+    return {
+      myIndex: -1,
+      root: {
+        latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
+      },
+      local: {},
+      map: null,
+      marker: null
+    }
+  },
+  emit: ['loginGoogle', 'locate'],
+  mounted() {
+    this.$nextTick(() => {
+      if (this.root.name) { // 確保 root.name 存在時才初始化地圖
         L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-
-        // Add a non-draggable marker at the map center
-        this.marker = L.marker(this.map.getCenter(), {draggable: false}).addTo(this.map);
-
-        // Update root.latlngColumn when the map center changes
-        this.map.on('moveend', () => {
-          const {lat, lng} = this.map.getCenter();
-          this.marker.setLatLng({lat, lng}); // Move the marker to the new center
-          this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-          this.$forceUpdate(); // Ensure Vue updates the data binding
-        });
-      },
-      setMe () {
-        console.log(this.users)
-        const keys = Object.keys(this.users)
-        this.root = this.users[this.uid] || {}
-        this.root.email = this.email
-        console.log(this.root.email)
-        this.myIndex = keys.indexOf(this.uid)
-        if (this.uid && this.myIndex === -1) {
-          console.log('new')
-          this.myIndex = this.uid
-          this.root = {
-            name: this.user.providerData[0].displayName || '新朋友',
-            uid: this.uid,
-            email: this.email,
-            photoURL: this.photoURL || '',
-            latlngColumn: '23.5330,121.0654',
-            note: ''
-          }
-        }
-        console.log(this.root.name)
-        console.log(this.root)
-        this.$forceUpdate()
-      },
-      longTimeNoSee () {
-        const today =  new Date().getTime()
-        // console.log((today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25)
-        return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25
-      },
-      usedAddr: function (hand) {
-        console.log(this.users)
-        
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        var vm = this;
-
-        const keys = Object.keys(this.users)
-        const usersList = keys.map(function (k) {
-          return vm.users[k]
-        })
-        var ans, i$, ref$, len$, h
-        ans = false
-        for (i$ = 0, len$ = (ref$ = usersList.filter(fn$)).length; i$ < len$; ++i$) {
-          h = ref$[i$]
-          if (h.latlngColumn === hand.latlngColumn) {
-            ans = true
-            break
-          }
-        }
-        if (hand.latlngColumn === 'undefined,undefined' || hand.latlngColumn === '36.778261,-119.4179324') {
-          ans = false
-        }
-        return ans
-        function fn$ (o) {
-          return o.name !== hand.name
-        }
-      },
-      tooDetail: function (addr) {
-        if (!addr) {
-          return false
-        }
-        if (addr.match(/(號|樓|F|f)/)) {
-          return true
-        }
-        return false
-      },
-      updateFlag: function () {
-        this.root.lastUpdate = (new Date()).getTime()
-        if (this.myIndex > -1) {
-          set(ref(db, 'users/' + this.uid), this.root).then(
-            alert('更新成功!')
-          )
-        } else {
-          console.log('new2')
-          set(ref(db, 'users/' + this.uid), this.root).then(
-            alert('登錄成功!')
-          )
-        }
-        this.$emit('locate', this.root, false)
-      },
-      loginFB: function () {
-        this.$emit('loginFB')
-      },
-      loginGoogle: function () {
-        this.$emit('loginGoogle')
+        setTimeout(this.initMap, 500);
+      }
+    });
+  },
+  watch: {
+    root (newR) {
+      if (newR.name) { // 確保 root.name 存在時才初始化地圖
+        setTimeout(this.initMap, 500);
       }
     }
+  },
+  methods: {
+    initMap() {
+      // Initialize the map
+      this.map = L.map('map').setView(this.root.latlngColumn.split(','), 7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+
+      // Set the correct path for marker icons
+      L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+
+      // Add a non-draggable marker at the map center
+      this.marker = L.marker(this.map.getCenter(), {draggable: false}).addTo(this.map);
+
+      // Update root.latlngColumn when the map center changes
+      this.map.on('moveend', () => {
+        const {lat, lng} = this.map.getCenter();
+        this.marker.setLatLng({lat, lng}); // Move the marker to the new center
+        this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        this.$forceUpdate(); // Ensure Vue updates the data binding
+      });
+    },
+    setMe () {
+      console.log(this.users)
+      const keys = Object.keys(this.users)
+      this.root = this.users[this.uid] || {}
+      this.root.email = this.email
+      console.log(this.root.email)
+      this.myIndex = keys.indexOf(this.uid)
+      if (this.uid && this.myIndex === -1) {
+        console.log('new')
+        this.myIndex = this.uid
+        this.root = {
+          name: this.user.providerData[0].displayName || '新朋友',
+          uid: this.uid,
+          email: this.email,
+          photoURL: this.photoURL || '',
+          latlngColumn: '23.5330,121.0654',
+          note: ''
+        }
+      }
+      console.log(this.root.name)
+      console.log(this.root)
+      this.$forceUpdate()
+    },
+    longTimeNoSee () {
+      const today =  new Date().getTime()
+      // console.log((today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25)
+      return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25
+    },
+    usedAddr: function (hand) {
+      console.log(this.users)
+      
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      var vm = this;
+
+      const keys = Object.keys(this.users)
+      const usersList = keys.map(function (k) {
+        return vm.users[k]
+      })
+      var ans, i$, ref$, len$, h
+      ans = false
+      for (i$ = 0, len$ = (ref$ = usersList.filter(fn$)).length; i$ < len$; ++i$) {
+        h = ref$[i$]
+        if (h.latlngColumn === hand.latlngColumn) {
+          ans = true
+          break
+        }
+      }
+      if (hand.latlngColumn === 'undefined,undefined' || hand.latlngColumn === '36.778261,-119.4179324') {
+        ans = false
+      }
+      return ans
+      function fn$ (o) {
+        return o.name !== hand.name
+      }
+    },
+    tooDetail: function (addr) {
+      if (!addr) {
+        return false
+      }
+      if (addr.match(/(號|樓|F|f)/)) {
+        return true
+      }
+      return false
+    },
+    updateFlag: function () {
+      this.root.lastUpdate = (new Date()).getTime()
+      if (this.myIndex > -1) {
+        set(ref(db, 'users/' + this.uid), this.root).then(
+          alert('更新成功!')
+        )
+      } else {
+        console.log('new2')
+        set(ref(db, 'users/' + this.uid), this.root).then(
+          alert('登錄成功!')
+        )
+      }
+      this.$emit('locate', this.root, false)
+    },
+    confirmDelete() {
+      if (window.confirm('確認您要退出自學2.0並刪除您的互助旗嗎？提醒您，此動作無法恢復')) {
+        this.deleteFlag();
+      }
+    },
+    deleteFlag() {
+      remove(ref(db, 'users/' + this.uid)).then(
+        alert('您的互助旗幟已刪除。謝謝您的使用。')
+      ).catch(
+        error => alert('刪除失敗: ' + error.message)
+      );
+      this.root = {};
+      this.$emit('logout')
+    },
+    loginFB: function () {
+      this.$emit('loginFB')
+    },
+    loginGoogle: function () {
+      this.$emit('loginGoogle')
+    }
   }
-  </script>
-  
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
-  <style scoped>
-  
-  label.required::before {
-    content: "*";
-    color:red;
-  }
-  
-  i.red.star::before{
-    content: "*";
-    color:red;    
-  }
-  
-  </style>
-  
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+label.required::before {
+  content: "*";
+  color:red;
+}
+
+i.red.star::before{
+  content: "*";
+  color:red;    
+}
+
+</style>
