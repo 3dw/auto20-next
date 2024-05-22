@@ -197,6 +197,7 @@ export default defineComponent({
     $route (to, from) {
       console.log(from.path); // 輸出路由變更前的路徑
       console.log(to.path); // 輸出路由變更後的路徑
+      window.scrollTo(0, 0); // 每次路由變更時回到頂部
     },
     center(newVal, oldVal) {
       console.log('Center updated from', oldVal, 'to', newVal);

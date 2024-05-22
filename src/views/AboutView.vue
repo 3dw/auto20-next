@@ -98,6 +98,8 @@
           b 自學2.0
           | 有位於Github的專案議題區。請上Github的專案議題區提出錯誤回報與功能請求，謝謝。若您還沒有Github帳號，請先註冊一個Github帳號再留言。
 
+        p Note: 若您單純是要登入自學2.0，而非提出議題，並不需要一個Github帳號。
+
         p
           a(href="https://github.com/3dw/auto20-next/issues") 前往專案議題區
             i.chevron.right.icon
