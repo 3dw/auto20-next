@@ -17,6 +17,7 @@
     "leaflet.markercluster": "^1.5.3",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
+    "qrcode": "^1.5.3",
     "register-service-worker": "^1.7.2",
     "semantic-ui-css": "^2.5.0",
     "vue": "^3.2.13",
