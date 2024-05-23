@@ -164,11 +164,11 @@ export default defineComponent({
 
 .hello {
   position: relative;
-  z-index: 999;
+  z-index: 1;
   height: 100%;
   min-height: 300px;
   background-color: #E6E6FA; /* Lavender */;
-  top: 50px; /* 這裡設定往下移動的距離，可以根據需要調整 */
+  
 }
 
 .image {
