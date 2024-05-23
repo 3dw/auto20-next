@@ -8,15 +8,22 @@
 
   .ui.divider
 
-  .ui.massive.blue.button(v-if="uid && !root.name && users" @click="setMe()") 按此開始
-  .ui.huge.buttons(v-if="!user")
-    //button.ui.blue.button(@click="loginFB")
-      i.facebook.icon
-      | 登入 
-    //.or
-    button.ui.orange.button(@click="loginGoogle")
-      i.google.icon
-      | 登入
+  .ui.grid
+    .ui.stackable.two.cloumn.fluid.row
+      .ten.wide.column
+        .ui.fluid.card.container(v-if="users[uid]")
+          card(:h="users[uid]", :full="true", :book="book", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
+      .six.wide.column
+        .ui.massive.green.button(v-if="uid && !root.name && users" @click="setMe()")
+          i.edit.icon
+          | 按此
+          span(v-if="!users[uid]") 開始
+          span(v-else) 編輯
+
+        .ui.huge.buttons(v-else-if="!uid")
+          button.ui.orange.button(@click="loginGoogle")
+            i.google.icon
+            | 登入
 
   .ui.container(v-if="root.name")
     .ui.warning.message(v-show="longTimeNoSee() > 0.25")
@@ -180,6 +187,7 @@
 <script>
 import mix from '../mixins/mix.ts'
 // import Loader from './Loader'
+import Card from '../components/Card'
 import { db } from '../firebase'
 import { set, ref, remove } from 'firebase/database'
 import 'leaflet/dist/leaflet.css';
@@ -188,7 +196,7 @@ export default {
   name: 'MyFlag',
   mixins: [mix],
   props: ['uid', 'user', 'email', 'mySearch', 'provider', 'photoURL', 'users', 'isInApp'],
-  // components: { Loader },
+  components: { Card },
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
     title: '我的旗幟',
@@ -342,6 +350,13 @@ export default {
     },
     loginFB: function () {
       this.$emit('loginFB')
+    },
+    locate: function (h, bool) {
+      this.$emit('locate', h, bool)
+    },
+    addBook: function (uid) {
+      console.log(uid)
+      this.$emit('addBook', uid)
     },
     loginGoogle: function () {
       this.$emit('loginGoogle')
