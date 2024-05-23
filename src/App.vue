@@ -323,6 +323,8 @@ export default defineComponent({
           vm.user = user;
           vm.email = user.providerData[0].email;
           vm.uid = user.uid;
+
+          console.log(vm.uid);
           vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://auto20-next.pages.dev/logo-new.png";
 
           if (vm.uid && vm.users[vm.uid]) {
@@ -331,6 +333,10 @@ export default defineComponent({
           if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
             this.locate(vm.users[vm.uid], false);
           }
+          
+          // 強制重定向的個人頁
+          vm.$router.push('/profile');
+          
         }).catch((error) => {
           console.error("Login error:", error);
           if (error.message.includes('sessionStorage')) {
