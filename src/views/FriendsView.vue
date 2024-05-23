@@ -39,12 +39,21 @@ export default defineComponent({
         {t: '臺中市', c: [24.163162, 120.647828]},
         {t: '臺南市', c: [22.991235, 120.184982]},
         {t: '高雄市', c: [22.627277, 120.301437]},
+        {t: '彰化縣', c: [120.4818, 23.99297]},
+        {t: '屏東縣', c: [120.62, 22.54951]},
+        {t: '雲林縣', c: [120.3897, 23.75585]},
+        {t: '苗栗縣', c: [120.9417, 24.48927]},
+        {t: '嘉義縣', c: [120.574, 23.45889]},
+        {t: '新竹縣', c: [121.1252, 24.70328]},
+        {t: '新竹市', c: [120.9647, 24.80395]},
+        {t: '基隆市', c: [121.7081, 25.10898]},
         {t: '宜蘭縣', c: [24.69295, 121.7195], z: 10},
         {t: '南投縣', c: [23.83876, 120.9876], z: 10},
         {t: '嘉義市', c: [23.47545, 120.4473], z: 10},
         {t: '花蓮縣', c: [23.7569, 121.3542], z: 10},
         {t: '臺東縣', c: [22.98461, 120.9876], z: 10},
-        {t: '澎湖縣', c: [23.56548, 119.6151], z: 9}
+        {t: '澎湖縣', c: [23.56548, 119.6151], z: 9},
+        {t: '連江縣', c: [119.5397, 26.19737]}
       ]
     };
   },
@@ -113,7 +122,7 @@ export default defineComponent({
         return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn));
       } else if (this.logic === 'age_nearest' && this.users[this.uid] && this.users[this.uid].child_birth) {
         const userChildBirth = new Date(this.users[this.uid].child_birth).getTime();
-        return data.sort((a, b) => {
+        return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn)).sort((a, b) => {
           const aChildBirth = a.child_birth ? new Date(a.child_birth).getTime() : Infinity;
           const bChildBirth = b.child_birth ? new Date(b.child_birth).getTime() : Infinity;
           return Math.abs(aChildBirth - userChildBirth) - Math.abs(bChildBirth - userChildBirth);
