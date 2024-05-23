@@ -323,18 +323,19 @@ export default defineComponent({
           vm.user = user;
           vm.email = user.providerData[0].email;
           vm.uid = user.uid;
-          
-          // 使用新的預設圖片位置
           vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://auto20-next.pages.dev/logo-new.png";
 
           if (vm.uid && vm.users[vm.uid]) {
             vm.user = vm.users[vm.uid];
           }
-          if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn ) {
+          if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
             this.locate(vm.users[vm.uid], false);
           }
         }).catch((error) => {
           console.error("Login error:", error);
+          if (error.message.includes('sessionStorage')) {
+            window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
+          }
         });
       }
     }
