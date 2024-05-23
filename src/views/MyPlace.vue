@@ -17,7 +17,7 @@
         label.required 概略地址
         input(v-model.trim='root.address', placeholder='地址愈詳細，別人愈好認識你的所在')
 
-        h4.ui.header 手動拖拉地圖讓標記移到位置附近
+        h4.ui.header 手動拖拉標記，移到正確的位置
           .sub.header 經緯座標： {{root.latlngColumn}}
         #map(style="height: 300px;")  // Add the map container
         .ui.error.message(v-show="!root.latlngColumn")
@@ -104,15 +104,15 @@ export default defineComponent({
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
 
-      // Set the marker at the initial center of the map without making it draggable
-      this.marker = L.marker(this.map.getCenter(), {draggable: false}).addTo(this.map);
+      // Set the marker at the initial center of the map and make it draggable
+      this.marker = L.marker(this.map.getCenter(), {draggable: true}).addTo(this.map);
       this.root.latlngColumn = `${defaultCoords[0]},${defaultCoords[1]}`;  // Update latlngColumn initially
-  
-      // Update latlngColumn when the map center changes after user interaction
-      this.map.on('moveend', () => {
-        const { lat, lng } = this.map.getCenter();
-        this.marker.setLatLng(new L.LatLng(lat, lng));  // Keep the marker centered
-        this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+
+      // Update latlngColumn and map center when the marker is dragged
+      this.marker.on('dragend', (event) => {
+        const latLng = event.target.getLatLng();
+        this.map.setView(latLng);  // Update the map center
+        this.root.latlngColumn = `${latLng.lat.toFixed(5)},${latLng.lng.toFixed(5)}`;
       });
     },
     usedAddr(hand) {
@@ -138,9 +138,6 @@ export default defineComponent({
           () => alert('登錄成功!')
         );
       }
-    },
-    loginFB() {
-      this.$emit('loginFB');
     },
     loginGoogle() {
       this.$emit('loginGoogle');

@@ -65,7 +65,7 @@ export default defineComponent({
       if (h && h.photoURL) {
         return h.photoURL;
       } else {
-        return 'https://www.moedict.tw/' + h.name + '.png';
+        return 'https://www.moedict.tw/' + (h.name || '').substr(0,1) + '.png';
       }
     }
 

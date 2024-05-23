@@ -63,7 +63,7 @@
           .header 地址太詳細了
           p 這是公開資料，最細寫到路段即可，請不要寫出門牌號碼。
       
-      h4.ui.header 手動拖拉地圖讓標記移到您的位置附近
+      h4.ui.header 手動拖拉標記，移到您的概略位置
         .sub.header 經緯座標： {{root.latlngColumn}}
       #map(style="height: 300px;")
       .ui.divider
@@ -241,13 +241,21 @@ export default {
       // Set the correct path for marker icons
       L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
 
-      // Add a non-draggable marker at the map center
-      this.marker = L.marker(this.map.getCenter(), {draggable: false}).addTo(this.map);
+      // Add a draggable marker at the map center
+      this.marker = L.marker(this.map.getCenter(), {draggable: true}).addTo(this.map);
 
       // Update root.latlngColumn when the map center changes
       this.map.on('moveend', () => {
         const {lat, lng} = this.map.getCenter();
-        this.marker.setLatLng({lat, lng}); // Move the marker to the new center
+        //this.marker.setLatLng({lat, lng}); // Move the marker to the new center
+        //this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        this.$forceUpdate(); // Ensure Vue updates the data binding
+      });
+
+      // Update map center and root.latlngColumn when marker dragging ends
+      this.marker.on('dragend', () => {
+        const {lat, lng} = this.marker.getLatLng();
+        this.map.setView({lat, lng}); // Move the map center to the marker position
         this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
         this.$forceUpdate(); // Ensure Vue updates the data binding
       });
