@@ -11,10 +11,10 @@
   .ui.grid
     .ui.stackable.two.cloumn.fluid.row
       .ten.wide.column
-        .ui.fluid.card.container(v-if="users[uid]")
+        .ui.fluid.card.container(v-if="users && users[uid]")
           card(:h="users[uid]", :full="true", :book="book", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
       .six.wide.column
-        .ui.massive.green.button(v-if="uid && !root.name && users" @click="setMe()")
+        .ui.massive.green.button(v-if="uid && !root.email && users" @click="setMe()")
           i.edit.icon
           | 按此
           span(v-if="!users || !users[uid]") 開始
@@ -25,7 +25,7 @@
             i.google.icon
             | 登入
 
-  .ui.container(v-if="root.name")
+  .ui.container(v-if="root.email")
     .ui.warning.message(v-show="longTimeNoSee() > 0.25")
       .header 請立即更新
       span(v-if="longTimeNoSee()> 0.25") 您的資料已三個月未更新，請立即更新，謝謝
@@ -216,7 +216,7 @@ export default {
   emit: ['loginGoogle', 'locate'],
   mounted() {
     this.$nextTick(() => {
-      if (this.root.name) { // 確保 root.name 存在時才初始化地圖
+      if (this.root.email) { // 確保 root.email 存在時才初始化地圖
         L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
         setTimeout(this.initMap, 500);
       }
@@ -224,7 +224,7 @@ export default {
   },
   watch: {
     root (newR) {
-      if (newR.name) { // 確保 root.name 存在時才初始化地圖
+      if (newR.email) { // 確保 root.email 存在時才初始化地圖
         setTimeout(this.initMap, 500);
       }
     }
