@@ -283,7 +283,7 @@ export default defineComponent({
       }
     },
     removeBook: function (index:number) {
-      if (window.prompt('確定要將這位朋友移出您的名簿嗎？')) {
+      if (window.confirm('確定要將這位朋友移出您的名簿嗎？')) {
         this.book.splice(index, 1)
         set(ref(db, 'books/' + this.uid), this.book)
       }
