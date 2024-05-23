@@ -11,7 +11,7 @@
   br
   .ui.two.doubling.cards.container(@scroll="handleScroll", ref="scrollContainer")
     .ui.card(v-for="(h, index) in visibleCards", :key="index")
-      card(:h="h", :full="false", :mySearch="mySearch", :id="id", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook")
+      card(:h="h", :full="false", :mySearch="mySearch", :id="id", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", :uid="uid")
 </template>
 
 <script>
