@@ -4,7 +4,37 @@
     router-link(v-if="book && uid && book.length == 0", to="/friends") 您的名簿目前沒有人，按此找朋友
   loader(v-show="!users")
   .ui.divider
-  .ui.four.doubling.cards.container(v-if="toList(places).length > 0 && toList(users).length > 0")
+
+  table.ui.celled.striped.collapsing.table
+    thead
+      tr
+        th
+        th 有空時段
+    tbody
+      tr(
+          v-for="(h, index) in searchBy(users, mySearch)",
+          :key="index",
+          :class="{invisible: !book || !h || book.indexOf(h.uid) == -1}"
+          v-show="book && h && book.indexOf(h.uid) > -1"
+        )
+        td
+          router-link(:to="'/flag/' + h.uid")
+            img.ui.avatar(:src="h.photoURL")
+            span {{h.name}}
+        td
+          span {{h.freetime}}
+      tr(
+        v-for="(h, index) in searchBy(places, mySearch)",
+        :key="index",
+          :class="{invisible: !book || !h || book.indexOf(h.uid) == -1}",
+        v-show="book && book.indexOf(h.uid) > -1"
+      )
+        td
+          router-link(:to="'/flag/' + h.idx") {{h.name}}
+        td
+          span {{h.freetime}}
+      
+  //.ui.four.doubling.cards.container(v-if="toList(places).length > 0 && toList(users).length > 0")
     .ui.card(
       v-for="(h, index) in searchBy(places, mySearch)",
       :key="index",
@@ -126,7 +156,41 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+table {
+  display: inline-table;
+  margin: 0 auto;
+}
+
 a {
-  color: #35495E;
+  color: #3549FE !important;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+img.ui.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+td {
+  font-size: 20px;
+}
+
+.invisible {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .ui.table:not(.unstackable) tr.invisible, .ui.table:not(.unstackable) tr.invisible>td, .ui.table:not(.unstackable) tr.invisible>th {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+  }
 }
 </style>

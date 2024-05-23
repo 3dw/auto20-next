@@ -11,7 +11,7 @@
   br
   .ui.two.doubling.cards.container(@scroll="handleScroll", ref="scrollContainer")
     .ui.card(v-for="(h, index) in visibleCards", :key="index")
-      card(:h="h", :full="false", :mySearch="mySearch", :id="id", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", :uid="uid")
+      card(:h="h", :full="false", :mySearch="mySearch",  :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", :uid="uid")
 </template>
 
 <script>
@@ -23,7 +23,7 @@ import Card from '../components/Card';
 export default defineComponent({
   name: 'FrindCards',
   mixins: [mix],
-  props: ['mySearch', 'id', 'book', 'users', 'places', 'center', 'user', 'uid'],
+  props: ['mySearch', 'book', 'users', 'places', 'center', 'user', 'uid'],
   components: { Loader, Card },
   data() {
     return {

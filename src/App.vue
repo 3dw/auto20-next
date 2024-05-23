@@ -36,6 +36,10 @@ nav.ui.menu#main-menu
 
         router-link.item(v-for="i in myGroupIdx()", :key="i", :to="'/group/' + i") {{ groups[i].n }}
 
+        router-link.item(to="/book", v-if="uid")
+          i.book.icon.no-float
+          | 我的名簿
+          
         button.no-border.ui.item(v-if="uid", @click="logout")
           i.sign-out.icon
           | 登出

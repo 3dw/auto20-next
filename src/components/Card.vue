@@ -1,6 +1,6 @@
 <template lang="pug">
 .hello
-  router-link(:to="'/flag/'+h.uid")
+  router-link(:to="'/flag/'+ (h.uid || h.idx)")
     .image
       h3.ui.header
         img.main(:src='getIcon(h)' alt='^_^')
@@ -197,7 +197,7 @@ p {
 
 .filler {
   display: block;
-  height: 120px;
+  height: 200px;
   flex-grow: 1;
 }
 
