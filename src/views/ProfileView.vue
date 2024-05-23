@@ -12,7 +12,7 @@
     .ui.stackable.two.cloumn.fluid.row
       .ten.wide.column
         .ui.fluid.card.container(v-if="users && users[uid]")
-          card(:h="users[uid]", :full="true", :book="book", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
+          card(:h="users[uid]", :full="true", :book="book", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle", :uid="uid")
       .six.wide.column
         .ui.massive.green.button(v-if="uid && !root.email && users" @click="setMe()")
           i.edit.icon
@@ -245,12 +245,12 @@ export default {
       this.marker = L.marker(this.map.getCenter(), {draggable: true}).addTo(this.map);
 
       // Update root.latlngColumn when the map center changes
-      this.map.on('moveend', () => {
-        const {lat, lng} = this.map.getCenter();
+      //this.map.on('moveend', () => {
+        //const {lat, lng} = this.map.getCenter();
         //this.marker.setLatLng({lat, lng}); // Move the marker to the new center
         //this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-        this.$forceUpdate(); // Ensure Vue updates the data binding
-      });
+        //this.$forceUpdate(); // Ensure Vue updates the data binding
+      //});
 
       // Update map center and root.latlngColumn when marker dragging ends
       this.marker.on('dragend', () => {
