@@ -2,24 +2,24 @@
 nav.ui.menu#main-menu
   button.no-border.ui.item(@click="toggleSidebar")
     i.icon.bars
-  router-link.item(to="/")
+  router-link.item.fat-only(to="/")
     i.home.icon
-    span.fat-only 首頁
-  router-link.item.fat-only(to="/about")
+    span 首頁
+  router-link.item(to="/about")
     i.info.icon
     | 說明
-  router-link.item(to="/friends")
-    i.users.icon
-    | 朋友
   router-link.item(to="/maps")
     i.map.icon
     | 地圖
+  router-link.item(to="/friends")
+    i.users.icon
+    | 朋友
   router-link.item.fat-only(to="/groups")
     i.globe.icon
     | 社團
 
   div.right.menu
-    .ui.simple.dropdown.item
+    // .ui.simple.dropdown.item
       i.share.square.icon
       .menu
         button.no-border.item(@click="copyLink()") 複製當前網址

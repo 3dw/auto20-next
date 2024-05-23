@@ -17,7 +17,7 @@
         .ui.massive.green.button(v-if="uid && !root.name && users" @click="setMe()")
           i.edit.icon
           | 按此
-          span(v-if="!users[uid]") 開始
+          span(v-if="!users || !users[uid]") 開始
           span(v-else) 編輯
 
         .ui.huge.buttons(v-else-if="!uid")
