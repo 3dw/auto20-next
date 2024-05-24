@@ -21,6 +21,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
+    path: '/polis',
+    name: 'polis',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "polis" */ '../views/PolisView.vue')
+  },
+  {
     path: '/privacy-policy',
     name: 'privacy-policy',
     component: () => import(/* webpackChunkName: "privacy-policy" */ '../views/PrivacyPolicyView.vue')
@@ -67,7 +75,8 @@ const routes: Array<RouteRecordRaw> = [
     path: '/my_place',
     name: 'my_place',
     component: () => import(/* webpackChunkName: "myplace" */ '../views/MyPlace.vue')
-  }
+  },
+  
 ]
 
 const router = createRouter({
