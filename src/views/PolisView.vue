@@ -2,7 +2,7 @@
     .hello
       h1.ui.header
         img(src="../assets/handshake1.webp")
-        | 自學2.0使用說明
+        | 自學2.0共識凝聚
         img(src="../assets/handshake1.webp")
     
       div.polis(data-page_id="PAGE_ID" data-site_id="polis_site_id_AcvBPzL6pBLVknQ3rt")
