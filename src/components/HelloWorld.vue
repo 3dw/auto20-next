@@ -17,7 +17,7 @@ br
   router-link.ui.blue.button(to="/profile", v-else)
     | 前往我的旗幟
 p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
-  .ui.divider
+
 .ui.divider
 select.ui.dropdown(v-show="users && toList(users).length > 0", v-model="logic" )
   option(value="random") 隨機介紹

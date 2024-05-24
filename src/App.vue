@@ -17,6 +17,9 @@ nav.ui.menu#main-menu
   router-link.item.fat-only(to="/groups")
     i.globe.icon
     | 社團
+  router-link.item.fat-only(to="/polis")
+    i.globe.icon
+    | 凝聚共識
 
   div.right.menu
     // .ui.simple.dropdown.item
