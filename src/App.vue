@@ -17,8 +17,8 @@ nav.ui.menu#main-menu
   router-link.item.fat-only(to="/groups")
     i.globe.icon
     | 社團
-  router-link.item.fat-only(to="/polis")
-    i.globe.icon
+  // router-link.item.fat-only(to="/polis")
+    i.comments.icon
     | 凝聚共識
 
   div.right.menu
@@ -75,7 +75,7 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
   router-link.item(to="/profile")
     i.user.icon.no-float
     | 我的旗幟
-  router-link.item(to="/my_place", v-if="uid")
+  // router-link.item(to="/my_place", v-if="uid")
     i.marker.icon.no-float
     | 自學場地登錄
   router-link.item(to="/book", v-if="uid")
@@ -181,10 +181,10 @@ export default defineComponent({
       const data = snapshot.val(); // 讀取用戶資料
       vm.users = data; // 更新用戶資料狀態
     });
-    onValue(placesRef, (snapshot) => {
+    /* onValue(placesRef, (snapshot) => {
       const data = snapshot.val(); // 讀取地點資料
       vm.places = data; // 更新地點資料狀態
-    });
+    }); */
     onValue(groupsRef, (snapshot) => {
       const data = snapshot.val(); // 讀取社團資料
       vm.groups = data; // 更新社團資料狀態
@@ -224,7 +224,7 @@ export default defineComponent({
   },
   methods: {
     doSearch: function (p) {
-      return !(p.match(/(^\/$|myPlace|qr|outer|flag|myFlag|group\/|place|profile|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
+      return !(p.match(/(^\/$|myPlace|polis|qr|outer|flag|myFlag|group\/|place|profile|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
     },
     myGroupIdx () {
       return (this.groups || []).filter((g) => {

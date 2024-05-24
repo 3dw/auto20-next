@@ -77,7 +77,7 @@ export default defineComponent({
       return filteredCards.slice(0, this.n); // 只返回當前應顯示的卡片
     },
     list() {
-      return this.processData(this.users).concat(this.processData(this.places));
+      return this.processData(this.users) // .concat(this.processData(this.places));
     }
   },
   mounted() {
@@ -89,11 +89,11 @@ export default defineComponent({
   watch: {
     center(newC) {
       console.log('Child component received new center:', newC);
-      this.allCards = this.processData(this.users).concat(this.processData(this.places));
+      this.allCards = this.processData(this.users) //.concat(this.processData(this.places));
       this.$forceUpdate();
     },
     users(newU) {
-      this.allCards = this.processData(newU).concat(this.processData(this.places));
+      this.allCards = this.processData(newU) //.concat(this.processData(this.places));
     },
     logic(newL) {
       console.log(newL);
@@ -107,9 +107,9 @@ export default defineComponent({
         const lng = parseFloat(nearMatch[2]);
         this.userLocation = { lat, lng };
         console.log('Updated user location to:', this.userLocation);
-        this.allCards = this.processData(this.users).concat(this.processData(this.places));
+        this.allCards = this.processData(this.users) // .concat(this.processData(this.places));
       } else {
-        this.allCards = this.processData(this.users).concat(this.processData(this.places));
+        this.allCards = this.processData(this.users) // .concat(this.processData(this.places));
       }
     }
   },
@@ -190,7 +190,7 @@ export default defineComponent({
             const lng = position.coords.longitude;
             this.userLocation = { lat, lng };
             console.log('User location obtained:', this.userLocation);
-            this.allCards = this.processData(this.users).concat(this.processData(this.places));
+            this.allCards = this.processData(this.users)// .concat(this.processData(this.places));
           },
           error => {
             console.error('Error getting user location:', error);

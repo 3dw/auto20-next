@@ -144,7 +144,7 @@ export default defineComponent({
       this.shuffledList = list;
     },
     sortByNewest() {
-      const list = this.toList(this.users).concat(this.toList(this.places)).slice().sort((a, b) => {
+      const list = this.toList(this.users).slice().sort((a, b) => {  //.concat(this.toList(this.places))
         if (!b.lastUpdate || isNaN(b.lastUpdate)) {
           return -1;
         }
