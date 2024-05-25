@@ -23,12 +23,12 @@
             span {{h.name}}
         td
           span {{h.freetime}}
-      tr(
+      // tr(
         v-for="(h, index) in searchBy(places, mySearch)",
         :key="index",
           :class="{invisible: !book || !h || book.indexOf(h.uid) == -1}",
         v-show="book && book.indexOf(h.uid) > -1"
-      )
+      //)
         td
           router-link(:to="'/flag/' + h.idx") {{h.name}}
         td
@@ -97,10 +97,10 @@ export default defineComponent({
       type: Object,
       default: () => { return {} },
     },
-    places: {
+    //places: {
       type: Object,
-      default: () => { return {} },
-    },
+    //  default: () => { return {} },
+    //},
   },
   components: { Loader, Card },
   metaInfo: {
