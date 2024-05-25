@@ -10,29 +10,32 @@
         .field
           a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
             | 創建社團
-      .ui.two.column.row
-        .ui.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx")
+      .ui.two.stackable.column.row
+        .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx")
           h3 〈{{g.n}}〉
           p {{g.intro}}
             br.thin-only
             | &nbsp;&nbsp;&nbsp;&nbsp;
-            a(@click="edit = !edit")
+          //  a(@click="edit = !edit")
               i.edit.icon
               | {{edit ? '結束' : ''}}編輯社團資料
           p
-            router-link.ui.basic.green.button(:to="'/group/' + g.idx")
-              i.sign-in.icon
-              | 前往社團
-          .ui.form(v-show="edit")
+            .ui.buttons
+              router-link.ui.basic.green.button(:to="'/group/' + g.idx")
+                i.sign-in.icon
+                | 前往社團
+              a.ui.green.button(v-show="uid && !isMember(g.idx)", @click="join(g.idx)") 我要加入
+              a.ui.red.basic.button(v-show="uid && isMember(g.idx)", @click="out(g.idx)") 我要退出
+          //.ui.form(v-show="edit")
             .field(v-if="!uid")
               button.ui.orange.button(@click="loginGoogle()")
                 i.google.icon
                 | 請先登入
-            .field
+            //.field
               .ui.labeled.input
                 label.ui.label 輸入社團簡介  
                 input(type="text", v-model="newIntro", placeholder="請先輸入社團簡介")
-            .field
+            //.field
               a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro(idx)")
                 | 更新簡介
           .ui.grid
@@ -40,14 +43,11 @@
               p 成員：
                 span(v-for="m in g.members")
                   router-link(:to = "'/flag/' + m", v-if="users[m]")
-                    img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
-                span(v-show="uid")
-                  a.ui.green.tiny.button(v-show="!isMember(g.idx)", @click="join(g.idx)") 我要加入
-                  a.ui.red.tiny.button(v-show="isMember(g.idx)", @click="out(g.idx)") 我要退出
+                    img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")              
             .two.column.stackable.row
               .column
                 .ui.divided.list
-                  .item.left.aligned 資源
+                  .item.left.aligned 資源：
                   .item.left.aligned(v-for = "(r, index) in g.res", :key="index + r.n + r.href")
                     a(:href="r.href", target="_blank", rel="noopener noreferrer")
                       img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
@@ -124,13 +124,15 @@ export default defineComponent({
       )
     },
     out (idx) {
-      this.groups[idx].members = this.groups[idx].members || []
-      this.groups[idx].members = this.groups[idx].members.filter( (i) => {
-        return i !== this.uid
-      })
-      set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
-      )
+      if (window.confirm('確定要退出嗎？')) {
+        this.groups[idx].members = this.groups[idx].members || []
+        this.groups[idx].members = this.groups[idx].members.filter( (i) => {
+          return i !== this.uid
+        })
+        set(ref(db, 'groups'), this.groups).then(
+          console.log('groups更新成功')
+        )
+      }
     },
     searchBy (list, k) {
       if (!k) {
@@ -205,7 +207,8 @@ export default defineComponent({
 <style scoped>
 
 img.ui.avatar {
-  top: 8px;
+  position: relative;
+  top: .6em;
   width: 28px; /* 調整圖片寬度 */
   height: 28px; /* 調整圖片高度 */
   border-radius: 50%; /* 圓形圖片 */
@@ -217,5 +220,9 @@ img.ui.avatar {
 
 .row p {
   margin-left: 2em;
+}
+
+a {
+  cursor: pointer;
 }
 </style>

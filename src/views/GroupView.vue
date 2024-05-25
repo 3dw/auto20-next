@@ -1,14 +1,14 @@
 <template lang="pug">
 .hello
-  .ui.container(v-if="users && toList(users).length > 0")
+  .ui.container(v-if="users && toList(users).length > 0 && groups[$route.params.idx]")
     .ui.grid
-      .ui.one.column.row(v-if="groups[$route.params.idx] && groups[$route.params.idx].n")
-        .ui.column.ui.segment(v-for = "(g, idx) in [groups[$route.params.idx]]")
-          h3 〈{{g.n}}〉
-          p {{g.intro}}
+      .ui.one.column.row(v-if="groups[$route.params.idx].n")
+        .ui.column.ui.segment
+          h3 〈{{groups[$route.params.idx].n}}〉
+          p {{groups[$route.params.idx].intro}}
             br.thin-only
             | &nbsp;&nbsp;&nbsp;&nbsp;
-            a(@click="edit = !edit")
+            a(@click="toggleEdit($route.params.idx)")
               i.edit.icon
               | {{edit ? '結束' : ''}}編輯社團資料
           p
@@ -25,22 +25,22 @@
                 label.ui.label 輸入社團簡介  
                 input(type="text", v-model="newIntro", placeholder="請先輸入社團簡介")
             .field
-              a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro(idx)")
+              a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
                 | 更新簡介
           .ui.grid
             .row
               p 成員：
-                span(v-for="m in g.members")
-                  router-link(:to = "'/flag/' + m", v-if="users[m]")
+                span(v-for="m in groups[$route.params.idx].members")
+                  router-link(:to="'/flag/' + m", v-if="users[m]")
                     img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
                 span(v-show="uid")
-                  a.ui.green.tiny.button(v-show="!isMember(g.idx)", @click="join(g.idx)") 我要加入
-                  a.ui.red.tiny.button(v-show="isMember(g.idx)", @click="out(g.idx)") 我要退出
+                  a.ui.green.tiny.button(v-show="!isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") 我要加入
+                  a.ui.red.tiny.button(v-show="isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") 我要退出
             .two.column.stackable.row
               .column
                 .ui.divided.list
                   .item.left.aligned 資源：
-                  .item.left.aligned(v-for = "(r, index) in g.res", :key="index + r.n + r.href")
+                  .item.left.aligned(v-for="(r, index) in groups[$route.params.idx].res", :key="index + r.n + r.href")
                     a(:href="r.href", target="_blank", rel="noopener noreferrer")
                       img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
                       | {{r.n}}
@@ -54,19 +54,19 @@
                         label.ui.label 輸入資源網址
                         input(type="text", v-model="newHref", placeholder="請先輸入資源網址")
                     .field
-                      a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes(idx)")
+                      a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
                         | 新增資源
-              .column
+              .column 留言：
                 .ui.divided.list
-                  .item(v-for = "(c, index) in g.chats", :key="index")
+                  .item(v-for="(c, index) in groups[$route.params.idx].chats", :key="index")
+                    img.ui.avatar(:src="c.photoURL")    
                     | {{c.n}} : {{c.t}}
-                  .item.ui.form(v-if="uid && edit")
+                  .item.ui.form(v-if="uid")
                     .field
-                      img.ui.avatar(:src="photoURL")
                       .ui.labeled.input
+                        img.ui.avatar(:src="photoURL")
                         input.input(v-model="msg" placeholder="在想什麼嗎?")
-                        a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat(idx)") 留言
-                
+                        a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") 留言  
 </template>
 
 <script>
@@ -95,6 +95,14 @@ export default defineComponent({
     }
   },
   methods: {
+    toggleEdit(idx) {
+      this.edit = !this.edit;
+      if (this.edit) {
+        this.newIntro = this.groups[idx].intro; // 將當前簡介載入到編輯框
+      } else {
+        this.newIntro = ''; // 可選，離開編輯模式時清空編輯框
+      }
+    },
     toList: (obj) => {
       if (!obj || typeof(obj) !== 'object') { 
         return []
@@ -135,18 +143,18 @@ export default defineComponent({
     addChat (idx) {
       var o = {
         uid: this.uid,
-        n: (this.user.providerData || [ {displayName: '匿名'} ])[0].displayName,
+        n: this.users[this.uid].name ? this.users[this.uid].name : '匿名',
         t: this.msg,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
       }
-      this.groups[idx].chats = 
-        this.groups[idx].chats || []
+      var chats = 
+        this.groups[idx].chats ? [...this.groups[idx].chats] : []
       if (this.msg) {
-        this.groups[idx].chats.push(o)
+        chats.push(o)
         this.msg = ''
       }
-      set(ref(db, 'groups/' + idx), this.g).then(
+      set(ref(db, 'groups/' + idx + '/chats'), chats).then(
         console.log('groups更新成功')
       )
     },
@@ -174,13 +182,16 @@ export default defineComponent({
       )
       // console.log(this.groups)
     },
-    addIntro (idx) {
-      this.groups[idx].intro = this.newIntro
-      this.newIntro = ''
-      set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
-      )
-      // console.log(this.groups)
+    addIntro(idx) {
+      if (this.newIntro.trim().length) { // 確保不提交空白或只有空格的字符串
+        this.groups[idx].intro = this.newIntro;
+        set(ref(db, 'groups/' + idx), this.groups[idx]).then(
+          () => console.log('簡介更新成功')
+        ).catch(error => {
+          console.error('更新失敗', error);
+        });
+        this.newIntro = '';
+      }
     }
   },
   mounted () {
@@ -197,8 +208,8 @@ export default defineComponent({
 <style scoped>
 
 img.ui.avatar {
-  position: relative !important;
-  top: 8px;
+  position: relative;
+  top: .6em;
   width: 28px; /* 調整圖片寬度 */
   height: 28px; /* 調整圖片高度 */
   border-radius: 50%; /* 圓形圖片 */
@@ -210,5 +221,9 @@ img.ui.avatar {
 
 .row p {
   margin-left: 2em;
+}
+
+a {
+  cursor: pointer;
 }
 </style>
