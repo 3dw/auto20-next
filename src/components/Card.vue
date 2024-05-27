@@ -173,8 +173,14 @@ export default defineComponent({
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(s);
     },
-    goto (h) {
-      window.open(h)
+    goto(h) {
+      // 檢查網址是否以 'http://' 或 'https://' 開頭
+      if (!h.startsWith('http://') && !h.startsWith('https://')) {
+        // 若沒有，則在前面加上 'https://'
+        h = 'https://' + h;
+      }
+      // 使用處理後的網址打開新窗口
+      window.open(h);
     },
     locate: function (h, bool) {
       console.log(h)
