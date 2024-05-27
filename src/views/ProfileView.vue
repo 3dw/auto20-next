@@ -9,6 +9,12 @@
   .ui.divider
 
   .ui.grid
+    .ui.row(v-if="!uid")
+      .sixteen.wide.column 
+        .ui.huge.buttons
+            button.ui.orange.button(@click="loginGoogle")
+              i.google.icon
+              | 登入
     .ui.stackable.two.cloumn.fluid.row
       .ten.wide.column
         .ui.fluid.card.container(v-if="users && users[uid]")
@@ -20,10 +26,6 @@
           span(v-if="!users || !users[uid]") 開始
           span(v-else) 編輯
 
-        .ui.huge.buttons(v-else-if="!uid")
-          button.ui.orange.button(@click="loginGoogle")
-            i.google.icon
-            | 登入
 
   .ui.container(v-if="root.email")
     .ui.warning.message(v-show="longTimeNoSee() > 0.25")
