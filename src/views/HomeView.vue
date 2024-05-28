@@ -1,6 +1,6 @@
 <template lang="pug">
 .home
-  img#main-img(src="../assets/handshake1.webp")
+  img#main-img(src="../assets/handshake1.webp", alt="互助互惠")
   HelloWorld(:uid="uid", :users = "users", :places = "places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")
 
 </template>

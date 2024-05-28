@@ -29,9 +29,6 @@ br
     card(:h="h", :full="false", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
 loader(v-else)
 
-.ui.divider
-div.polis(data-conversation_id='5azfwmdsb6')
-
 </template>
 
 <script lang="ts">
@@ -124,18 +121,6 @@ export default defineComponent({
     }
   },
   mounted() {
-
-    // 使用 setTimeout 來延遲執行
-    setTimeout(function() {
-      // 創建一個 script 元素
-      var script = document.createElement('script');
-      script.id = 'polis-script'
-      script.async = true;
-      script.src = 'https://polis.tw/embed.js';
-      // 將 script 元素添加到 document 的 head 中
-      document.head.appendChild(script);
-    }, 1000); // 延遲時間為 1000 毫秒，即 1 秒
-    
     this.shuffleList();
     this.sortByNewest();
   },

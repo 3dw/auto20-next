@@ -44,37 +44,7 @@
                 span(v-for="m in g.members")
                   router-link(:to = "'/flag/' + m", v-if="users[m]")
                     img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")              
-            .two.column.stackable.row
-              .column
-                .ui.divided.list
-                  .item.left.aligned 資源：
-                  .item.left.aligned(v-for = "(r, index) in g.res", :key="index + r.n + r.href")
-                    a(:href="r.href", target="_blank", rel="noopener noreferrer")
-                      img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
-                      | {{r.n}}
-                  .item.ui.form(v-show="uid && edit")
-                    .field
-                      .ui.labeled.input
-                        label.ui.label 輸入資源名
-                        input(type="text", v-model="newResName", placeholder="請先輸入資源名")
-                    .field
-                      .ui.labeled.input
-                        label.ui.label 輸入資源網址
-                        input(type="text", v-model="newHref", placeholder="請先輸入資源網址")
-                    .field
-                      a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes(idx)")
-                        | 新增資源
-              .column
-                .ui.divided.list
-                  .item(v-for = "(c, index) in g.chats", :key="index")
-                    | {{c.n}} : {{c.t}}
-                  .item.ui.form(v-if="uid && edit")
-                    .field
-                      img.ui.avatar(:src="photoURL")
-                      .ui.labeled.input
-                        input.input(v-model="msg" placeholder="在想什麼嗎?")
-                        a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat(idx)") 留言
-                
+              
 </template>
 
 <script>
