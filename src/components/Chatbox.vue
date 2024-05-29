@@ -23,12 +23,12 @@
           router-link(:to="'/flag/' + c.uid")
             img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
           a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
-          a(@click="edit = c" v-show="c.uid == uid")
+          // a(@click="edit = c" v-show="c.uid == uid")
             i.edit.icon(title="edit")
-          span.text | {{ c.n }} : {{ c.t }}
+          span.text {{ c.n }} : {{ c.t }}
           span.gray(v-show="isFull") &nbsp;&nbsp;-
             | {{ countDateDiff(c.time) }}
-        .ui.form(v-show="edit == c")
+        //.ui.form(v-show="edit == c")
           .ui.input
             input.input(v-model="c.t", placeholder="更新")
             a.ui.green.small.button(@click.stop="edit = ''; updateChat(c)") 更新
@@ -102,24 +102,6 @@ export default defineComponent({
         time: (new Date()).getTime()
       };
       this.p = o;
-    },
-    updateChat(c) {
-      var o = {
-        uid: c.uid,
-        n: c.n,
-        t: c.t,
-        l: c.l,
-        photoURL: c.photoURL || '',
-        time: (new Date()).getTime()
-      };
-      this.chats[c['.key']] = o;
-      this.edit = ''; // 清除編輯狀態
-      set(ref(db, 'chats'), this.chats).then(
-        () => {
-          console.log('chats更新成功');
-          this.edit = ''; // 確保編輯狀態被清除
-        }
-      );
     },
     addChat() {
       var o = {
