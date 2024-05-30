@@ -17,7 +17,7 @@ nav.ui.menu#main-menu
   router-link.item.fat-only(to="/groups")
     i.globe.icon
     | 社團
-  router-link.item.fat-only(to="/polis")
+  // router-link.item.fat-only(to="/polis")
     i.comments.icon
     | 論譠
 
@@ -72,7 +72,7 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
   router-link.item(to="/groups")
     i.globe.icon.no-float
     | 社團
-  router-link.item(to="/polis")
+  // router-link.item(to="/polis")
     i.comments.icon.no-float
     | 論譠
   router-link.item(to="/profile")

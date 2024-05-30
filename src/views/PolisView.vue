@@ -19,7 +19,7 @@ export default defineComponent({
       script.src = 'https://polis.tw/embed.js';
       // 將 script 元素添加到 document 的 head 中
       document.head.appendChild(script);
-    }, 1000); // 延遲時間為 1000 毫秒，即 1 秒
+    }, 100); // 延遲時間為 1000 毫秒，即 1 秒
   }
 });
 </script>
