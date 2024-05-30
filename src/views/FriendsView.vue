@@ -4,6 +4,7 @@
   select.ui.dropdown(v-model="logic")
     option(value="newest") 最近更新
     option(value="nearest", v-show="userLocation || (uid && users[uid])") 離我最近
+    option(value="random") 隨機介紹
     option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") 孩子年齡相近
     option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}附近
   br
@@ -30,7 +31,7 @@ export default defineComponent({
       n: 10, // 初始顯示的卡片數量
       busy: false,
       allCards: [], // 所有卡片的數據
-      logic: 'newest', // 初始排序邏輯
+      logic: 'random', // 初始排序邏輯
       userLocation: null, // 使用者位置
       cities: [
         {t: '臺北市', c: [25.046337, 121.517444]},
@@ -118,6 +119,9 @@ export default defineComponent({
       const data = Object.keys(obj || {}).map(key => obj[key]);
       if (this.logic === 'newest') {
         return data.sort((a, b) => (b.lastUpdate || 0) - (a.lastUpdate || 0));
+      } else if (this.logic === 'random') {
+        // 隨機排序數據
+        return data.sort(() => 0.5 - Math.random());
       } else if (this.logic === 'nearest' || this.logic.match(/^near_(\d+\.\d+),(\d+\.\d+)$/)) {
         return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn));
       } else if (this.logic === 'age_nearest' && this.users[this.uid] && this.users[this.uid].child_birth) {
