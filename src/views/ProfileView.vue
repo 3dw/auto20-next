@@ -6,7 +6,7 @@
   p(v-show="!users[uid]") 請先詳閱我們的
     router-link(target="_blank", to="/privacy-policy") 隱私權政策
 
-  .ui.divider
+  .ui.divider(v-show="!root.email")
 
   .ui.grid
     .ui.row(v-if="!uid")
@@ -15,7 +15,7 @@
             button.ui.orange.button(@click="loginGoogle")
               i.google.icon
               | 登入
-    .ui.stackable.two.cloumn.fluid.row
+    .ui.stackable.two.cloumn.fluid.row(v-show="!root.email")
       .ten.wide.column
         .ui.fluid.card.container(v-if="users && users[uid]")
           card(:h="users[uid]", :full="true", :book="book", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle", :uid="uid")
@@ -329,13 +329,13 @@ export default {
     },
     updateFlag: function () {
       this.root.lastUpdate = (new Date()).getTime()
-      if (!this.agree) {
-        window.alert('請先勾選「我同意自學2.0的隱私權政策」')
-        return
-      } else if (this.myIndex > -1) {
+      if (this.myIndex > -1) {
         set(ref(db, 'users/' + this.uid), this.root).then(
           alert('更新成功!')
         )
+      } else if (!this.agree) {
+        window.alert('請先勾選「我同意自學2.0的隱私權政策」')
+        return
       } else {
         console.log('new2')
         set(ref(db, 'users/' + this.uid), this.root).then(
