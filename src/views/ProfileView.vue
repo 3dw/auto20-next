@@ -5,7 +5,10 @@
   p(v-show="isNew") 請先詳閱我們的
     router-link(target="_blank" to="/privacy-policy") 隱私權政策
 
-  .ui.divider(v-if="!root.email")
+  .ui.divider(v-if="isNew")
+  br(v-if="isNew")
+  br(v-if="isNew")
+  br(v-if="isNew")
 
   .ui.grid
     .ui.row(v-if="!uid")
