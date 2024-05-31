@@ -1,7 +1,13 @@
 <template lang="pug">
 .hello
-  loader(v-show="!users")
-  select.ui.dropdown(v-model="logic")
+  .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
+    .sixteen.wide.column 
+      .ui.huge.buttons
+        button.ui.orange.button(@click="loginGoogle")
+          i.google.icon
+          | 登入
+  loader(v-else-if="!users || toList(users).length == 0")
+  select.ui.dropdown(v-else, v-model="logic")
     option(value="newest") 最近更新
     option(value="nearest", v-show="userLocation || (uid && users[uid])") 離我最近
     option(value="random") 隨機介紹
@@ -115,6 +121,16 @@ export default defineComponent({
     }
   },
   methods: {
+    loginGoogle () {
+      this.$emit('loginGoogle')
+    },
+    toList(obj) {
+      if (!obj || typeof obj !== 'object') {
+        return [];
+      } else {
+        return Object.values(obj);
+      }
+    },
     processData(obj) {
       const data = Object.keys(obj || {}).map(key => obj[key]);
       if (this.logic === 'newest') {
