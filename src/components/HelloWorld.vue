@@ -1,6 +1,6 @@
 <template lang="pug">
 .hello
-  h4.ui.header 聞道有先後，術業有專攻
+  h4.ui.header {{ $t('login.hd') }}
   //h4.ui.header 請先登入，升起互助旗，和
     span {{ toList(users).length > 0 ? toList(users).length : '各' }}
     | 各位朋友相互認識
