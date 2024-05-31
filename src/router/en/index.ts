@@ -22,6 +22,6 @@ export default {
       fr:'Friends',
       gp:'Ｇroups',
       fg:'Flag',
-      hd:'There is a sequence of hearing the Tao, and there is a specialization in the art industry',
+      hd:'There is an order to learning the Way (Dao), and every skill has its specialists.',
     }
   }
