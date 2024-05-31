@@ -214,6 +214,9 @@ export default {
   },
   methods: {
     isValid() {
+      if (!this.root.note || this.root.note.length < 20) {
+        return false
+      }
       // Check that all required fields are filled
       const requiredFields = [
         this.root.name,
