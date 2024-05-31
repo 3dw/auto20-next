@@ -4,19 +4,19 @@ nav.ui.menu#main-menu
     i.icon.bars
   router-link.item.fat-only(to="/")
     i.home.icon
-    span 首頁
+    span {{ $t('login.hp') }}
   router-link.item(to="/about")
     i.info.icon
-    | 說明
+    | {{ $t('login.ab') }}
   router-link.item(to="/maps")
     i.map.icon
-    | 地圖
+    | {{ $t('login.mp') }}
   router-link.item(to="/friends")
     i.users.icon
-    | 朋友
+    | {{ $t('login.fr') }}
   router-link.item.fat-only(to="/groups")
     i.globe.icon
-    | 社團
+    | {{ $t('login.gp') }}
   // router-link.item.fat-only(to="/polis")
     i.comments.icon
     | 論譠
@@ -25,15 +25,25 @@ nav.ui.menu#main-menu
     // .ui.simple.dropdown.item
       i.share.square.icon
       .menu
-        button.no-border.item(@click="copyLink()") 複製當前網址
+      button.no-border.item(@click="copyLink()") 複製當前網址
+    //button(@click="changeZh") 中文Chinese
+    //button(@click="changeEn") 英文English
+    .ui.simple.dropdown.item
+      | 語言 Language
+      .menu
+        button.no-border.ui.item(@click="changeZh")
+          | 中文Chinese
 
+        button.no-border.ui.item(@click="changeEn")
+          | 英文English
+    
     .ui.simple.dropdown.item
       img.ui.avatar.image(v-if="photoURL" :src="photoURL")
       i.user.icon(v-else)
       .menu
         router-link.item(to="/profile")
           i.flag.icon
-          | 我的旗幟
+          | {{ $t('login.fg') }}
 
         .ui.divider(v-show = "myGroupIdx().length > 0")
 
@@ -235,6 +245,15 @@ export default defineComponent({
       }).map(function (g) {
         return g.idx
       })
+    },
+    changeZh() {
+      this.$i18n.locale = 'zh';
+      localStorage.setItem('lang', 'zh');
+    },
+
+    changeEn() {
+      this.$i18n.locale = 'en';
+      localStorage.setItem('lang', 'en');
     },
     // eslint-disable-next-line
     locate: function (h:any, gotoMap: boolean) {
