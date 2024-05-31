@@ -2,13 +2,13 @@
 .hello
   h1.ui.header
     img(src="../assets/handshake1.webp", alt="互助互惠")
-    | 自學2.0使用說明
+    | {{ $t('about.intro') }}
     img(src="../assets/handshake1.webp", alt="互助互惠")
 
   .ui.grid.container
     .ui.two.column.stackable.row
       .ui.padded.segment.column
-        h2.ui.header 自學2.0是什麼？
+        h2.ui.header {{$t('about.what_is_auto20')}}
         p 
           b 自學2.0
           | 是一個公益尋友平台，免付費、無業配廣告，旨在透過地理位置、個人興趣及專長來協助用戶尋找朋友。平台的核心功能「互助旗」提供公開的自我介紹，讓人們在見面前能初步了解和認識對方。
