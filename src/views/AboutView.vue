@@ -10,13 +10,13 @@
       .ui.padded.segment.column
         h2.ui.header {{$t('about.what_is_auto20')}}
         p 
-          b 自學2.0
-          | 是一個公益尋友平台，免付費、無業配廣告，旨在透過地理位置、個人興趣及專長來協助用戶尋找朋友。平台的核心功能「互助旗」提供公開的自我介紹，讓人們在見面前能初步了解和認識對方。
+          b {{$t('about.auto20')}}
+          | {{$t('about.intro_1')}}
         p 
-          b 自學
-          | 有狹義的「在家自學」和廣義的「自主學習」。自主學習是一種為自己的成長和生命負責的態度。
+          b {{$t('about.al')}}
+          | {{$t('about.intro_2')}}
         p
-          | 自學2.0歡迎所有對「自主學習」有興趣的朋友一起參與，不分年齡、在校與否。
+          | {{$t('about.intro_3')}}
         h2.ui.header 自學2.0由誰在設計及維護？
         p 本平台由非營利組織
           a(href="http://www.alearn.org.tw", target="_blank") 中華民國自主學習促進會

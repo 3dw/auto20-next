@@ -8,11 +8,11 @@ br
 .ui.huge.buttons
   button.ui.basic.orange.button(@click="loginGoogle", v-if="!user || !user.uid", :class="{disabled: isInApp}")
     i.google.icon
-    | 登入
+    | {{ $t('login.login' )}}
   router-link.ui.blue.button(to="/profile", v-else)
-    | 前往我的旗幟
+    | {{ $t('login.go_flag' )}}
   .or
-  router-link(to="/about").ui.blue.button 瞭解更多
+  router-link(to="/about").ui.blue.button {{ $t('login.lm' )}}
   //router-link.ui.basic.orange.button(to="/profile", v-if="!user || !user.uid", :class="{disabled: isInApp}")
     i.google.icon
     | 登入
