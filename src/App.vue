@@ -28,7 +28,9 @@ nav.ui.menu#main-menu
       button.no-border.item(@click="copyLink()") 複製當前網址
     //button(@click="changeZh") 中文Chinese
     //button(@click="changeEn") 英文English
-    .ui.simple.dropdown.item
+    
+
+    // .ui.simple.dropdown.item
       i.globe.icon
       span.fat-only
         | 語言 Language
