@@ -34,5 +34,9 @@ export default {
       al: 'Autonomous Learning',
       intro_2: ' is "homeschooling" in the narrow sense and "Self-directed learning" in the broad sense. Independent learning is an attitude of being responsible for one\'s own growth and life.',
       intro_3: 'We welcome all friends who are interested in "Self-directed Learning" to participate, regardless of age and whether they are in school or not.'
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      strong: 'In order to protect your personal privacy, please do not place any sensitive or too complete personally identifiable information on the mutual aid flag.'
     }
   }
