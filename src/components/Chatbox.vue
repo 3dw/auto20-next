@@ -11,11 +11,11 @@
     .right.menu
       a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
-        | 群聊
+        | {{$t('chat.gc')}}
         .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
       a.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
-        | 縮小
+        | {{$t('chat.cp')}}
   #box
     .ui.list
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")

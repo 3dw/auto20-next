@@ -4,19 +4,19 @@ nav.ui.menu#main-menu
     i.icon.bars
   router-link.item.fat-only(to="/")
     i.home.icon
-    span 首頁
+    span {{ $t('login.hp') }}
   router-link.item(to="/about")
     i.info.icon
-    | 說明
+    | {{ $t('login.ab') }}
   router-link.item(to="/maps")
     i.map.icon
-    | 地圖
-  router-link.item(to="/friends")
+    | {{ $t('login.mp') }}
+  router-link.item.fat-only(to="/friends")
     i.users.icon
-    | 朋友
+    | {{ $t('login.fr') }}
   router-link.item.fat-only(to="/groups")
-    i.globe.icon
-    | 社團
+    i.object.group.outline.icon
+    | {{ $t('login.gp') }}
   // router-link.item.fat-only(to="/polis")
     i.comments.icon
     | 論譠
@@ -25,15 +25,29 @@ nav.ui.menu#main-menu
     // .ui.simple.dropdown.item
       i.share.square.icon
       .menu
-        button.no-border.item(@click="copyLink()") 複製當前網址
+      button.no-border.item(@click="copyLink()") 複製當前網址
+    //button(@click="changeZh") 中文Chinese
+    //button(@click="changeEn") 英文English
+    
 
+    // .ui.simple.dropdown.item
+      i.globe.icon
+      span.fat-only
+        | 語言 Language
+      .menu
+        button.no-border.ui.item(@click="changeZh")
+          | 中文 Chinese
+
+        button.no-border.ui.item(@click="changeEn")
+          | 英文 English
+    
     .ui.simple.dropdown.item
       img.ui.avatar.image(v-if="photoURL" :src="photoURL")
       i.user.icon(v-else)
       .menu
         router-link.item(to="/profile")
           i.flag.icon
-          | 我的旗幟
+          | {{ $t('login.fg') }}
 
         .ui.divider(v-show = "myGroupIdx().length > 0")
 
@@ -41,14 +55,14 @@ nav.ui.menu#main-menu
 
         router-link.item(to="/book", v-if="uid")
           i.book.icon.no-float
-          | 我的名簿
+          | {{ $t('login.bk')}}
           
         button.no-border.ui.item(v-if="uid", @click="logout")
           i.sign-out.icon
-          | 登出
+          | {{ $t('login.logout')}}
 carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000", :pauseAutoplayOnHover="true")
   slide(v-for="slide in news", :key="slide")
-    span(v-html="slide")
+    span {{ $t('news.' + slide) }}
   template(#addons)
     // navigation
     // pagination
@@ -56,34 +70,34 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
 .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
   router-link.item(to="/")
     i.home.icon.no-float
-    | 首頁
+    | {{ $t('login.hp') }}
   router-link.item(to="/about")
     i.info.icon.no-float
-    | 說明
+    | {{ $t('login.ab') }}
   router-link.item(to="/privacy-policy")
     i.save.icon.no-float
-    | 隱私權政策
+    | {{ $t('login.pr') }}
   router-link.item(to="/friends")
     i.users.icon.no-float
-    | 朋友
+    | {{ $t('login.fr') }}
   router-link.item(to="/maps")
     i.map.icon.no-float
-    | 地圖
+    | {{ $t('login.mp') }}
   router-link.item(to="/groups")
-    i.globe.icon.no-float
-    | 社團
+    i.object.group.outlin.icon.no-float
+    | {{ $t('login.gp') }}
   // router-link.item(to="/polis")
     i.comments.icon.no-float
     | 論譠
   router-link.item(to="/profile")
     i.user.icon.no-float
-    | 我的旗幟
+    | {{ $t('login.fg') }}
   // router-link.item(to="/my_place", v-if="uid")
     i.marker.icon.no-float
     | 自學場地登錄
   router-link.item(to="/book", v-if="uid")
     i.book.icon.no-float
-    | 我的名簿
+    | {{ $t('login.bk')}}
 
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 br
@@ -151,10 +165,10 @@ export default defineComponent({
     return {
       mySearch: '',
       news: [
-        '自學2.0更新中',
-        '請定期更新您的互助旗',
-        '兩年以上未更新之旗幟將被系統移除',
-        '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
+        'upgrading',
+        'flag',
+        'remove',
+        // 'report'
       ],
       zoom: 7,
       center: [23.5330, 121.0654],
@@ -235,6 +249,15 @@ export default defineComponent({
       }).map(function (g) {
         return g.idx
       })
+    },
+    changeZh() {
+      this.$i18n.locale = 'zh';
+      localStorage.setItem('lang', 'zh');
+    },
+
+    changeEn() {
+      this.$i18n.locale = 'en';
+      localStorage.setItem('lang', 'en');
     },
     // eslint-disable-next-line
     locate: function (h:any, gotoMap: boolean) {

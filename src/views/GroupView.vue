@@ -58,7 +58,7 @@
                         | 新增資源
               .column 留言：
                 .ui.divided.list
-                  .item(v-for="(c, index) in groups[$route.params.idx].chats", :key="index")
+                  .item(v-for="(c, index) in latestChats" :key="index")
                     img.ui.avatar(:src="c.photoURL")    
                     | {{c.n}} : {{c.t}}
                   .item.ui.form(v-if="uid")
@@ -70,7 +70,6 @@
 </template>
 
 <script>
-
 
 import { defineComponent } from 'vue';
 import { onValue, set, ref } from 'firebase/database'
@@ -92,6 +91,13 @@ export default defineComponent({
       newHref: '',
       msg: '',
       groups: []
+    }
+  },
+  computed: {
+    latestChats() {
+      const idx = this.$route.params.idx;
+      const chats = this.groups[idx]?.chats || [];
+      return chats.slice(-10);
     }
   },
   methods: {

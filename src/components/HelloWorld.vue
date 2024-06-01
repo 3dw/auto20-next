@@ -1,33 +1,33 @@
 <template lang="pug">
 .hello
-  h4.ui.header 聞道有先後，術業有專攻
+  h4.ui.header {{ $t('login.hd') }}
   //h4.ui.header 請先登入，升起互助旗，和
     span {{ toList(users).length > 0 ? toList(users).length : '各' }}
     | 各位朋友相互認識
 br
 .ui.huge.buttons
-  router-link(to="/about").ui.purple.button 瞭解更多
-  .or
   button.ui.basic.orange.button(@click="loginGoogle", v-if="!user || !user.uid", :class="{disabled: isInApp}")
     i.google.icon
-    | 登入
+    | {{ $t('login.login' )}}
+  router-link.ui.blue.button(to="/profile", v-else)
+    | {{ $t('login.go_flag' )}}
+  .or
+  router-link(to="/about").ui.blue.button {{ $t('login.lm' )}}
   //router-link.ui.basic.orange.button(to="/profile", v-if="!user || !user.uid", :class="{disabled: isInApp}")
     i.google.icon
     | 登入
-  router-link.ui.blue.button(to="/profile", v-else)
-    | 前往我的旗幟
 p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
 
-.ui.divider
-select.ui.dropdown(v-show="users && toList(users).length > 0", v-model="logic" )
+//.ui.divider
+//select.ui.dropdown(v-show="users && toList(users).length > 0", v-model="logic" )
   option(value="random") 隨機介紹
   option(value="newest") 最近更新
-br
-br
-.ui.two.doubling.stackable.cards.container(v-if="toList(users).length > 0")
+//br
+//br
+//.ui.two.doubling.stackable.cards.container(v-if="toList(users).length > 0")
   .ui.card(v-for="(h, index) in ordered_list.slice(0, 2)", :key="index")
     card(:h="h", :full="false", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
-loader(v-else)
+loader(v-if = "toList(users).length == 0")
 
 </template>
 

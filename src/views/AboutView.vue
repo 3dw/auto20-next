@@ -2,27 +2,26 @@
 .hello
   h1.ui.header
     img(src="../assets/handshake1.webp", alt="互助互惠")
-    | 自學2.0使用說明
+    | {{ $t('about.intro') }}
     img(src="../assets/handshake1.webp", alt="互助互惠")
 
   .ui.grid.container
     .ui.two.column.stackable.row
       .ui.padded.segment.column
-        h2.ui.header 自學2.0是什麼？
+        h2.ui.header {{$t('about.what_is_auto20')}}
         p 
-          b 自學2.0
-          | 是一個公益尋友平台，免付費、無業配廣告，旨在透過地理位置、個人興趣及專長來協助用戶尋找朋友。平台的核心功能「互助旗」提供公開的自我介紹，讓人們在見面前能初步了解和認識對方。
-        h2.ui.header 自學2.0是什麼？
+          b {{$t('about.auto20')}}
+          | {{$t('about.intro_1')}}
         p 
-          b 自學
-          | 有狹義的「在家自學」和廣義的「自主學習」。自主學習是一種為自己的成長和生命負責的態度。
+          b {{$t('about.al')}}
+          | {{$t('about.intro_2')}}
         p
-          | 自學2.0歡迎所有對「自主學習」有興趣的朋友一起參與，不分年齡、在校與否。
+          | {{$t('about.intro_3')}}
         h2.ui.header 自學2.0由誰在設計及維護？
         p 本平台由非營利組織
           a(href="http://www.alearn.org.tw", target="_blank") 中華民國自主學習促進會
           | 設計及維護，致力於提供一個安全且友善的環境，讓大家能夠自由地尋找學習夥伴。
-        p 由於免付費、無業配廣告，我們申請的後台是Fireabse免費版。基於它的用量限制，若同時超過100人連線，將會無法正常顯示資訊。若發生無法連線，請擇日再瀏覽及登入本平台，謝謝。
+        p 免付費、無業配廣告下，伺服器的流量承載有限。若發生無法連線，請擇日再瀏覽，謝謝。
         h2.ui.header 雲端名片與互助旗是什麼？
         p 
           b 雲端名片

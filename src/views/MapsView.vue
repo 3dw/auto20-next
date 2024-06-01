@@ -1,7 +1,12 @@
 <template lang="pug">
 .hello
-  loader(v-show="!users || toList(users).length == 0")
-  .ui.divider
+  .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
+        .sixteen.wide.column 
+          .ui.huge.buttons
+            button.ui.orange.button(@click="loginGoogle")
+              i.google.icon
+              | 登入
+  loader(v-else-if="!users || toList(users).length == 0")
   .ui.container#map(style="width: 100%; height: 600px;")
 </template>
 
@@ -21,10 +26,15 @@ export default defineComponent({
   props: ['mySearch', 'zoom', 'center', 'cities', 'users', 'places'],
   components: { Loader },
   mixins: [mix],
-  setup(props) {
+  setup(props, { emit }) {
     const map = ref(null);
     const markerClusterGroup = ref(null);
     const router = useRouter();
+
+    // Added loginGoogle method
+    function loginGoogle() {
+      emit('loginGoogle');
+    }
 
     function noHTML (s) {
       return (s || '').replace(/</g, '&gt;').replace(/>/g, '%lt;')
@@ -148,7 +158,9 @@ export default defineComponent({
       }
     });
 
-    return { map, toList, countLatLng, getIcon, getAnIcon };
+    return { map, toList, countLatLng, getIcon, getAnIcon,
+      loginGoogle // Make sure to return this method to make it available in the template
+     };
   }
 });
 </script>
