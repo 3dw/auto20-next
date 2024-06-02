@@ -1,7 +1,7 @@
 <template lang="pug">
 .home
   h2 展示此QR碼，給您的朋友掃描
-  vue-qrcode(:value="'https://auto20-next.pages.dev/#/flag/' + $route.params.uid", :color ="{ dark: '#f39c04', light: '#fff' }")
+  vue-qrcode(:value="'https://we.alearn.org.tw/#/flag/' + $route.params.uid", :color ="{ dark: '#f39c04', light: '#fff' }")
 
 </template>
 

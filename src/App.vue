@@ -324,7 +324,7 @@ export default defineComponent({
         return;
       }
       console.log(this.$route);
-      const copyText = 'https://auto20-next.pages.dev/#' + this.$route.path;
+      const copyText = 'https://we.alearn.org.tw/#' + this.$route.path;
       navigator.clipboard.writeText(copyText)
         .then(() => {
           window.alert("已複製當前網址: " + copyText);
@@ -358,7 +358,7 @@ export default defineComponent({
           vm.uid = user.uid;
 
           console.log(vm.uid);
-          vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://auto20-next.pages.dev/logo-new.png";
+          vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
 
           if (vm.uid && vm.users[vm.uid]) {
             vm.user = vm.users[vm.uid];
