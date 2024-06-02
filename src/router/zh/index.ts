@@ -23,7 +23,7 @@ export default {
     news: {
       upgrading: '自學2.0更新中',
       flag: '請定期更新您的互助旗',
-      remove: '兩年以上未更新之旗幟將被移除',
+      remove: '以Facebook登入之旗幟將被移除',
       //report: '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
     },
     about: {
