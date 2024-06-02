@@ -23,7 +23,7 @@ export default {
     news: {
       upgrading: 'We are upgrading',
       flag: 'Please update your flag regularly',
-      remove: 'Flags that have not been updated for more than two years will be removed',
+      remove: 'Flags that logged in with Facebook will be removed',
       // report: 'For any suggestions and bug reports, please go to this <a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">issue area</a>'
     },
     about: {

@@ -10,6 +10,9 @@
   select.ui.dropdown(v-else, v-model="logic")
     option(value="newest") 最近更新
     option(value="nearest", v-show="userLocation || (uid && users[uid])") 離我最近
+    option(value="learner_habit_nearst", v-show="uid && users[uid] && users[uid].learner_habit") 興趣相仿
+    option(value="ask_match_share", v-show="uid && users[uid] && users[uid].ask") 尋找協助
+    option(value="share_match_ask", v-show="uid && users[uid] && users[uid].share") 尋找需求者
     option(value="random") 隨機介紹
     option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") 孩子年齡相近
     option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}附近
@@ -131,24 +134,73 @@ export default defineComponent({
         return Object.values(obj);
       }
     },
+    // 在 processData 函數中添加新的排序邏輯
     processData(obj) {
       const data = Object.keys(obj || {}).map(key => obj[key]);
       if (this.logic === 'newest') {
         return data.sort((a, b) => (b.lastUpdate || 0) - (a.lastUpdate || 0));
       } else if (this.logic === 'random') {
-        // 隨機排序數據
         return data.sort(() => 0.5 - Math.random());
       } else if (this.logic === 'nearest' || this.logic.match(/^near_(\d+\.\d+),(\d+\.\d+)$/)) {
         return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn));
       } else if (this.logic === 'age_nearest' && this.users[this.uid] && this.users[this.uid].child_birth) {
-        const userChildBirth = new Date(this.users[this.uid].child_birth).getTime();
-        return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn)).sort((a, b) => {
-          const aChildBirth = a.child_birth ? new Date(a.child_birth).getTime() : Infinity;
-          const bChildBirth = b.child_birth ? new Date(b.child_birth).getTime() : Infinity;
-          return Math.abs(aChildBirth - userChildBirth) - Math.abs(bChildBirth - userChildBirth);
+          const userChildBirth = new Date(this.users[this.uid].child_birth).getTime();
+          return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn)).sort((a, b) => {
+            const aChildBirth = a.child_birth ? new Date(a.child_birth).getTime() : Infinity;
+            const bChildBirth = b.child_birth ? new Date(b.child_birth).getTime() : Infinity;
+            return Math.abs(aChildBirth - userChildBirth) - Math.abs(bChildBirth - userChildBirth);
+        })
+      } else if (this.logic === 'ask_match_share' && this.users[this.uid]) {
+        // 新增的配對邏輯: 尋找協助
+        const currentUser = this.users[this.uid];
+        return data.filter(user => user.uid !== this.uid)
+          .sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn))
+          .sort((a, b) => {
+          const scoreA = this.countOverlap(currentUser.ask, a.share);
+          const scoreB = this.countOverlap(currentUser.ask, b.share);
+          return scoreB - scoreA; // 高分在前
+        });
+      } else if (this.logic === 'share_match_ask' && this.users[this.uid]) {
+        // 新增的配對邏輯: 尋找需求者
+        const currentUser = this.users[this.uid];
+        return data.filter(user => user.uid !== this.uid)
+          .sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn))
+          .sort((a, b) => {
+          const scoreA = this.countOverlap(currentUser.share, a.ask);
+          const scoreB = this.countOverlap(currentUser.share, b.ask);
+          return scoreB - scoreA; // 高分在前
+        });
+      } else if (this.logic === 'learner_habit_nearest' && this.users[this.uid]) {
+        // 新增的配對邏輯
+        const currentUser = this.users[this.uid];
+        return data.filter(user => user.uid !== this.uid)
+          .sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn))
+          .sort((a, b) => {
+          const scoreA = this.countOverlap(currentUser.learner_habit, a.learner_habit) + this.countOverlap(a.ask, currentUser.share);
+          const scoreB = this.countOverlap(currentUser.learner_habit, b.learner_habit) + this.countOverlap(b.ask, currentUser.share);
+          return scoreB - scoreA; // 高分在前
         });
       }
       return data;
+    },
+
+    // 新增 countOverlap 函數
+    countOverlap(askStr, shareStr) {
+      if (!askStr || !shareStr) return 0;
+
+      const asks = askStr.split(/[，,、\s]/g);
+      const shares = shareStr.split(/[，,、\s]/g);
+
+      const askSet = new Set(asks);
+      const shareSet = new Set(shares);
+
+      let overlap = 0;
+      askSet.forEach(item => {
+        if (shareSet.has(item)) {
+          overlap++;
+        }
+      });
+      return overlap;
     },
     distanceToCenter(latlngColumn) {
       if (!latlngColumn || latlngColumn.split(',').length !== 2) {
