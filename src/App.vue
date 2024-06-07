@@ -30,7 +30,7 @@ nav.ui.menu#main-menu
     //button(@click="changeEn") 英文English
     
 
-    // .ui.simple.dropdown.item
+    .ui.simple.dropdown.item
       i.globe.icon
       span.fat-only
         | 語言 Language
