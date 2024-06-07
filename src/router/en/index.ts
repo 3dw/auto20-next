@@ -14,11 +14,12 @@ export default {
       logout: "Logout",
       lm: "Learn more",
       login: "Login",
-      go_flag: "Go to My Flag"
+      go_flag: "Go to My Flag",
+      em: "Email: ",
     },
     chat: {
       gc: "Chats",
-      cp: "Shrink"
+      cp: "Shrink",
     },
     news: {
       upgrading: "We are upgrading",
@@ -76,7 +77,27 @@ export default {
       github_go: "GitHub Tutorial for Beginners",
     },
     privacy: {
-      title: ' Privacy Policy ',
-      strong: 'In order to protect your personal privacy, please do not place any sensitive or too complete personally identifiable information on the mutual aid flag.'
+      title: " Privacy Policy ",
+      strong: "In order to protect your personal privacy, please do not place any sensitive or too complete personally identifiable information on the mutual aid flag.",
+      content1: "Welcome to our service! We value your privacy and would like to inform you that the ‘Mutual Aid Flag’ content on Autonomous Learning 2.0(Auto20)(hereinafter referred to as the Platform) is completely public. The program also requires your email for login, please choose an email that you are comfortable making public.",
+      content2: "When using this service, please carefully consider what information you are willing to make public online. We encourage you to only share information that you are comfortable having others know.",
+      content3: "For the security of your data, the Platform provides an option to download a backup of your data. You can download your 'Mutual Aid Flag' data at any time for self-management and backup. You can also delete your own flag after logging in.",
+      cc_is: "Creative Commons Licenses",
+      cc_content1: "Your 'Mutual Aid Flag' on this platform are publicly available on the internet under the Creative Commons Attribution-NoDerivatives (CC BY-ND) license. This means you grant others permission to freely share and distribute your content, but they may not modify it and must give you appropriate credit.",
+      cc_content2: "Details of the CC BY-ND license terms",
+      cc_content3: "CC BY-ND (Attribution-NoDerivatives) is a Creative Commons license that allows others to reuse your work for any purpose and in any form, but with two conditions:",
+      cc_by_is: "Attribution (BY):",
+      cc_content4: " When using your work, they must give you appropriate credit, provide the title of the work, and indicate if any changes were made. The specific manner of attribution can be determined by you.",
+      cc_nd_is: "NoDerivatives (ND):",
+      cc_content5: "Users cannot make any modifications, adaptations, or create derivative works from your work in any way.",
+      cc_content6: "This means that others can freely share your work, but they must maintain the integrity of the work and must attribute it in the way you specify.",
+      security_download_is: "Data Security and Backup Downloads",
+      security_download_content1: "We provide an option to download data backups so you can download and manage your 'Mutual Aid Flag' data at any time. Please download backups regularly to ensure the security of your data.",
+      manager_right_is: "Administrator Rights",
+      manage_content1: "In the event of special circumstances, such as a user who has not updated their flag for two years or has posted offensive language, the administrators of Autonomous Learning 2.0(Auto20) reserve the right to remove the Mutual Aid Flag, but the administrators must still comply with the Creative Commons license and may not modify the user's Mutual Aid Flag.",
+      contactus: "Contact Us",
+      contact_manager: "If you have any questions or suggestions regarding the Privacy Policy, please feel free to contact us. The contact information for the administrators is as follows:",
+      download_backup: "Download My Backup",
+      lg_downlaod_backup: "Login to download backup",
     }
   }
