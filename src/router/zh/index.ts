@@ -67,6 +67,7 @@ export default {
       directory_content1: '是方便管理和查找特定朋友的功能，類似捷徑或釘選。使用者可以建立自己的名簿，方便下次查找特定的朋友。',
       group_is: '自學2.0中社團概念為何？',
       group_content1: '功能類似資源庫，使用者可創建社團，添加簡介，分享學習資源，留言聊天。這有助於根據主題收集和分享有用資訊，促進成員間的協作和互動。',
+      group_go: '前往社團介面',
       bugreport_is: '如何提出錯誤回報或功能請求？',
       bugreport_content1: '有位於Github的專案議題區。請上Github的專案議題區提出錯誤回報與功能請求，謝謝。若您還沒有Github帳號，請先註冊一個Github帳號再留言。',
       bugreport_content2: 'Note: 若您單純是要登入自學2.0，而非提出議題，並不需要一個Github帳號。',

@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html lang="zh-Tw">
   <head>
+    <!-- 設定字符編碼為 UTF-8 -->
     <meta charset="utf-8">
+    <!-- 設定網頁描述 -->
     <meta name=description content="和朋友多久沒碰面了？讓互助平台協助您。建立您的雲端名片和互助旗，獲得專屬網址，和朋友交流。">
+    <!-- 指定網頁與 Internet Explorer 的相容性模式 -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 設定 viewport，使網頁適應不同裝置的寬度和縮放比例 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+     <!-- 設定網頁圖示 -->
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <!-- 引入 Semantic UI 的 CSS 樣式 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css" integrity="sha512-KXol4x3sVoO+8ZsWPFI/r5KBVB/ssCGB5tsv2nVOKwLg33wTFP3fmnXa47FdSVIshVTgsYk/1734xSk9aFIa4A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- 引入 PWA manifest 文件 -->
     <link rel="manifest" href="./img/manifest.json">
-    <title>自學2.0</title><meta property=fb:app_id content=485195848253155><meta property=og:title content=自學2.0><meta property=og:description content=和朋友多久沒碰面了？讓互助平台協助您。建立您的雲端名片和互助旗，獲得專屬網址，和朋友交流。><meta property=og:type content=website><meta property=og:site_name content=自學2.0><meta property=og:url content=http://we.alearn.org.tw><meta property=og:image content=https://we.alearn.org.tw/logo-new.png><link rel="shortcut icon" href=https://we.alearn.org.tw/favicon.ico>
+    <title>自學2.0</title>
+  
+    <!-- Facebook 的 Open Graph 設定 -->
+    <meta property=fb:app_id content=485195848253155>
+    <meta property=og:title content=自學2.0>
+    <meta property=og:description content=和朋友多久沒碰面了？讓互助平台協助您。建立您的雲端名片和互助旗，獲得專屬網址，和朋友交流。>
+    <meta property=og:type content=website><meta property=og:site_name content=自學2.0>
+    <meta property=og:url content=http://we.alearn.org.tw>
+    <meta property=og:image content=https://we.alearn.org.tw/logo-new.png>
 
+    <!-- Twitter 的 Open Graph 設定 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="自學2.0 Autonomous Learning 2.0(Auto20)">
+    <meta name="twitter:description" content="和朋友多久沒碰面了？讓互助平台協助您。建立您的雲端名片和互助旗，獲得專屬網址，和朋友交流。">
+    <meta name="twitter:image" content="https://we.alearn.org.tw/logo-new.png">
+    <meta name="twitter:site" content="自學2.0 Autonomous Learning 2.0(Auto20)">
+    <meta name="twitter:label1" content="Est. reading time">
+    <meta name="twitter:data1" content="3 分鐘">
+    
+    <!-- 設定快捷圖示 -->
+    <link rel="shortcut icon" href=https://we.alearn.org.tw/favicon.ico>
+    
+    <!-- Google 標籤管理器設定 -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNTJVRF63Z"></script>
     <script>
