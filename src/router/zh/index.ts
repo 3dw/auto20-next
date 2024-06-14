@@ -7,6 +7,7 @@ export default {
       mp: '地圖',
       fr: '夥伴',
       gp: '社團',
+      auto_gp: '自學社團',
       fg: '我的旗幟',
       hd: '聞道有先後，術業有專攻',
       pr: ' 隱私權政策 ',
@@ -29,6 +30,7 @@ export default {
       delete_confirm2: '確認您要退出自學2.0並刪除您的互助旗嗎？提醒您，此動作無法恢復',
       delete_confirm3: '您的互助旗幟已刪除。謝謝您的使用。',
       delete_failed: '刪除失敗',
+      anoymous: '匿名',
     },
     profile: {
       announce1: '請先詳閱我們的',
@@ -122,6 +124,17 @@ export default {
       flag: '請定期更新您的互助旗',
       remove: '以Facebook登入之旗幟將被移除',
       //report: '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
+    },
+    groups: {
+      group_name: '輸入社團名稱',
+      enter_group_name: '請先輸入社團名稱',
+      create_group: '創建社團',
+      go_group: '前往社團',
+      join_group: '我要加入',
+      out_group: '我要退出',
+      members: '成員',
+      update_sucess: '社團更新成功',
+      out_confirm: '確認您要退出社團嗎？',
     },
     friends: {
       recent_updates: '最近更新',

@@ -7,6 +7,7 @@ export default {
       mp:"Map",
       fr:"Friends",
       gp:"Groups",
+      auto_gp:"Self-directed Learning Groups",
       fg:"My flag",
       hd:"Some are first in learning, and others excel in  different fields.",
       pr:" Privacy Policy ",
@@ -29,6 +30,7 @@ export default {
       delete_confirm2: "Are you sure you want to leave Autonomous Learning 2.0(Auto20) and delete your Mutual Aid Flag? Please note that this action cannot be undone.",
       delete_confirm3: "Your Mutual Aid Flag has been deleted. Thank you for using our service.",
       delete_failed: "Deletion failed.",
+      anoymous: "Anonymous",
     },
     profile: {
       announce1: "Please read our ",
@@ -121,6 +123,18 @@ export default {
       flag: "Please update your flag regularly",
       remove: "Flags that logged in with Facebook will be removed",
       // report: 'For any suggestions and bug reports, please go to this <a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">issue area</a>'
+    },
+    groups: {
+      group_name: "Group Name",
+      enter_group_name: "Enter Group Name",
+      create_group: "Start a Group",
+      go_group: "Go to Group",
+      join_group: "Join Group",
+      out_group: "Leave Group",
+      members: "Members",
+      update_sucess: "Group Updated Sucessfully",
+      out_confirm: "Are you sure you want to leave the group?",
+
     },
     friends: {
       recent_updates: "Recent Updates",

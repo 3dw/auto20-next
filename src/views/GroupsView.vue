@@ -5,11 +5,11 @@
       .row.ui.form(v-show="uid")
         .field
           .ui.labeled.input
-            label.ui.label 輸入名字
-            input(type="text", v-model="newName", placeholder="請先輸入社團名")
+            label.ui.label {{ $t('groups.group_name') }}
+            input(type="text", v-model="newName", :placeholder="$t('groups.enter_group_name')")
         .field
           a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
-            | 創建社團
+            | {{ $t('groups.create_group') }}
       .ui.two.stackable.column.row
         .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx")
           h3 〈{{g.n}}〉
@@ -23,9 +23,9 @@
             .ui.buttons
               router-link.ui.basic.green.button(:to="'/group/' + g.idx")
                 i.sign-in.icon
-                | 前往社團
-              a.ui.green.button(v-show="uid && !isMember(g.idx)", @click="join(g.idx)") 我要加入
-              a.ui.red.basic.button(v-show="uid && isMember(g.idx)", @click="out(g.idx)") 我要退出
+                | {{$t('groups.go_group')}}
+              a.ui.green.button(v-show="uid && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
+              a.ui.red.basic.button(v-show="uid && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
           //.ui.form(v-show="edit")
             .field(v-if="!uid")
               button.ui.orange.button(@click="loginGoogle()")
@@ -40,7 +40,7 @@
                 | 更新簡介
           .ui.grid
             .row
-              p 成員：
+              p {{$t('groups.members')}}
                 span(v-for="m in g.members")
                   router-link(:to = "'/flag/' + m", v-if="users[m]")
                     img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")              
@@ -59,7 +59,8 @@ export default defineComponent({
   props: ['photoURL', 'users', 'user', 'uid', 'mySearch'],
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
-    title: '自學社團',
+    //title: '自學社團',
+    title: "$t('login.auto_gp')",
   },
   data () {
     return {
@@ -90,17 +91,19 @@ export default defineComponent({
       this.groups[idx].members = this.groups[idx].members || []
       this.groups[idx].members.push(this.uid)
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     out (idx) {
-      if (window.confirm('確定要退出嗎？')) {
+      if (window.confirm(this.$t('groups.out_confirm'))) {
         this.groups[idx].members = this.groups[idx].members || []
         this.groups[idx].members = this.groups[idx].members.filter( (i) => {
           return i !== this.uid
         })
         set(ref(db, 'groups'), this.groups).then(
-          console.log('groups更新成功')
+          //console.log('groups更新成功')
+          console.log(this.$t('groups.update_sucess'))
         )
       }
     },
@@ -115,7 +118,8 @@ export default defineComponent({
     addChat (idx) {
       var o = {
         uid: this.uid,
-        n: (this.user.providerData || [ {displayName: '匿名'} ])[0].displayName,
+        //n: (this.user.providerData || [ {displayName: '匿名'} ])[0].displayName,
+        n: (this.user.providerData || [ {displayName: this.$t('login.anoymous')} ])[0].displayName,
         t: this.msg,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
@@ -127,7 +131,8 @@ export default defineComponent({
         this.msg = ''
       }
       set(ref(db, 'groups/' + idx), this.g).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     addGroup () {
@@ -140,7 +145,8 @@ export default defineComponent({
       )
       this.newName = ''
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     addRes (idx) {
@@ -150,7 +156,8 @@ export default defineComponent({
       this.newResName = ''
       this.newHref = ''
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
       // console.log(this.groups)
     },
@@ -158,7 +165,8 @@ export default defineComponent({
       this.groups[idx].intro = this.newIntro
       this.newIntro = ''
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
       // console.log(this.groups)
     }
