@@ -4,7 +4,7 @@
 
   p(v-show="isNew") {{ $t('profile.announce1') }}
     router-link(target="_blank" to="/privacy-policy") {{ $t('profile.announce2') }}
-  |{{ $t('profile.announce3') }}
+    | {{ $t('profile.announce3') }}
   .ui.divider(v-if="isNew")
   br(v-if="isNew")
   br(v-if="isNew")

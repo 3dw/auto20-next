@@ -5,17 +5,17 @@
       .ui.huge.buttons
         button.ui.orange.button(@click="loginGoogle")
           i.google.icon
-          | 登入
+          | {{ $t('login.login') }}hello
   loader(v-else-if="!users || toList(users).length == 0")
   select.ui.dropdown(v-else, v-model="logic")
-    option(value="newest") 最近更新
-    option(value="nearest", v-show="userLocation || (uid && users[uid])") 離我最近
-    option(value="learner_habit_nearst", v-show="uid && users[uid] && users[uid].learner_habit") 興趣相仿
-    option(value="ask_match_share", v-show="uid && users[uid] && users[uid].ask") 尋找協助
-    option(value="share_match_ask", v-show="uid && users[uid] && users[uid].share") 尋找需求者
-    option(value="random") 隨機介紹
-    option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") 孩子年齡相近
-    option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}附近
+    option(value="newest") {{$t('friends.recent_updates')}}
+    option(value="nearest", v-show="userLocation || (uid && users[uid])") {{$t('friends.nearest')}}
+    option(value="learner_habit_nearst", v-show="uid && users[uid] && users[uid].learner_habit") {{$t('friends.similiar_interest') }}
+    option(value="ask_match_share", v-show="uid && users[uid] && users[uid].ask") {{$t('friends.seeking_help')}}
+    option(value="share_match_ask", v-show="uid && users[uid] && users[uid].share") {{$t('friends.sharer')}}
+    option(value="random") {{$t('friends.random_profile')}}
+    option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") {{$t('friends.similiar_age_kid')}}
+    option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}{{ $t('friends.area') }}
   br
   .ui.divider
   br
@@ -43,27 +43,27 @@ export default defineComponent({
       logic: 'random', // 初始排序邏輯
       userLocation: null, // 使用者位置
       cities: [
-        {t: '臺北市', c: [25.046337, 121.517444]},
-        {t: '新北市', c: [25.011709, 121.465881], z: 10},
-        {t: '桃園市', c: [24.993923, 121.301680]},
-        {t: '臺中市', c: [24.163162, 120.647828]},
-        {t: '臺南市', c: [22.991235, 120.184982]},
-        {t: '高雄市', c: [22.627277, 120.301437]},
-        {t: '彰化縣', c: [120.4818, 23.99297]},
-        {t: '屏東縣', c: [120.62, 22.54951]},
-        {t: '雲林縣', c: [120.3897, 23.75585]},
-        {t: '苗栗縣', c: [120.9417, 24.48927]},
-        {t: '嘉義縣', c: [120.574, 23.45889]},
-        {t: '新竹縣', c: [121.1252, 24.70328]},
-        {t: '新竹市', c: [120.9647, 24.80395]},
-        {t: '基隆市', c: [121.7081, 25.10898]},
-        {t: '宜蘭縣', c: [24.69295, 121.7195], z: 10},
-        {t: '南投縣', c: [23.83876, 120.9876], z: 10},
-        {t: '嘉義市', c: [23.47545, 120.4473], z: 10},
-        {t: '花蓮縣', c: [23.7569, 121.3542], z: 10},
-        {t: '臺東縣', c: [22.98461, 120.9876], z: 10},
-        {t: '澎湖縣', c: [23.56548, 119.6151], z: 9},
-        {t: '連江縣', c: [119.5397, 26.19737]}
+        {t: this.$t('friends.taipei'), c: [25.046337, 121.517444]},
+        {t: this.$t('friends.newtaipei'), c: [25.011709, 121.465881], z: 10},
+        {t: this.$t('friends.taoyuan'), c: [24.993923, 121.301680]},
+        {t: this.$t('friends.taichung'), c: [24.163162, 120.647828]},
+        {t: this.$t('friends.tainan'), c: [22.991235, 120.184982]},
+        {t: this.$t('friends.kaohsiung'), c: [22.627277, 120.301437]},
+        {t: this.$t('friends.changhua'), c: [120.4818, 23.99297]},
+        {t: this.$t('friends.pingtung'), c: [120.62, 22.54951]},
+        {t: this.$t('friends.yunlin'), c: [120.3897, 23.75585]},
+        {t: this.$t('friends.miaoli'), c: [120.9417, 24.48927]},
+        {t: this.$t('friends.chiayiCounty'), c: [120.574, 23.45889]},
+        {t: this.$t('friends.hsinchuCounty'), c: [121.1252, 24.70328]},
+        {t: this.$t('friends.hsinchuCity'), c: [120.9647, 24.80395]},
+        {t: this.$t('friends.keelung'), c: [121.7081, 25.10898]},
+        {t: this.$t('friends.yilan'), c: [24.69295, 121.7195], z: 10},
+        {t: this.$t('friends.nantou'), c: [23.83876, 120.9876], z: 10},
+        {t: this.$t('friends.chiayiCity'), c: [23.47545, 120.4473], z: 10},
+        {t: this.$t('friends.hualien'), c: [23.7569, 121.3542], z: 10},
+        {t: this.$t('friends.taitung'), c: [22.98461, 120.9876], z: 10},
+        {t: this.$t('friends.penghu'), c: [23.56548, 119.6151], z: 9},
+        {t: this.$t('friends.lienchiang'), c: [119.5397, 26.19737]},
       ]
     };
   },
