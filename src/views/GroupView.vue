@@ -10,23 +10,25 @@
             | &nbsp;&nbsp;&nbsp;&nbsp;
             a(@click="toggleEdit($route.params.idx)")
               i.edit.icon
-              | {{edit ? '結束' : ''}}編輯社團資料
+              //| {{edit ? '結束' : ''}}編輯社團資料
+              | {{edit ? $t('login.end') : ''}}{{ $t('group.edit_group') }}
+              
           p
             router-link.ui.basic.green.button(to="/groups")
               i.globe.icon
-              | 探索所有社團
+              | {{$t('group.explore_groups')}}
           .ui.form(v-show="edit")
             .field(v-if="!uid")
               button.ui.orange.button(@click="loginGoogle()")
                 i.google.icon
-                | 請先登入
+                | {{$t('login.login_first')}}
             .field
               .ui.labeled.input
-                label.ui.label 輸入社團簡介  
-                input(type="text", v-model="newIntro", placeholder="請先輸入社團簡介")
+                label.ui.label {{$t('group.enter_intro')}}
+                input(type="text", v-model="newIntro", :placeholder="$t('group.enter_intro_first')")
             .field
               a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
-                | 更新簡介
+                | {{$t('group.update_intro')}}
           .ui.grid
             .row
               p 成員：
@@ -34,12 +36,12 @@
                   router-link(:to="'/flag/' + m", v-if="users[m]")
                     img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
                 span(v-show="uid")
-                  a.ui.green.tiny.button(v-show="!isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") 我要加入
-                  a.ui.red.tiny.button(v-show="isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") 我要退出
+                  a.ui.green.tiny.button(v-show="!isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
+                  a.ui.red.tiny.button(v-show="isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}
             .two.column.stackable.row
               .column
                 .ui.divided.list
-                  .item.left.aligned 資源：
+                  .item.left.aligned {{$t('group.resources')}}
                   .item.left.aligned(v-for="(r, index) in groups[$route.params.idx].res", :key="index + r.n + r.href")
                     a(:href="r.href", target="_blank", rel="noopener noreferrer")
                       img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
@@ -47,16 +49,16 @@
                   .item.ui.form(v-show="uid && edit")
                     .field
                       .ui.labeled.input
-                        label.ui.label 輸入資源名
-                        input(type="text", v-model="newResName", placeholder="請先輸入資源名")
+                        label.ui.label {{$t('group.enter_resource')}}
+                        input(type="text", v-model="newResName", :placeholder="$t('group.enter_resource_first')")
                     .field
                       .ui.labeled.input
-                        label.ui.label 輸入資源網址
-                        input(type="text", v-model="newHref", placeholder="請先輸入資源網址")
+                        label.ui.label {{$t('group.enter_link')}}
+                        input(type="text", v-model="newHref", :placeholder="$t('group.enter_link_first')")
                     .field
                       a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                        | 新增資源
-              .column 留言：
+                        | {{$t('group.add_resource')}}
+              .column {{ $t('login.leave_messages') }}
                 .ui.divided.list
                   .item(v-for="(c, index) in latestChats" :key="index")
                     img.ui.avatar(:src="c.photoURL")    
@@ -65,8 +67,8 @@
                     .field
                       .ui.labeled.input
                         img.ui.avatar(:src="photoURL")
-                        input.input(v-model="msg" placeholder="在想什麼嗎?")
-                        a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") 留言  
+                        input.input(v-model="msg" :placeholder="$t('group.anything_to_say')")
+                        a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}  
 </template>
 
 <script>
@@ -80,7 +82,7 @@ export default defineComponent({
   props: ['photoURL', 'users', 'user', 'uid', 'mySearch'],
   metaInfo: {
     // if no subcomponents specify a metaInfo.title, this title will be used
-    title: '自學社團',
+    title: "$t('login.auto_gp')",
   },
   data () {
     return {
@@ -126,7 +128,8 @@ export default defineComponent({
       this.groups[idx].members = this.groups[idx].members || []
       this.groups[idx].members.push(this.uid)
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     out (idx) {
@@ -135,7 +138,8 @@ export default defineComponent({
         return i !== this.uid
       })
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     searchBy (list, k) {
@@ -149,7 +153,8 @@ export default defineComponent({
     addChat (idx) {
       var o = {
         uid: this.uid,
-        n: this.users[this.uid].name ? this.users[this.uid].name : '匿名',
+        //n: this.users[this.uid].name ? this.users[this.uid].name : '匿名',
+        n: this.users[this.uid].name ? this.users[this.uid].name : this.$t('login.anoymous'),
         t: this.msg,
         photoURL: this.photoURL || '',
         time: (new Date()).getTime()
@@ -161,7 +166,8 @@ export default defineComponent({
         this.msg = ''
       }
       set(ref(db, 'groups/' + idx + '/chats'), chats).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     addGroup () {
@@ -174,7 +180,8 @@ export default defineComponent({
       )
       this.newName = ''
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
       )
     },
     addRes (idx) {
@@ -184,7 +191,9 @@ export default defineComponent({
       this.newResName = ''
       this.newHref = ''
       set(ref(db, 'groups'), this.groups).then(
-        console.log('groups更新成功')
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
+
       )
       // console.log(this.groups)
     },
@@ -192,9 +201,11 @@ export default defineComponent({
       if (this.newIntro.trim().length) { // 確保不提交空白或只有空格的字符串
         this.groups[idx].intro = this.newIntro;
         set(ref(db, 'groups/' + idx), this.groups[idx]).then(
-          () => console.log('簡介更新成功')
+          //() => console.log('簡介更新成功')
+          () => console.log(this.$t('login.update_sucess'))
         ).catch(error => {
-          console.error('更新失敗', error);
+          //console.error('更新失敗', error);
+          console.error(this.$t('login.update_failed'), error)
         });
         this.newIntro = '';
       }
