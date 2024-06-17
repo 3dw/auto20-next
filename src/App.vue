@@ -305,6 +305,7 @@ export default defineComponent({
       // console.log(this.$localStorage.get(n))
     },
     addBook: function (uid:string) {
+      this.book = this.book || []
       if (this.book.indexOf(uid) === -1) {
         this.book.push(uid)
         set(ref(db, 'books/' + this.uid), this.book)
