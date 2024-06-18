@@ -132,7 +132,7 @@ export default {
     groups: {
       group_name: '輸入社團名稱',
       enter_group_name: '請先輸入社團名稱',
-      create_group: '創建社團',
+      create_group: '創建社團2',
       go_group: '前往社團',
       join_group: '我要加入',
       out_group: '我要退出',
