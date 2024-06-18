@@ -31,7 +31,7 @@ import Loader from '../components/Loader.vue';
 import Card from '../components/Card';
 
 export default defineComponent({
-  name: 'FrindCards',
+  name: 'FindCards',
   mixins: [mix],
   props: ['mySearch', 'book', 'users', 'places', 'center', 'user', 'uid'],
   components: { Loader, Card },
