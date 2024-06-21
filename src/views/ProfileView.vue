@@ -193,7 +193,7 @@ import { set, get, ref, remove } from 'firebase/database'
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 
-const keywords = ['放屁', '約砲', 'fuck'];
+const keywords = ['放屁', '約砲', 'fuck']; //可陸續增加垃圾關鍵字
 
 
 export default {

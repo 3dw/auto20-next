@@ -73,7 +73,7 @@
                     .field
                       .ui.labeled.input
                         img.ui.avatar(:src="photoURL")
-                        input.input(v-model="msg" :placeholder="$t('group.anything_to_say')")
+                        input.input(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')")
                         a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}  
 </template>
 
@@ -82,6 +82,8 @@
 import { defineComponent } from 'vue';
 import { onValue, set, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
+
+const keywords = ['放屁', '約砲', 'fuck']; //可陸續增加垃圾關鍵字
 
 export default defineComponent({
   name: 'GroupsView',
@@ -109,6 +111,17 @@ export default defineComponent({
     }
   },
   methods: {
+    containsKeyword(message) {
+      return keywords.some(keyword => message.includes(keyword));
+    },
+    filterInput(field, event) {
+      if (this.containsKeyword(event.target.value)) {
+        alert('Input contains forbidden keywords.');
+        this[field] = '';
+      } else {
+        this[field] = event.target.value;
+      }
+    },
     toggleEdit(idx) {
       this.edit = !this.edit;
       if (this.edit) {
