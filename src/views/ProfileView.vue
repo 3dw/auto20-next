@@ -43,12 +43,19 @@
         i.red.star
         | {{ $t('profile.form3') }}
       h4.ui.dividing.header {{$t('profile.form4')}}
+      //- .field
+      //-   label.required {{$t('profile.form5')}}
+      //-   input(type='text' v-model='root.name', :placeholder="$t('profile.form6')")
+      //- .field(:class="{error: root.address && (root.latlngColumn == 'undefined,undefined' || root.latlngColumn == '36.778261,-119.4179324')}")
+      //-   label.required {{$t('profile.form7')}}
+      //-   input(v-model.trim='root.address', :placeholder="$t('profile.form8')")
+      
       .field
         label.required {{$t('profile.form5')}}
-        input(type='text' v-model='root.name', :placeholder="$t('profile.form6')")
+        input(type='text' v-model='root.name' @input="filterInput('name', $event)" :placeholder="$t('profile.form6')")
       .field(:class="{error: root.address && (root.latlngColumn == 'undefined,undefined' || root.latlngColumn == '36.778261,-119.4179324')}")
         label.required {{$t('profile.form7')}}
-        input(v-model.trim='root.address', :placeholder="$t('profile.form8')")
+        input(v-model.trim='root.address' @input="filterInput('address', $event)" :placeholder="$t('profile.form8')")
 
         .ui.error.message(v-if="(root.address && (root.latlngColumn == 'undefined,undefined' || root.latlngColumn == '36.778261,-119.4179324'))")
           .header {{$t('profile.form9')}}
@@ -70,13 +77,13 @@
         label {{$t('profile.form18')}}
         .two.fields
           .field
-            input(v-model='root.site', :placeholder="$t('profile.form19')")
+            input(v-model='root.site', @input="filterInput('site', $event)" :placeholder="$t('profile.form19')")
             span(v-if='root.site')
               a(:href='root.site', target='_blank')
                 img(:src="'https://www.google.com/s2/favicons?domain=' + root.site", :title="$t('profile.form19')", :alt="$t('profile.form19')")
                 | {{$t('profile.form20')}}
           .field
-            input(v-model='root.site2', :placeholder="$t('profile.form21')")
+            input(v-model='root.site2', @input="filterInput('site2', $event)" :placeholder="$t('profile.form21')")
             span(v-if='root.site2')
               a(:href='root.site2', target='_blank')
                 img(:src="'https://www.google.com/s2/favicons?domain=' + root.site2", :title="$t('profile.form22')", :alt="$t('profile.form22')")
@@ -85,10 +92,10 @@
       .two.fields
         .field
           label.required {{$t('profile.form23')}}
-          input(type='text' v-model='root.connect_me', :placeholder="$t('profile.form24')")
+          input(type='text' v-model='root.connect_me', @input="filterInput('connect_me', $event)" :placeholder="$t('profile.form24')")
         .field
           label {{$t('profile.form25')}}
-          input(type='text', v-model='root.freetime', :placeholder="$t('profile.form26')")
+          input(type='text', v-model='root.freetime', @input="filterInput('freetime', $event)" :placeholder="$t('profile.form26')")
       h4.ui.dividing.header {{$t('profile.form27')}}
       .field
         label {{$t('profile.form28')}}
@@ -102,7 +109,7 @@
           option(v-for="t in [$t('profile.form39'), $t('profile.form40'), $t('profile.form41'), $t('profile.form42')]", :value="t") {{ t }}
       .field(:class="{error: badAge(root.learner_birth), warning: !root.learner_birth}")
         label.required {{ $t('profile.form43') }}
-        input(type='text', v-model='root.learner_birth', :placeholder="$t('profile.form44')")
+        input(type='text', v-model='root.learner_birth', @input="filterInput('learner_birth', $event)" :placeholder="$t('profile.form44')")
       span(v-if='root.learner_birth') {{$t('profile.form45')}}{{ toAge(root.learner_birth) }}{{ $t('login.old') }}
       .ui.warning.message(v-if="!root.learner_birth")
         .header {{$t('profile.form46')}}
@@ -113,32 +120,32 @@
       .field
         label {{ $t('profile.form50') }}
         span
-          input(v-model='root.child_birth', type='text', :placeholder="$t('profile.form51')")
+          input(v-model='root.child_birth' @input="filterInput('child_birth', $event)"   type='text', :placeholder="$t('profile.form51')")
           br
           span(v-if='root.child_birth') {{$t('profile.form45')}}{{ toAge(root.child_birth) }}{{ $t('login.arround') }}
           .ui.divider
           span(style="margin-left: 15px;") {{ $t('profile.form52') }}
             br
-            input(v-model='root.child_birth2', type='text', :placeholder="$t('profile.form53')")
+            input(v-model='root.child_birth2' @input="filterInput('child_birth2', $event)" type='text', :placeholder="$t('profile.form53')")
             br
           span(v-if='root.child_birth2') {{$t('login.arround')}}{{ toAge(root.child_birth2) }}{{$t('login.old')}}~{{ toAge(root.child_birth) }}{{ $t('login.old') }}
         .ui.divider
         .three.fields
           .field
             label.required {{ $t('profile.form54') }}
-            input(v-model='root.learner_habit', :placeholder="$t('profile.form54')")
+            input(v-model='root.learner_habit', @input="filterInput('learner_habit', $event)" :placeholder="$t('profile.form54')")
           .field
             label.required {{ $t('profile.form55') }}
-            input(v-model='root.share', :placeholder="$t('profile.form56')")
+            input(v-model='root.share', @input="filterInput('share', $event)" :placeholder="$t('profile.form56')")
           .field
             label {{ $t('profile.form57') }}
-            input(v-model='root.ask', :placeholder="$t('profile.form58')")
+            input(v-model='root.ask', @input="filterInput('ask', $event)" :placeholder="$t('profile.form58')")
           .field
             label {{ $t('profile.form59') }}
-            input(v-model='root.price', :placeholder="$t('profile.form60')")
+            input(v-model='root.price', @input="filterInput('price', $event)" :placeholder="$t('profile.form60')")
         .field
           label.required {{$t('profile.form61')}}
-          textarea#note(v-model='root.note', rows='5', cols='30', :placeholder="$t('profile.form62')")
+          textarea#note(v-model='root.note', @input="filterInput('note', $event)" rows='5', cols='30', :placeholder="$t('profile.form62')")
         .ui.warning.message(v-if="root.note && root.note.length < 20")
           .header {{$t('profile.form63')}}{{ 20 - root.note.length }}{{$t('profile.form64')}}
           p {{$t('profile.form65')}}
@@ -185,6 +192,10 @@ import { db } from '../firebase'
 import { set, get, ref, remove } from 'firebase/database'
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
+
+const keywords = ['放屁', '約砲', 'fuck'];
+
+
 export default {
   name: 'MyFlag',
   mixins: [mix],
@@ -216,6 +227,18 @@ export default {
     }
   },
   methods: {
+    containsKeyword(message) {
+      return keywords.some(keyword => message.includes(keyword));
+    },
+    filterInput(field, event) {
+      if (this.containsKeyword(event.target.value)) {
+        alert('Input contains forbidden keywords.');
+        this.root[field] = '';
+      } else {
+        this.root[field] = event.target.value;
+      }
+    },
+
     isValid() {
       if (!this.root.note || this.root.note.length < 20) {
         return false
