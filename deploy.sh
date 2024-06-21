@@ -20,3 +20,5 @@ git commit -m 'deploy'
 git push -f git@github.com:3dw/auto20-next.git master:gh-pages
 
 cd -
+
+
