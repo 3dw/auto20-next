@@ -3,7 +3,8 @@
       #menu.ui.inverted.big.menu
         .item.ui.form(v-show="isFull")
           .ui.input
-            input(v-model="key", placeholder="搜尋")
+            //input(v-model="key", placeholder="搜尋")
+            input(v-model="key" @input="filterInput('key', $event)" :placeholder="搜尋")
           // .ui.buttons(v-if="!user")
             button.ui.orange.button(@click="loginGoogle()")
               i.google.icon
@@ -44,7 +45,7 @@
             .ui.form
               .field
                 img.ui.avatar(:src="photoURL")
-                input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
+                input.input(v-model="msg" @input="filterInput('msg', $event)" placeholder="在想什麼嗎?" autofocus)
               .inline.fields
                 .field(v-for="l in labels")
                   .ui.radio.checkbox
@@ -66,6 +67,8 @@
     import { onValue, set, ref } from 'firebase/database';
     import { db, chatsRef } from '../firebase';
     import mix from '../mixins/mix.ts';
+
+    const keywords = ['放屁', '約砲', 'fuck']; //可陸續增加垃圾關鍵字
     
     export default defineComponent({
       name: 'ChatBox',
@@ -91,6 +94,17 @@
         }
       },
       methods: {
+        containsKeyword(message) {
+          return keywords.some(keyword => message.includes(keyword));
+        },
+        filterInput(field, event) {
+          if (this.containsKeyword(event.target.value)) {
+        alert('Input contains forbidden keywords.');
+        this[field] = '';
+          } else {
+        this[field] = event.target.value;
+          }
+        },
         preview() {
           var o = {
             uid: this.uid,
