@@ -94,7 +94,8 @@
         preview() {
           var o = {
             uid: this.uid,
-            n: this.user.providerData[0].displayName,
+            //n: this.user.providerData[0].displayName,
+            n: this.user && this.user.providerData && this.user.providerData[0] ? this.user.providerData[0].displayName : this.user.name,
             t: this.msg,
             l: this.label,
             edit: false,
@@ -104,9 +105,19 @@
           this.p = o;
         },
         addChat() {
+          if (this.user && this.user.providerData) {
+          // 可以安全地存取 providerData[0]
+            console.log(this.user.providerData[0]);
+          } else {
+          // 處理 this.user 或 this.user.providerData 是 undefined 的情況
+            console.error("User or providerData is undefined");
+          }
           var o = {
             uid: this.uid,
-            n: this.user.providerData[0].displayName,
+            //n: this.user.providerData[0].displayName,
+            //n: this.user && this.user.providerData && this.user.providerData[0] ? this.user.providerData[0].displayName : 'Anonymous',
+            //很多人的displayname是undefined，所以改成這樣
+            n: this.user && this.user.providerData && this.user.providerData[0] ? this.user.providerData[0].displayName : this.user.name,
             t: this.msg,
             l: this.label,
             photoURL: this.photoURL || '',
