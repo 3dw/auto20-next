@@ -83,6 +83,9 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
   router-link.item(to="/maps")
     i.map.icon.no-float
     | {{ $t('login.mp') }}
+  router-link.item(to="/polis")
+    i.comments.icon.no-float
+    | {{ $t('login.polis') }}
   router-link.item(to="/groups")
     i.object.group.outlin.icon.no-float
     | {{ $t('login.gp') }}

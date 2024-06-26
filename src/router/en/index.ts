@@ -6,6 +6,7 @@ export default {
       ab:"About us",
       mp:"Map",
       fr:"Friends",
+      polis: 'Disscusions',
       gp:"Groups",
       auto_gp:"Self-directed Learning Groups",
       fg:"My flag",

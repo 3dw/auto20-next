@@ -6,6 +6,7 @@ export default {
       ab: '關於我們',
       mp: '地圖',
       fr: '夥伴',
+      polis: '論壇',
       gp: '社團',
       auto_gp: '自學社團',
       fg: '我的旗幟',
