@@ -193,6 +193,8 @@
     
       .item {
         text-align: left;
+        padding: 1em; /* 增加內邊距，特別是垂直方向的內邊距 */
+        overflow-y: auto; /* 允許垂直方向滾動 */
       }
     
       .item.preview {
@@ -224,13 +226,11 @@
     
       @media screen and (max-width: 600px) {
         .chats {
-          width: 100vw;
-          height: 20vh;
+          height: 25vh; /* 稍微增加最小狀態的高度，讓更多內容顯示 */
         }
-    
+
         .chats.full {
-          width: 100vw;
-          height: 80vh;    
+          height: 80vh; /* 確保在全屏模式下有足夠的顯示高度 */
         }
     
         .chats.mini {
@@ -277,11 +277,11 @@
       }
     
       p {
-        font-size: 16px !important;
+        font-size: 14px !important;
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        max-height: 6.5em;
+        max-height: none;
         overflow-y: auto;
         padding: 1em;
       }
@@ -293,6 +293,8 @@
     
       p a {
         min-width: 3em;
+        padding: .2em;
+        border-radius: 3px;
       }
-    </style>
+</style>
     
