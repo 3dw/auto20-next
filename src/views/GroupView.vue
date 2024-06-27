@@ -14,11 +14,9 @@
           p {{groups[$route.params.idx].intro}}
             br.thin-only
             | &nbsp;&nbsp;&nbsp;&nbsp;
-            a(@click="toggleEdit($route.params.idx)")
+            a(@click="toggleEdit($route.params.idx)" v-if="isMember(groups[$route.params.idx].idx)")
               i.edit.icon
-              //| {{edit ? '結束' : ''}}編輯社團資料
               | {{edit ? $t('login.end') : ''}}{{ $t('group.edit_group') }}
-              
           p
             router-link.ui.basic.green.button(to="/groups")
               i.globe.icon
@@ -123,11 +121,15 @@ export default defineComponent({
       }
     },
     toggleEdit(idx) {
+      if (!this.isMember(idx)) {
+        alert(this.$t('groups.edit_permission'));
+        return; // 如果不是社團成員，不允許編輯並返回
+      }
       this.edit = !this.edit;
       if (this.edit) {
-        this.newIntro = this.groups[idx].intro; // 將當前簡介載入到編輯框
+        this.newIntro = this.groups[idx].intro; // 加載當前簡介到編輯框
       } else {
-        this.newIntro = ''; // 可選，離開編輯模式時清空編輯框
+        this.newIntro = ''; // 離開編輯模式時可選擇清空編輯框
       }
     },
     toList: (obj) => {
