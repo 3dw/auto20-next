@@ -1,68 +1,48 @@
 <template lang="pug">
-    .chats(v-bind:class = "{ full : isFull, mini: isMini }")
-      #menu.ui.inverted.big.menu
-        .item.ui.form(v-show="isFull")
-          .ui.input
-            //input(v-model="key", placeholder="搜尋")
-            input(v-model="key" @input="filterInput('key', $event)" :placeholder="搜尋")
-          // .ui.buttons(v-if="!user")
-            button.ui.orange.button(@click="loginGoogle()")
-              i.google.icon
-              | 登入
-        .right.menu
-          a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
-            i.comments.icon
-            | {{$t('chat.gc')}}
-            .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
-          a.item(v-if="!isMini" @click="isFull = false; isMini = true")
-            i.compress.icon
-            | {{$t('chat.cp')}}
-      #box
-        .ui.list
-          .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
-            p(v-show="edit !== c") 
-              router-link(:to="'/flag/' + c.uid")
-                img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
-              a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
-              // a(@click="edit = c" v-show="c.uid == uid")
-                i.edit.icon(title="edit")
-              span.text {{ c.n }} : {{ c.t }}
-              span.gray(v-show="isFull") &nbsp;&nbsp;-
-                | {{ countDateDiff(c.time) }}
-            //.ui.form(v-show="edit == c")
-              .ui.input
-                input.input(v-model="c.t", placeholder="更新")
-                a.ui.green.small.button(@click.stop="edit = ''; updateChat(c)") 更新
+.chats(v-bind:class = "{ full : isFull, mini: isMini }")
+  #menu.ui.inverted.big.menu
+    .item.ui.form(v-show="isFull")
+      .ui.input
+        input(v-model="key", placeholder="搜尋")
+    .right.menu
+      a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
+        i.comments.icon
+        | {{$t('chat.gc')}}
+        .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
+      a.item(v-if="!isMini" @click="isFull = false; isMini = true")
+        i.compress.icon
+        | {{$t('chat.cp')}}
+  #box
+    .ui.list
+      .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
+        p(v-show="edit !== c") 
+          router-link(:to="'/flag/' + c.uid")
+            img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
+          a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
+          span.text {{ c.n }} : {{ c.t }}
+          span.gray(v-show="isFull") &nbsp;&nbsp;-
+            | {{ countDateDiff(c.time) }}
+      .item(v-if="uid")
+        .ui.form(@submit.prevent="submitChat")
+          .field
+            img.ui.avatar(:src="photoURL")
+            input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
+          .inline.fields
+            .field(v-for="l in labels")
+              .ui.radio.checkbox
+                input(type="radio", name="l", v-model="label", :value="l")
+                label
+                  a(@click="label=l" v-bind:class="l") {{ l }}
+            .ui.button.group
+              a.ui.green.small.button(type="submit") 留言
+      .item(v-else)
+        .ui.big.buttons
+          button.ui.orange.button(@click="loginGoogle()")
+            i.google.icon
+            | 登入以留言
+</template>
     
-          .item.preview(v-if="p.t")
-            router-link(:to="'/flag/' + p.uid")
-              img.ui.avatar(:src="p.photoURL || '/static/img/handshake0.png'")
-            a(@click="key = p.l" v-bind:class="p.l") [{{p.l}}] (預覽)
-            | {{ p.n }} : {{ p.t }}
-            span.gray(v-show="isFull") &nbsp;&nbsp;-
-              | {{ countDateDiff(p.time) }}
-          .item(v-if="uid")
-            .ui.form
-              .field
-                img.ui.avatar(:src="photoURL")
-                input.input(v-model="msg" @input="filterInput('msg', $event)" placeholder="在想什麼嗎?" autofocus)
-              .inline.fields
-                .field(v-for="l in labels")
-                  .ui.radio.checkbox
-                    input(type="radio", name="l", v-model="label", :value="l")
-                    label
-                      a(@click="label=l" v-bind:class="l") {{ l }}
-                .ui.button.group
-                  a.ui.blue.small.button(@click="preview") 預覽
-                  a.ui.green.small.button(@click="addChat") 留言
-          .item(v-else)
-            .ui.big.buttons(v-if="!uid")
-              button.ui.orange.button(@click="loginGoogle()")
-                i.google.icon
-                | 登入以留言 
-    </template>
-    
-    <script>
+<script>
     import { defineComponent } from 'vue';
     import { onValue, set, ref } from 'firebase/database';
     import { db, chatsRef } from '../firebase';
@@ -97,12 +77,11 @@
         containsKeyword(message) {
           return keywords.some(keyword => message.includes(keyword));
         },
-        filterInput(field, event) {
-          if (this.containsKeyword(event.target.value)) {
-        alert('Input contains forbidden keywords.');
-        this[field] = '';
+        submitChat() {
+          if (!this.containsKeyword(this.msg)) {
+            this.addChat(); // Call addChat only if the message doesn't contain any keywords
           } else {
-        this[field] = event.target.value;
+            alert('Input contains forbidden keywords.');
           }
         },
         preview() {
