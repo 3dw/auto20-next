@@ -23,7 +23,7 @@
           span.gray(v-show="isFull") &nbsp;&nbsp;-
             | {{ countDateDiff(c.time) }}
       .item(v-if="uid")
-        .ui.form(@submit.prevent="submitChat")
+        .ui.form()
           .field
             img.ui.avatar(:src="photoURL")
             input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
@@ -34,7 +34,7 @@
                 label
                   a(@click="label=l" v-bind:class="l") {{ l }}
             .ui.button.group
-              a.ui.green.small.button(type="submit") 留言
+              a.ui.green.small.button(@click="submitChat") {{ $t('chat.submit') }}
       .item(v-else)
         .ui.big.buttons
           button.ui.orange.button(@click="loginGoogle()")

@@ -123,6 +123,7 @@ export default {
     chat: {
       gc: '群聊',
       cp: '縮小',
+      submit: '留言'
     },
     news: {
       upgrading: '自學2.0更新中',

@@ -122,6 +122,7 @@ export default {
     chat: {
       gc: 'Goup Chat',
       cp: 'Collapse',
+      submit: 'Submit'
     },
     news: {
       upgrading: "We are upgrading",
