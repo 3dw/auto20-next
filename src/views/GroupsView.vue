@@ -12,7 +12,7 @@
         .field
           .ui.labeled.input
             label.ui.label {{ $t('groups.group_name') }}
-            input(type="text", v-model="newName", :placeholder="$t('groups.enter_group_name')")
+            input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
         .field
           a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
             | {{ $t('groups.create_group') }}
@@ -55,7 +55,7 @@
 
 <script>
 
-
+import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
 import { onValue, set, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
@@ -80,6 +80,17 @@ export default defineComponent({
     }
   },
   methods: {
+    containsKeyword(message) {
+      return keywords.some(keyword => message.includes(keyword));
+    },
+    filterInput(field, event) {
+      if (this.containsKeyword(event.target.value)) {
+        alert('Input contains forbidden keywords.');
+        this[field] = '';
+      } else {
+        this[field] = event.target.value;
+      }
+    },
     toList: (obj) => {
       if (!obj || typeof(obj) !== 'object') { 
         return []

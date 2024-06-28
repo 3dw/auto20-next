@@ -29,7 +29,7 @@
             .field
               .ui.labeled.input
                 label.ui.label {{$t('group.enter_intro')}}
-                input(type="text", v-model="newIntro", :placeholder="$t('group.enter_intro_first')")
+                input(type="text", v-model="newIntro" @input="filterInput('newIntro', $event)" :placeholder="$t('group.enter_intro_first')")
             .field
               a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
                 | {{$t('group.update_intro')}}
@@ -54,11 +54,11 @@
                     .field
                       .ui.labeled.input
                         label.ui.label {{$t('group.enter_resource')}}
-                        input(type="text", v-model="newResName", :placeholder="$t('group.enter_resource_first')")
+                        input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')")
                     .field
                       .ui.labeled.input
                         label.ui.label {{$t('group.enter_link')}}
-                        input(type="text", v-model="newHref", :placeholder="$t('group.enter_link_first')")
+                        input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')")
                     .field
                       a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
                         | {{$t('group.add_resource')}}
@@ -76,12 +76,12 @@
 </template>
 
 <script>
-
+import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
 import { onValue, set, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
 
-const keywords = ['放屁', '約砲', 'fuck']; //可陸續增加垃圾關鍵字
+
 
 export default defineComponent({
   name: 'GroupsView',

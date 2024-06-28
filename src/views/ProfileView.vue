@@ -185,6 +185,8 @@
 </template>
 
 <script>
+
+import { keywords } from '../data/keywords.js';
 import mix from '../mixins/mix.ts'
 // import Loader from './Loader'
 import Card from '../components/Card'
@@ -193,7 +195,7 @@ import { set, get, ref, remove } from 'firebase/database'
 import 'leaflet/dist/leaflet.css';
 import * as L from 'leaflet';
 
-const keywords = ['放屁', '約砲', 'fuck']; //可陸續增加垃圾關鍵字
+
 
 
 export default {
