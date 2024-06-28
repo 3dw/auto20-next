@@ -43,19 +43,11 @@
 </template>
     
 <script>
+    import { keywords } from '../data/keywords.js';
     import { defineComponent } from 'vue';
     import { onValue, set, ref } from 'firebase/database';
     import { db, chatsRef } from '../firebase';
     import mix from '../mixins/mix.ts';
-
-    const keywords = [
-      '放屁', 
-      '約砲',
-      '肏',
-      '他媽的','幹你娘','操你媽','你老母',
-      '強暴', '強姦', '強吻', 
-      'fuck', 'Fuck'
-    ]; //可陸續增加垃圾關鍵字
     
     export default defineComponent({
       name: 'ChatBox',
