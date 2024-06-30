@@ -9,7 +9,7 @@
   loader(v-else-if="!users || toList(users).length == 0")
   select.ui.dropdown(v-else, v-model="logic")
     option(value="newest") {{$t('friends.recent_updates')}}
-    option(value="nearest", v-show="userLocation || (uid && users[uid])") {{$t('friends.nearest')}}
+    option(value="nearest", v-show="(uid && users[uid])") {{$t('friends.nearest')}}
     option(value="learner_habit_nearst", v-show="uid && users[uid] && users[uid].learner_habit") {{$t('friends.similiar_interest') }}
     option(value="ask_match_share", v-show="uid && users[uid] && users[uid].ask") {{$t('friends.seeking_help')}}
     option(value="share_match_ask", v-show="uid && users[uid] && users[uid].share") {{$t('friends.sharer')}}
@@ -94,7 +94,7 @@ export default defineComponent({
     console.log('Initial center in child component:');
     console.log(this.center);
     this.allCards = this.list; // 初始化所有卡片數據
-    this.getUserLocation(); // 獲取使用者位置
+    // this.getUserLocation(); // 獲取使用者位置
   },
   watch: {
     center(newC) {
@@ -109,8 +109,21 @@ export default defineComponent({
       console.log(newL);
       const nearMatch = newL.match(/^near_(\d+\.\d+),(\d+\.\d+)$/);
       if (newL === 'nearest' && !this.userLocation) {
+        console.log(this.users[this.uid].latlngColumn);
+        // 從this.users[this.uid].latlngColumn剖析出位置, 存入this.userLocation
+        if (this.users[this.uid].latlngColumn) {
+          const [lat, lng] = this.users[this.uid].latlngColumn.split(',').map(Number);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            this.userLocation = { lat, lng };
+            console.log('User location set to:', this.userLocation);
+          } else {
+            console.error('Cannot parse lat or lng from latlngColumn:', this.users.latlngColumn);
+          }
+        }
+        this.allCards = this.processData(this.users) // .concat(this.processData(this.places));
+
         // 使用者未登入，使用導航 API 獲取位置
-        this.getUserLocation();
+        // this.getUserLocation();
       } else if (nearMatch) {
         // 更新使用者位置並依據新的位置排序卡片
         const lat = parseFloat(nearMatch[1]);
@@ -254,7 +267,7 @@ export default defineComponent({
       console.log(index);
       this.$emit('removeBook', index);
     },
-    getUserLocation() {
+    /* getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           position => {
@@ -271,7 +284,7 @@ export default defineComponent({
       } else {
         console.error('Geolocation is not supported by this browser.');
       }
-    }
+    } */
   }
 });
 </script>
