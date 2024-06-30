@@ -5,7 +5,7 @@
           .ui.huge.buttons
             button.ui.orange.button(@click="loginGoogle")
               i.google.icon
-              | 登入
+              | {{ $t('login.login' )}}
   loader(v-else-if="!users || toList(users).length == 0")
   .ui.container#map(style="width: 100%; height: 600px;")
 </template>

@@ -105,7 +105,7 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 br
 
-.ui.form.container(v-if="doSearch($route.path)")
+.ui.form.container(v-if="doSearch($route.path)", v-show="uid")
   .search-input
     input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
     i.search.icon
