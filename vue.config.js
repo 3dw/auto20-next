@@ -9,7 +9,8 @@ module.exports = defineConfig({
     appleMobileWebAppStatusBarStyle: 'black',
     workboxOptions: {
       exclude: [/\.gitkeep/],
-      skipWaiting: true 
+      skipWaiting: true,
+      clientsClaim: true
    }
   },
 })
