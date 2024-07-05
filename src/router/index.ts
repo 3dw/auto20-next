@@ -68,11 +68,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'book',
     component: () => import(/* webpackChunkName: "book" */ '../views/BookView.vue')
   },
-  // {
-  //  path: '/polis',
-  //  name: 'polis',
-  //  component: () => import(/* webpackChunkName: "plois" */ '../views/PolisView.vue')
-  // } 
+  {
+    path: '/polis',
+    name: 'polis',
+    component: () => import(/* webpackChunkName: "plois" */ '../views/PolisView.vue')
+  } 
 ]
 
 export const router = createRouter({
