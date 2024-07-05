@@ -115,8 +115,9 @@
             photoURL: this.photoURL || '',
             time: (new Date()).getTime()
           };
+          const rid = (Math.random() + '').substr(0, 8).replace('.', '');
+            
           if (this.msg) {
-            const rid = (Math.random() + '').substr(0, 8).replace('.', '');
             this.chats[rid] = o;
             this.msg = '';
             this.p = '';
