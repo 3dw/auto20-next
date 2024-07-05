@@ -50,6 +50,11 @@ npm run build
 ### 建構更新並上傳至網路
 
 #### Mac
+```
+yarn deploy
+```
+
+or 
 
 ```
 sh deploy.sh
