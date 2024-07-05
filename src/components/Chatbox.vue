@@ -121,7 +121,7 @@
             this.msg = '';
             this.p = '';
           }
-          set(ref(db, 'chats'), this.chats).then(
+          set(ref(db, 'chats/' + rid), o).then(
             console.log('chats更新成功')
           );
         },
