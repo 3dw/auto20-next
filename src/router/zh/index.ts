@@ -4,6 +4,7 @@ export default {
       welcome:'歡迎來到自學2.0公益尋友平台',
       hp: '首頁',
       ab: '關於我們',
+      link: '友站連結',
       mp: '地圖',
       fr: '夥伴',
       polis: '論壇',

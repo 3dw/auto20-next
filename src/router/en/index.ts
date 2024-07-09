@@ -4,6 +4,7 @@ export default {
       welcome:"Welcome to Autonomous Learning 2.0(Auto20) non-profit friend search platform",
       hp:"Home page",
       ab:"About us",
+      link: 'Links',
       mp:"Map",
       fr:"Friends",
       polis: 'Disscusions',

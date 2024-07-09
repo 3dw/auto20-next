@@ -101,6 +101,9 @@ carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="
   router-link.item(to="/book", v-if="uid")
     i.book.icon.no-float
     | {{ $t('login.bk')}}
+  router-link.item(to="/link")
+    i.globe.icon.no-float
+    | {{ $t('login.link') }}
 
 .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
 br
