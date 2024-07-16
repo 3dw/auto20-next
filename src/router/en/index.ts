@@ -235,7 +235,7 @@ export default {
       bugreport_content2: "Note: You do not need a Github account if you are only logging into Autonomous Learning 2.0(Auto20) and not submitting an issue.",
       bugreport_go: "Go to Project Issue Tracker",
       github_is: "What is Github?",
-      github_content1: "Github is a platform for hosting and collaborating on software development projects. It is widely used for version control using Git. It also provides a platform for users to submit bug reports and feature requests.",
+      github_content: "Github is a platform for hosting and collaborating on software development projects. It is widely used for version control using Git. It also provides a platform for users to submit bug reports and feature requests.",
       github_go: "GitHub Tutorial for Beginners",
     },
     privacy: {

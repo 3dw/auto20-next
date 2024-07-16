@@ -156,26 +156,62 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.hello {
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 20px auto;
+  max-width: 1200px;
+  padding: 20px;
+}
 
-table {
-  display: inline-table;
-  margin: 0 auto;
+.ui.divider {
+  margin: 20px 0;
+}
+
+table.ui.celled.striped.collapsing.table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+thead {
+  background-color: #f9f9f9;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f1f1f1;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
 a {
-  color: #3549FE !important;
-  font-weight: bold;
-  font-size: 22px;
+  color: #0056b3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 img.ui.avatar {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
-td {
-  font-size: 20px;
+td span {
+  font-size: 16px;
 }
 
 .invisible {
@@ -192,5 +228,40 @@ td {
     height: 0 !important;
     max-height: 0 !important;
   }
+}
+
+.ui.cards.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.ui.card {
+  flex: 1 1 calc(25% - 20px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ui.card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ui.card .content {
+  padding: 20px;
+}
+
+.ui.card .content h4 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.ui.card .content p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
 }
 </style>

@@ -243,25 +243,106 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped>/* Scoped CSS */
+
+.hello {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+.ui.segment {
+  background-color: #f7f8fa; /* 淺灰色背景 */
+  border: 1px solid #dee2e6; /* 邊框顏色 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+  border-radius: 8px; /* 圓角 */
+  padding: 20px; /* 內邊距 */
+}
+
+.ui.buttons .button {
+  font-size: 18px; /* 字體大小 */
+  padding: 15px 20px; /* 內邊距 */
+}
+
+.ui.button.orange {
+  background-color: #f39c12; /* 橙色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.orange:hover {
+  background-color: #e67e22; /* 懸停時更深的橙色 */
+}
+
+.ui.button.green {
+  background-color: #28a745; /* 綠色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.green:hover {
+  background-color: #218838; /* 懸停時更深的綠色 */
+}
+
+.ui.button.red {
+  background-color: #dc3545; /* 紅色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.red:hover {
+  background-color: #c82333; /* 懸停時更深的紅色 */
+}
+
+.ui.labeled.input .ui.label {
+  background-color: #0056b3; /* 藍色標籤 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.labeled.input input {
+  border: 1px solid #ced4da; /* 邊框顏色 */
+  border-radius: 4px; /* 圓角 */
+  padding: 10px; /* 內邊距 */
+}
 
 img.ui.avatar {
   position: relative;
   top: .6em;
-  width: 28px; /* 調整圖片寬度 */
-  height: 28px; /* 調整圖片高度 */
+  width: 40px; /* 調整圖片寬度 */
+  height: 40px; /* 調整圖片高度 */
   border-radius: 50%; /* 圓形圖片 */
+  border: 2px solid #e9ecef; /* 添加邊框 */
 }
 
-.ui.list {
-  width: 100%;
+.ui.divided.list .item {
+  padding: 15px 0; /* 項目間距 */
+  border-bottom: 1px solid #dee2e6; /* 底部邊框 */
 }
 
-.row p {
+.ui.divided.list .item:last-child {
+  border-bottom: none; /* 最後一個項目無底部邊框 */
+}
+
+.ui.container {
+  margin-top: 30px; /* 頂部外邊距 */
+}
+
+p {
   margin-left: 2em;
 }
 
 a {
   cursor: pointer;
+  color: #0056b3; /* 超連結顏色 */
+  text-decoration: underline; /* 超連結下劃線 */
 }
+
+a:hover {
+  color: #004494; /* 懸停時超連結顏色 */
+}
+
+.ui.form .field {
+  margin-bottom: 15px; /* 字段間距 */
+}
+
+.ui.form .button {
+  margin-top: 10px; /* 按鈕頂部外邊距 */
+}
+
 </style>
