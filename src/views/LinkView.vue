@@ -1,12 +1,14 @@
 <template lang="pug">
   .hello
-    .buttons-container
-      a.button.primary(href="https://galacticproject.notion.site/d7477db76ecd4ff3b453a39ba21d97ef") 星河計畫-自學生經驗匯流
-      a.button.pink(href="https://discord.gg/m9888BCPd7") 在家自學社群@Discord伺服器
-      a.button.secondary(href="https://math.alearn.org.tw") 自由數學
-      a.button.tertiary(href="https://sites.google.com/view/autoalearn") 自主學習促進會
-      a.button.quaternary(href="https://map.alearn.org.tw/#/") 自學地圖
-      a.button.quinary(href="https://playback.bestian.tw/") Playback劇場
+    .ui.segment.container 
+      h2.ui.header 友站連結
+      .buttons-container
+        a.button.primary(href="https://galacticproject.notion.site/d7477db76ecd4ff3b453a39ba21d97ef") 星河計畫-自學生經驗匯流
+        a.button.pink(href="https://discord.gg/m9888BCPd7") 在家自學社群Discord
+        a.button.secondary(href="https://math.alearn.org.tw") 自由數學
+        a.button.quaternary(href="https://map.alearn.org.tw/#/") 自學地圖
+        a.button.tertiary(href="https://sites.google.com/view/autoalearn") 自主學習促進會
+        a.button.quinary(href="https://playback.bestian.tw/") Playback劇場
 </template>
 
 <style scoped>
@@ -110,5 +112,20 @@
 .button.quinary:active {
   background-color: #8e6c00; /* 點擊時最深的黃色背景 */
   border-color: #8e6c00;
+}
+
+.button.pink {
+  background-color: #e83e8c; /* 粉紅色背景 */
+  border-color: #e83e8c;
+}
+
+.button.pink:hover {
+  background-color: #d63384; /* 懸停時更深的粉紅色背景 */
+  border-color: #d63384;
+}
+
+.button.pink:active {
+  background-color: #c2186f; /* 點擊時最深的粉紅色背景 */
+  border-color: #c2186f;
 }
 </style>
