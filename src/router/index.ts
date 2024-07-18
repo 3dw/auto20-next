@@ -77,7 +77,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/polis',
     name: 'polis',
     component: () => import(/* webpackChunkName: "plois" */ '../views/PolisView.vue')
-  } 
+  },
+  {
+    path: '/source_github',
+    name: 'source_github',
+    component: () => import(/* webpackChunkName: "plois" */ '../views/Source_github.vue')
+  }  
 ]
 
 export const router = createRouter({

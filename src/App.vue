@@ -104,6 +104,9 @@
     router-link.item(to="/link")
       i.globe.icon.no-float
       | {{ $t('login.link') }}
+    router-link.item(to="/source_github")
+      i.github.icon.no-float
+      | {{ $t('login.source_github') }}
   
   .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
   br

@@ -37,6 +37,7 @@ export default {
       anoymous: '匿名',
       end: '結束',
       leave_messages: '留言',
+      source_github: '原始碼',
     },
     profile: {
       announce1: '請先詳閱我們的',

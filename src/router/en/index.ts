@@ -37,6 +37,7 @@ export default {
       anoymous: "Anonymous",
       end: "End",
       leave_messages: "Leave a message",
+      source_github: "Github Source Code",
     },
     profile: {
       announce1: "Please read our ",
