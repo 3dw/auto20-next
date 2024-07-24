@@ -6,7 +6,7 @@
         button.ui.orange.button(@click="loginGoogle")
           i.google.icon
           | {{ $t('login.login') }}
-  .ui.container(v-if="users && toList(users).length > 0 && groups[$route.params.idx]")
+  .ui.container(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
     .ui.grid
       .ui.one.column.row(v-if="groups[$route.params.idx].n")
         .ui.column.ui.segment
@@ -33,7 +33,10 @@
             .field
               a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
                 | {{$t('group.update_intro')}}
-
+          p(v-if="(groups[$route.params.idx].members || []).length === 0")
+            button.ui.red.button(@click="hideGroup($route.params.idx)")
+              i.delete.icon
+              | {{ $t('group.delete_group') }}
           .ui.grid
             .row
               p 成員：
@@ -75,6 +78,7 @@
                         input.input(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')")
                         a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}  
 </template>
+    
 
 <script>
 import { keywords } from '../data/keywords.js';
@@ -109,7 +113,17 @@ export default defineComponent({
       return chats.slice(-10);
     }
   },
-  methods: {
+  methods: {    
+    hideGroup(idx) {
+      if (confirm(this.$t('group.delete_confirm'))) {
+        this.groups[idx].hidden = true;
+        set(ref(db, 'groups/' + idx + '/hidden'), true).then(
+          console.log(this.$t('groups.update_sucess'))
+        ).catch(error => {
+          console.error(this.$t('groups.update_failed'), error);
+        });
+      }
+    },
     containsKeyword(message) {
       return keywords.some(keyword => message.includes(keyword));
     },
@@ -140,8 +154,8 @@ export default defineComponent({
         return Object.values(obj)
       }
     },
-    loginGoogle: function () {
-      this.$emit('loginGoogle')
+    loginGoogle: function (autoredirect) {
+      this.$emit('loginGoogle', autoredirect)
     },
     isMember (idx) {
       return (this.groups[idx].members || []).indexOf(this.uid) > -1

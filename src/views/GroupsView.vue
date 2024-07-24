@@ -17,7 +17,8 @@
             a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
               | {{ $t('groups.create_group') }}
         .ui.two.stackable.column.row
-          .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx")
+          .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
+            , v-show = "!g.hidden")
             h3 〈{{g.n}}〉
             p {{g.intro}}
               br.thin-only

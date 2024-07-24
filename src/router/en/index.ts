@@ -141,10 +141,12 @@ export default {
       out_group: "Leave Group",
       members: "Members",
       update_sucess: "Group Updated Sucessfully",
+      update_failed: "Group Updated Failed",
       out_confirm: "Are you sure you want to leave the group?",
     },
     group: {
       edit_group: " Group Editing",
+      delete_group: 'Detele This Group',
       explore_groups: "Explore All Groups",
       enter_intro: "Enter Group Introduction",
       enter_intro_first: "Please enter the group introduction first",

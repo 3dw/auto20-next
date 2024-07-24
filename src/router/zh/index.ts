@@ -142,10 +142,12 @@ export default {
       out_group: '我要退出',
       members: '成員',
       update_sucess: '社團更新成功',
+      update_failed: '社團更新失敗',
       out_confirm: '確認您要退出社團嗎？',
     },
     group: {
       edit_group: '編輯社團資料',
+      delete_group: '刪除該社團',
       explore_groups: '探索所有社團',
       enter_intro: '輸入社團簡介',
       enter_intro_first: '請先輸入社團簡介',
