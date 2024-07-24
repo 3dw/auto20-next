@@ -168,6 +168,7 @@ export default defineComponent({
 <style>
 .leaflet-marker-icon {
   border-radius: 50%;
+  
 }
 
 .custom-icon span {
@@ -196,5 +197,11 @@ export default defineComponent({
 
 .leaflet-container a.leaflet-popup-close-button {
   display: none;
+}
+
+/* Add this new CSS rule */
+.ui.container#map {
+  z-index: -1;
+  position: relative; /* Ensure it has a position context */
 }
 </style>
