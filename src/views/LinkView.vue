@@ -1,14 +1,14 @@
 <template lang="pug">
-  .hello
-    .ui.segment.container 
-      h2.ui.header 友站連結
-      .buttons-container
-        a.button.primary(href="https://galacticproject.notion.site/d7477db76ecd4ff3b453a39ba21d97ef") 星河計畫-自學生經驗匯流
-        a.button.pink(href="https://discord.gg/m9888BCPd7") 在家自學社群Discord
-        a.button.secondary(href="https://math.alearn.org.tw") 自由數學
-        a.button.quaternary(href="https://map.alearn.org.tw/#/") 自學地圖
-        a.button.tertiary(href="https://sites.google.com/view/autoalearn") 自主學習促進會
-        a.button.primary(href="https://hack.bestian.tw/") Bestian 的工坊
+.hello
+  .ui.segment.container 
+    h2.ui.header 友站連結
+    .buttons-container
+      a.button.primary(href="https://galacticproject.notion.site/d7477db76ecd4ff3b453a39ba21d97ef") 星河計畫-自學生經驗匯流
+      a.button.pink(href="https://discord.gg/m9888BCPd7") 在家自學社群Discord
+      a.button.secondary(href="https://math.alearn.org.tw") 自由數學
+      a.button.quaternary(href="https://map.alearn.org.tw/#/") 自學地圖
+      a.button.tertiary(href="https://sites.google.com/view/autoalearn") 自主學習促進會
+      a.button.primary(href="https://hack.bestian.tw/") Bestian 的工坊
 </template>
 
 <style scoped>

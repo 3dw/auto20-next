@@ -3,7 +3,7 @@
   .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
         .sixteen.wide.column 
           .ui.huge.buttons
-            button.ui.orange.button(@click="loginGoogle")
+            button.ui.orange.button(@click="loginGoogle(false)")
               i.google.icon
               | {{ $t('login.login' )}}
   loader(v-else-if="!users || toList(users).length == 0")
@@ -32,8 +32,8 @@ export default defineComponent({
     const router = useRouter();
 
     // Added loginGoogle method
-    function loginGoogle() {
-      emit('loginGoogle');
+    function loginGoogle(autoredirect) {
+      emit('loginGoogle', autoredirect);
     }
 
     function noHTML (s) {
@@ -201,7 +201,7 @@ export default defineComponent({
 
 /* Add this new CSS rule */
 .ui.container#map {
-  z-index: -1;
+  z-index: 1;
   position: relative; /* Ensure it has a position context */
 }
 </style>

@@ -130,7 +130,7 @@
   <script lang="ts">
   import { defineComponent } from 'vue';
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { set, ref, onValue } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { get, set, ref, onValue } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
@@ -355,7 +355,7 @@
           vm.$router.push('/'); // 導航回首頁
         });
       },
-      loginGoogle: function () {
+      loginGoogle: function (autoredirect) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
         if (this.isInApp) {
@@ -366,20 +366,32 @@
             vm.user = user;
             vm.email = user.providerData[0].email;
             vm.uid = user.uid;
-  
+
             console.log(vm.uid);
             vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
-  
-            if (vm.uid && vm.users[vm.uid]) {
+
+            if (vm.uid && vm.users && vm.users[vm.uid]) {
               vm.user = vm.users[vm.uid];
+              if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
+                this.locate(vm.users[vm.uid], false);
+              }
+            } else {
+              // 用GET的方法，用usersRef一次性取得users的資料，再加上.then
+              get(usersRef).then((snapshot) => {
+                const data = snapshot.val();
+                vm.users = data; // 更新用戶資料狀態
+                vm.user = vm.users[vm.uid];
+                if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
+                  this.locate(vm.users[vm.uid], false);
+                }
+              }).catch((error) => {
+                console.error("Error fetching users:", error);
+              });
             }
-            if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
-              this.locate(vm.users[vm.uid], false);
+            if (autoredirect) {
+              // 強制重定向的個人頁
+              vm.$router.push('/profile');
             }
-            
-            // 強制重定向的個人頁
-            vm.$router.push('/profile');
-            
           }).catch((error) => {
             console.error("Login error:", error);
             if (error.message.includes('sessionStorage')) {

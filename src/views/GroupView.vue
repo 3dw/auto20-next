@@ -29,10 +29,11 @@
             .field
               .ui.labeled.input
                 label.ui.label {{$t('group.enter_intro')}}
-                input(type="text", v-model="newIntro" @input="filterInput('newIntro', $event)" :placeholder="$t('group.enter_intro_first')")
+                textarea(v-model="newIntro" @input="filterInput('newIntro', $event)" :placeholder="$t('group.enter_intro_first')" rows="5" style="width: 100%")
             .field
               a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
                 | {{$t('group.update_intro')}}
+
           .ui.grid
             .row
               p 成員：
@@ -343,6 +344,19 @@ a:hover {
 
 .ui.form .button {
   margin-top: 10px; /* 按鈕頂部外邊距 */
+}
+
+p {
+  text-align: left;
+  font-size: 16px;
+  white-space: pre-line !important;
+}
+
+textarea {
+  padding: 10px; /* 添加內邊距 */
+  border: 1px solid #ced4da; /* 邊框顏色 */
+  border-radius: 4px; /* 圓角 */
+  font-size: 16px; /* 字體大小 */
 }
 
 </style>

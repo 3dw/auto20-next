@@ -3,13 +3,13 @@
   .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
     .sixteen.wide.column 
       .ui.huge.buttons
-        button.ui.orange.button(@click="loginGoogle")
+        button.ui.orange.button(@click="loginGoogle(false)")
           i.google.icon
           | {{ $t('login.login') }}
   loader(v-else-if="!users || toList(users).length == 0")
   select.ui.dropdown(v-else, v-model="logic")
     option(value="newest") {{$t('friends.recent_updates')}}
-    option(value="nearest", v-show="(uid && users[uid])") {{$t('friends.nearest')}}
+    option(value="nearest", v-show="(uid && users[uid] && users[uid].latlngColumn)") {{$t('friends.nearest')}}
     option(value="learner_habit_nearst", v-show="uid && users[uid] && users[uid].learner_habit") {{$t('friends.similiar_interest') }}
     option(value="ask_match_share", v-show="uid && users[uid] && users[uid].ask") {{$t('friends.seeking_help')}}
     option(value="share_match_ask", v-show="uid && users[uid] && users[uid].share") {{$t('friends.sharer')}}
@@ -137,8 +137,8 @@ export default defineComponent({
     }
   },
   methods: {
-    loginGoogle () {
-      this.$emit('loginGoogle')
+    loginGoogle (autoredirect) {
+      this.$emit('loginGoogle', autoredirect)
     },
     toList(obj) {
       if (!obj || typeof obj !== 'object') {
