@@ -29,7 +29,7 @@
       //button(@click="changeZh") 中文Chinese
       //button(@click="changeEn") 英文English
       
-  
+      
       .ui.simple.dropdown.item
         i.globe.icon
         span.fat-only
@@ -40,7 +40,12 @@
   
           button.no-border.ui.item(@click="changeEn")
             | 英文 English
-      
+            // Notification Icon with Badge
+      .item
+        .ui.icon.button(@click="goToNotifications")
+          i.bell.icon
+            .ui.red.small.label(v-if="unreadCount > 0") {{ unreadCount }}
+   
       .ui.simple.dropdown.item
         img.ui.avatar.image(v-if="photoURL" :src="photoURL")
         i.user.icon(v-else)
@@ -130,7 +135,7 @@
   <script lang="ts">
   import { defineComponent } from 'vue';
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { get, set, ref, onValue } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { get, set, ref, onValue, onChildAdded  } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
@@ -197,6 +202,8 @@
         // eslint-disable-next-line
         groups: null as [any] | null, // 定義社團資料變量
         places: null as [string] | null, // 定義地點資料變量
+        notifications: [] as any[],
+        unreadCount: 0,
       }
     },
     mounted () {
@@ -211,15 +218,25 @@
         const data = snapshot.val(); // 讀取地點資料
         vm.places = data; // 更新地點資料狀態
       }); */
+      
       onValue(groupsRef, (snapshot) => {
         const data = snapshot.val(); // 讀取社團資料
         vm.groups = data; // 更新社團資料狀態
+        vm.setupGroupListeners(); // 設置監聽器
       });
+      
+      onValue(ref(db, 'users/' + this.uid + '/notifications'), (snapshot) => {
+      const data = snapshot.val() || [];
+      vm.notifications = data;
+      vm.unreadCount = data.filter(n => !n.isRead).length;
+      });
+      
       onValue(booksRef, (snapshot) => {
         console.log('get books')
         const data = snapshot.val() || {}; // 讀取社團資料
         vm.books = data; // 更新名簿資料狀態
       });
+      
   
       /* if (localStorage.getItem('book')) {
         console.log(localStorage.getItem('book'))
@@ -249,6 +266,45 @@
       }
     },
     methods: {
+      
+      setupGroupListeners() {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const vm = this;
+        if (!vm.groups) return;
+
+        vm.groups.forEach((group, idx) => {
+          if (!group.members || !group.members.includes(vm.uid)) return;
+
+          const groupRef = ref(db, 'groups/' + idx + '/res');
+          onChildAdded(groupRef, (snapshot) => {
+            const newResource = snapshot.val();
+            vm.addNotification('New resource added in group ' + group.n, '/groups/' + idx);
+          });
+
+          const chatsRef = ref(db, 'groups/' + idx + '/chats');
+          onChildAdded(chatsRef, (snapshot) => {
+            const newChat = snapshot.val();
+            vm.addNotification('New message in group ' + group.n, '/groups/' + idx);
+          });
+        });
+      },
+      addNotification(text, route) {
+        const notification = {
+          time: new Date().toISOString(),
+          from: 'system',
+          text,
+          route,
+          isRead: false
+        };
+        const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+        set(userNotificationsRef, [...this.notifications, notification]).then(() => {
+          console.log('notification created');
+        });
+      },
+      goToNotifications() {
+        this.$router.push('/notifications');
+      },
+
       doSearch: function (p) {
         return !(p.match(/(^\/$|myPlace|polis|qr|outer|flag|myFlag|group\/|place|profile|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
       },
@@ -414,7 +470,20 @@
     color: #2c3e50;
   }
   
+  .ui.menu .item .icon.bell {
+  position: relative;
+  }
   
+  .ui.menu .item .ui.red.small.label {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  padding: 0.4em;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  }
+
   /* Media Query for devices wider than 768px */
   @media (min-width: 769px) {
     .phone-only {
@@ -422,6 +491,8 @@
     }
   }
   
+
+
   @media (max-width: 770px) {
     .fat-only {
       display: none !important;
