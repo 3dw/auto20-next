@@ -27,7 +27,7 @@ p(v-if="isInApp") 本系統不支援facebook, link等app內部瀏覽，請用一
 //.ui.two.doubling.stackable.cards.container(v-if="toList(users).length > 0")
   .ui.card(v-for="(h, index) in ordered_list.slice(0, 2)", :key="index")
     card(:h="h", :full="false", :mySearch="mySearch", :uid="uid", :book="book", @locate="locate", @addBook="addBook", @removeBook="removeBook", @loginGoogle="loginGoogle")
-//loader(v-if = "uid && toList(users).length == 0")
+loader(v-if = "uid && toList(users).length == 0")
 
 </template>
 
