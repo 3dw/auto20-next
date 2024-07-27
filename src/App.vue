@@ -136,7 +136,7 @@
   <script lang="ts">
   import { defineComponent } from 'vue';
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { get, set, ref, onValue, onChildAdded  } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { get, set, push, ref, onValue, onChildAdded, onChildChanged} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
@@ -203,6 +203,9 @@
         // eslint-disable-next-line
         groups: null as [any] | null, // 定義社團資料變量
         places: null as [string] | null, // 定義地點資料變量
+        groups_for_notifications: null as [any] | null, 
+        group_for_no: null as [any] | null, 
+        idx_for_no: null as [any] | null, // 定義社團資料變量
         notifications: [] as any[],
         unreadCount: 0,
       }
@@ -271,35 +274,51 @@
       setupGroupListeners() {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
+        console.log('setupGroupListeners');
+        console.log('groups', vm.groups);
         if (!vm.groups) return;
+        let notificationSent = false; // 初始化標誌
+        vm.groups.forEach((group_for_no, idx_for_no) => {
+          if (!group_for_no.members || !group_for_no.members.includes(vm.uid)) return;
+          const chatsRef = ref(db, 'groups/' + idx_for_no + '/chats');
+              //const chatsRef = ref(db, 'groups/0' + '/chats');
+          console.log('chatsRef路徑', 'groups/' + idx_for_no + '/chats');
 
-        vm.groups.forEach((group, idx) => {
-          if (!group.members || !group.members.includes(vm.uid)) return;
+          
 
-          const groupRef = ref(db, 'groups/' + idx + '/res');
-          onChildAdded(groupRef, (snapshot) => {
-            const newResource = snapshot.val();
-            vm.addNotification('New resource added in group ' + group.n, '/groups/' + idx);
+          onChildAdded(ref(db, 'groups/' + idx_for_no + '/chats'), (snapshot) => {
+            if (notificationSent) return; // 如果已經發送通知，直接返回
+            console.log('有新訊息', 'groups/' + idx_for_no + '/chats');
+            //const newChat = snapshot.val();
+            vm.addNotification('New messagedef in group ' + group_for_no.n, '/groups/' + idx_for_no);
+            notificationSent = true; // 設置標誌為 true
           });
-
-          const chatsRef = ref(db, 'groups/' + idx + '/chats');
-          onChildAdded(chatsRef, (snapshot) => {
-            const newChat = snapshot.val();
-            vm.addNotification('New message in group ' + group.n, '/groups/' + idx);
-          });
+          if (notificationSent) {
+            return; // 跳出回圈
+          }
+           
         });
+        if (notificationSent) {
+            return; // 跳出回圈
+        }
       },
       addNotification(text, route) {
         const notification = {
           time: new Date().toISOString(),
-          from: 'system',
+          from: 'systemdef',
           text,
           route,
           isRead: false
         };
+        //const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+        //set(userNotificationsRef, [...this.notifications, notification]).then(() => {
+        //  console.log('notification created');
+        //});
         const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
-        set(userNotificationsRef, [...this.notifications, notification]).then(() => {
+        push(userNotificationsRef, notification).then(() => {
           console.log('notification created');
+        }).catch((error) => {
+          console.error('Error creating notification:', error);
         });
       },
       goToNotifications() {
