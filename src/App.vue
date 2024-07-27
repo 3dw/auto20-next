@@ -7,7 +7,8 @@
       span {{ $t('login.hp') }}
     router-link.item(to="/about")
       i.info.icon
-      | {{ $t('login.ab') }}
+      span.fat-only
+        | {{ $t('login.ab') }}
     router-link.item(to="/maps")
       i.map.icon
       | {{ $t('login.mp') }}
