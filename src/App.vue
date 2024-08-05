@@ -280,26 +280,27 @@
         let notificationSent = false; // 初始化標誌
         vm.groups.forEach((group_for_no, idx_for_no) => {
           if (!group_for_no.members || !group_for_no.members.includes(vm.uid)) return;
-          const chatsRef = ref(db, 'groups/' + idx_for_no + '/chats');
+          const groupChatsRef = ref(db, 'groups/' + idx_for_no + '/chats');
               //const chatsRef = ref(db, 'groups/0' + '/chats');
           console.log('chatsRef路徑', 'groups/' + idx_for_no + '/chats');
 
           
 
-          onChildAdded(ref(db, 'groups/' + idx_for_no + '/chats'), (snapshot) => {
+          onChildAdded(ref(groupChatsRef), (snapshot) => {
             if (notificationSent) return; // 如果已經發送通知，直接返回
             console.log('有新訊息', 'groups/' + idx_for_no + '/chats');
-            //const newChat = snapshot.val();
+            const newChat = snapshot.val();
+            console.log(newChat)
             vm.addNotification('New messagedef in group ' + group_for_no.n, '/groups/' + idx_for_no);
             notificationSent = true; // 設置標誌為 true
           });
           if (notificationSent) {
-            return; // 跳出回圈
+            return; // 跳出迴圈
           }
            
         });
         if (notificationSent) {
-            return; // 跳出回圈
+            return; // 跳出迴圈
         }
       },
       addNotification(text, route) {
