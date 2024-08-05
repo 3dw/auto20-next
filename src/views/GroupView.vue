@@ -214,11 +214,11 @@ export default defineComponent({
         members.forEach((u) => {
           let notifications = u.notifications || [];
           let route = '/group/' + idx;
-          this.addNotificatoin('在社團' this.groups[idx].n + '有新消息', route)
+          this.addNotificatoin(u.uid, '在社團' + this.groups[idx].n + '有新消息', route)
         })
       */
     },
-    addNotification(text, route) {
+    addNotificationByUid(uid, text, route) {
       const notification = {
         time: new Date().toISOString(),
         from: 'systemdef',
@@ -226,11 +226,11 @@ export default defineComponent({
         route,
         isRead: false
       };
-      //const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+      //const userNotificationsRef = ref(db, 'users/' + uid + '/notifications');
       //set(userNotificationsRef, [...this.notifications, notification]).then(() => {
       //  console.log('notification created');
       //});
-      const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+      const userNotificationsRef = ref(db, 'users/' + uid + '/notifications');
       push(userNotificationsRef, notification).then(() => {
         console.log('notification created');
       }).catch((error) => {
