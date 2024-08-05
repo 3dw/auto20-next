@@ -83,7 +83,7 @@
 <script>
 import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
-import { onValue, set, ref } from 'firebase/database'
+import { onValue, set, push, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
 
 
