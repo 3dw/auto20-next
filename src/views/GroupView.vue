@@ -205,6 +205,37 @@ export default defineComponent({
         //console.log('groups更新成功')
         console.log(this.$t('groups.update_sucess'))
       )
+      /*  
+        加入通知邏輯，對每個群組的成員，發送有新消息的通知
+
+        psudocode:
+        
+        const members = this.groups[idx].members || []
+        members.forEach((u) => {
+          let notifications = u.notifications || [];
+          let route = '/group/' + idx;
+          this.addNotificatoin('在社團' this.groups[idx].n + '有新消息', route)
+        })
+      */
+    },
+    addNotification(text, route) {
+      const notification = {
+        time: new Date().toISOString(),
+        from: 'systemdef',
+        text,
+        route,
+        isRead: false
+      };
+      //const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+      //set(userNotificationsRef, [...this.notifications, notification]).then(() => {
+      //  console.log('notification created');
+      //});
+      const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+      push(userNotificationsRef, notification).then(() => {
+        console.log('notification created');
+      }).catch((error) => {
+        console.error('Error creating notification:', error);
+      });
     },
     addGroup () {
       this.groups.push(
