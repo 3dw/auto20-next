@@ -14,7 +14,7 @@
     option(value="ask_match_share", v-show="uid && users[uid] && users[uid].ask") {{$t('friends.seeking_help')}}
     option(value="share_match_ask", v-show="uid && users[uid] && users[uid].share") {{$t('friends.sharer')}}
     option(value="random") {{$t('friends.random_profile')}}
-    option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") {{$t('friends.similiar_age_kid')}}
+    option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") {{$t('friends.similar_age_kid')}}
     option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}{{ $t('friends.area') }}
   br
   .ui.divider

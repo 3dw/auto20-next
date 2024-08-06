@@ -226,7 +226,7 @@
       onValue(groupsRef, (snapshot) => {
         const data = snapshot.val(); // 讀取社團資料
         vm.groups = data; // 更新社團資料狀態
-        vm.setupGroupListeners(); // 設置監聽器
+        // vm.setupGroupListeners(); // 設置監聽器
       });
       
       onValue(ref(db, 'users/' + this.uid + '/notifications'), (snapshot) => {
@@ -271,7 +271,7 @@
     },
     methods: {
       
-      setupGroupListeners() {
+      /* setupGroupListeners() {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
         console.log('setupGroupListeners');
@@ -296,13 +296,13 @@
           });
           if (notificationSent) {
             return; // 跳出迴圈
-          }
+          } 
            
         });
         if (notificationSent) {
             return; // 跳出迴圈
         }
-      },
+      },*/
       addNotification(text, route) {
         const notification = {
           time: new Date().toISOString(),
