@@ -97,8 +97,6 @@
     .ui.red.button(@click="removeBook(book.indexOf(h.uid || h.idx))" v-else-if = "uid && book && book.indexOf(h.uid || h.idx) > -1")
       i.book.icon
       | 從名簿移除
-    i.user.icon
-    | 登入
     .ui.purple.button(@click="locate(h, true)")
       i.map.icon
       | 地圖檢視
