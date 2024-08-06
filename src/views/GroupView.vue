@@ -205,21 +205,15 @@ export default defineComponent({
         //console.log('groups更新成功')
         console.log(this.$t('groups.update_sucess'))
       )
-      /*  
-        加入通知邏輯，對每個群組的成員，發送有新消息的通知
-
-        psudocode:
-        
-        const members = this.groups[idx].members || []
-        members.forEach((uid) => {
-          let route = '/group/' + idx;
-          this.addNotificatoin(uid, '在社團' + this.groups[idx].n + '有新消息', route)
-        })
-      */
+      const members = this.groups[idx].members || []
+      members.forEach((uid) => {
+        let route = '/group/' + idx;
+        this.addNotificationByUid(uid, '在社團' + this.groups[idx].n + '有新消息', route)
+      })
     },
     addNotificationByUid(uid, text, route) {
       const notification = {
-        time: new Date().toISOString(),
+        date: (new Date()).toISOString(),
         from: 'systemdef',
         text,
         route,
@@ -370,6 +364,11 @@ img.ui.avatar {
 
 p {
   margin-left: 2em;
+  text-align: left;
+}
+
+.item {
+  text-align: left;
 }
 
 a {

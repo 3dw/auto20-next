@@ -42,10 +42,9 @@
           button.no-border.ui.item(@click="changeEn")
             | 英文 English
             // Notification Icon with Badge
-      .item
-        .ui.icon.button(@click="goToNotifications")
-          i.bell.icon
-            .ui.red.small.label(v-if="unreadCount > 0") {{ unreadCount }}
+      button.ui.item.no-border(v-show="uid", @click="goToNotifications")
+        i.bell.icon
+          .ui.red.small.label(v-if="unreadCount > 0") {{ unreadCount }}
    
       .ui.simple.dropdown.item
         img.ui.avatar.image(v-if="photoURL" :src="photoURL")
@@ -213,7 +212,7 @@
     mounted () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this; // 儲存當前Vue實例
-      console.log(vm.isInApp); // 輸出是否在應用內部的狀態
+      //console.log(vm.isInApp); // 輸出是否在應用內部的狀態
       onValue(usersRef, (snapshot) => {
         const data = snapshot.val(); // 讀取用戶資料
         vm.users = data; // 更新用戶資料狀態
@@ -229,11 +228,6 @@
         // vm.setupGroupListeners(); // 設置監聽器
       });
       
-      onValue(ref(db, 'users/' + this.uid + '/notifications'), (snapshot) => {
-      const data = snapshot.val() || [];
-      vm.notifications = data;
-      vm.unreadCount = data.filter(n => !n.isRead).length;
-      });
       
       onValue(booksRef, (snapshot) => {
         console.log('get books')
@@ -323,6 +317,20 @@
         });
       },
       goToNotifications() {
+        let notifications = this.users[this.uid].notifications || new Object;
+        console.log(notifications);
+        let ks = Object.keys(notifications)
+        for (let j = 0; j < ks.length; j++) {
+          let k = ks[j]
+          notifications[k].isRead = true
+        }
+        const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+        set(userNotificationsRef, notifications).then(() => {
+          console.log('all notification are read')
+        }).catch((error) => {
+          console.error('Error read notification:', error);
+        });
+
         this.$router.push('/notifications');
       },
 
@@ -453,6 +461,16 @@
                 this.locate(vm.users[vm.uid], false);
               }
             } else {
+
+
+              // 用GET的方法，一次性取得notifications的資料，再加上.then
+              get(ref(db, 'users/' + vm.uid + '/notifications')).then((snapshot) => {
+                const data = snapshot.val() || new Object;
+                console.log(data);
+                vm.notifications = data;
+                vm.unreadCount = Object.values(data as object).filter(n => !n.isRead).length;
+              });
+
               // 用GET的方法，用usersRef一次性取得users的資料，再加上.then
               get(usersRef).then((snapshot) => {
                 const data = snapshot.val();
@@ -464,6 +482,7 @@
               }).catch((error) => {
                 console.error("Error fetching users:", error);
               });
+
             }
             if (autoredirect) {
               // 強制重定向的個人頁
