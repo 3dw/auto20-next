@@ -211,10 +211,9 @@ export default defineComponent({
         psudocode:
         
         const members = this.groups[idx].members || []
-        members.forEach((u) => {
-          let notifications = u.notifications || [];
+        members.forEach((uid) => {
           let route = '/group/' + idx;
-          this.addNotificatoin(u.uid, '在社團' + this.groups[idx].n + '有新消息', route)
+          this.addNotificatoin(uid, '在社團' + this.groups[idx].n + '有新消息', route)
         })
       */
     },
