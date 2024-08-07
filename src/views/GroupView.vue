@@ -207,8 +207,10 @@ export default defineComponent({
       )
       const members = this.groups[idx].members || []
       members.forEach((uid) => {
-        let route = '/group/' + idx;
-        this.addNotificationByUid(uid, '在社團' + this.groups[idx].n + '有新消息', route)
+        if (uid !== this.uid) {
+          let route = '/group/' + idx;
+          this.addNotificationByUid(uid, '在社團' + this.groups[idx].n + '有新消息', route)
+        }
       })
     },
     addNotificationByUid(uid, text, route) {
