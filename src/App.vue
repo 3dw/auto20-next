@@ -135,8 +135,8 @@
   <script lang="ts">
   import { defineComponent } from 'vue';
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { get, set, push, ref, onValue, onChildAdded, onChildChanged} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
-  import { app, usersRef, placesRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
+  import { get, set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
   
@@ -323,6 +323,7 @@
         for (let j = 0; j < ks.length; j++) {
           let k = ks[j]
           notifications[k].isRead = true
+          this.unreadCount = 0
         }
         const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
         set(userNotificationsRef, notifications).then(() => {
@@ -457,25 +458,19 @@
 
             if (vm.uid && vm.users && vm.users[vm.uid]) {
               vm.user = vm.users[vm.uid];
+              vm.notifications = vm.user.notifications || {};
+              vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
               if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
                 this.locate(vm.users[vm.uid], false);
               }
             } else {
-
-
-              // 用GET的方法，一次性取得notifications的資料，再加上.then
-              get(ref(db, 'users/' + vm.uid + '/notifications')).then((snapshot) => {
-                const data = snapshot.val() || new Object;
-                console.log(data);
-                vm.notifications = data;
-                vm.unreadCount = Object.values(data as object).filter(n => !n.isRead).length;
-              });
-
               // 用GET的方法，用usersRef一次性取得users的資料，再加上.then
               get(usersRef).then((snapshot) => {
                 const data = snapshot.val();
                 vm.users = data; // 更新用戶資料狀態
                 vm.user = vm.users[vm.uid];
+                vm.notifications = vm.user.notifications || {};
+                vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
                 if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
                   this.locate(vm.users[vm.uid], false);
                 }
@@ -486,7 +481,9 @@
             }
             if (autoredirect) {
               // 強制重定向的個人頁
-              vm.$router.push('/profile');
+              setTimeout(() => {
+                vm.$router.push('/profile');                
+              }, 300);
             }
           }).catch((error) => {
             console.error("Login error:", error);
@@ -499,37 +496,42 @@
     }
   });
   
-  </script>
+</script>
   
-  <style>
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-  
-  .ui.menu .item .icon.bell {
-  position: relative;
-  }
-  
-  .ui.menu .item .ui.red.small.label {
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.ui.menu .item .icon.bell {
+position: relative;
+}
+
+.ui.menu .item .ui.red.small.label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  top: -10px;
-  right: 0;
+  top: -1.5em;
+  left: .5em;
   padding: 0.4em;
+  width: 2em;
+  height: 2em;
   border-radius: 50%;
   background-color: red;
   color: white;
-  }
+}
 
-  /* Media Query for devices wider than 768px */
-  @media (min-width: 769px) {
-    .phone-only {
-      display: none !important; /* 在較大螢幕上隱藏 */
-    }
+/* Media Query for devices wider than 768px */
+@media (min-width: 769px) {
+  .phone-only {
+    display: none !important; /* 在較大螢幕上隱藏 */
   }
+}
   
 
 
