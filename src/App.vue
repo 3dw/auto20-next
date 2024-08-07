@@ -206,11 +206,7 @@
         group_for_no: null as [any] | null, 
         idx_for_no: null as [any] | null, // 定義社團資料變量
         notifications: [] as any[],
-      }
-    },
-    computed () {
-      unreadCount () {
-        return Object.values(this.notifications as object).filter(n => !n.isRead).length || 0;
+        unreadCount: 0,
       }
     },
     mounted () {
@@ -327,6 +323,7 @@
         for (let j = 0; j < ks.length; j++) {
           let k = ks[j]
           notifications[k].isRead = true
+          this.unreadCount = 0
         }
         const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
         set(userNotificationsRef, notifications).then(() => {
@@ -462,7 +459,7 @@
             if (vm.uid && vm.users && vm.users[vm.uid]) {
               vm.user = vm.users[vm.uid];
               vm.notifications = vm.user.notifications || {};
-              // vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
+              vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
               if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
                 this.locate(vm.users[vm.uid], false);
               }
@@ -473,7 +470,7 @@
                 vm.users = data; // 更新用戶資料狀態
                 vm.user = vm.users[vm.uid];
                 vm.notifications = vm.user.notifications || {};
-                // vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
+                vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
                 if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
                   this.locate(vm.users[vm.uid], false);
                 }
