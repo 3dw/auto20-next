@@ -44,8 +44,8 @@
                   router-link(:to="'/flag/' + m", v-if="users[m]")
                     img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
                 span(v-show="uid")
-                  a.ui.green.tiny.button(v-show="!isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
-                  a.ui.red.tiny.button(v-show="isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}
+                  a.ui.green.tiny.button(v-if="isUser(uid) && !isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
+                  a.ui.red.tiny.button(v-if="isUser(uid) && isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}
             .two.column.stackable.row
               .column
                 .ui.divided.list
@@ -85,8 +85,6 @@ import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
 import { onValue, set, push, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
-
-
 
 export default defineComponent({
   name: 'GroupsView',
@@ -156,6 +154,9 @@ export default defineComponent({
     },
     loginGoogle: function (autoredirect) {
       this.$emit('loginGoogle', autoredirect)
+    },
+    isUser(uid) {
+      return uid && this.users[uid]
     },
     isMember (idx) {
       return (this.groups[idx].members || []).indexOf(this.uid) > -1

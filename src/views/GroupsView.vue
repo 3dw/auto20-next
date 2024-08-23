@@ -31,8 +31,8 @@
                 router-link.ui.basic.green.button(:to="'/group/' + g.idx")
                   i.sign-in.icon
                   | {{$t('groups.go_group')}}
-                a.ui.green.button(v-show="uid && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
-                a.ui.red.basic.button(v-show="uid && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
+                a.ui.green.button(v-if="isUser(uid) && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
+                a.ui.red.basic.button(v-if="isUser(uid) && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
             //.ui.form(v-show="edit")
               .field(v-if="!uid")
                 button.ui.orange.button(@click="loginGoogle()")
@@ -97,6 +97,9 @@ export default defineComponent({
     },
     loginGoogle: function () {
       this.$emit('loginGoogle')
+    },
+    isUser(uid) {
+      return uid && this.users[uid]
     },
     isMember (idx) {
       return (this.groups[idx].members || []).indexOf(this.uid) > -1
