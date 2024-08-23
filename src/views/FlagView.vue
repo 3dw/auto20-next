@@ -2,8 +2,8 @@
   .hello
     loader(v-show="!users")
     .ui.segment.container#flag
-      .ui.fluid.card(v-for="(h, index) in toList(users)" v-show="h.uid == $route.params.uid")
-        card(:h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
+      .ui.fluid.card(v-for="(h, index) in toList(users)", v-show="h.uid == $route.params.uid")
+        card(v-if="h.uid == $route.params.uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
 </template>
 
 <script>

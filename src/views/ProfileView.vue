@@ -316,6 +316,9 @@
         return false
       },
       updateFlag: function () {
+        this.root.email = this.email || ''
+        this.root.uid = this.uid || ''
+        this.root.photoURL = this.photoURL || ''
         this.root.lastUpdate = (new Date()).getTime()
         if (!this.isNew) {
           this.isNew = false

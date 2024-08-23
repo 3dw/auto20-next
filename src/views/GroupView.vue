@@ -41,9 +41,9 @@
             .row
               p 成員：
                 span(v-for="m in groups[$route.params.idx].members")
-                  router-link(:to="'/flag/' + m", v-if="users[m]")
+                  router-link(:to="'/flag/' + m", v-if="isUser(m)")
                     img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
-                span(v-show="uid")
+                span(v-if="uid")
                   a.ui.green.tiny.button(v-if="isUser(uid) && !isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
                   a.ui.red.tiny.button(v-if="isUser(uid) && isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}
             .two.column.stackable.row
@@ -210,7 +210,7 @@ export default defineComponent({
       members.forEach((uid) => {
         if (uid !== this.uid) {
           let route = '/group/' + idx;
-          this.addNotificationByUid(uid, '在社團' + this.groups[idx].n + '有新消息', route)
+          this.addNotificationByUid(uid, '在社團「' + this.groups[idx].n + '」有新消息', route)
         }
       })
     },

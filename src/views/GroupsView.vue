@@ -49,8 +49,8 @@
               .row
                 p {{$t('groups.members')}}
                   span(v-for="m in g.members")
-                    router-link(:to = "'/flag/' + m", v-if="users[m]")
-                      img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
+                    router-link(:to = "'/flag/' + m", v-if="isUser(m)")
+                      img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
 </template>
 
 <script>
@@ -99,7 +99,7 @@ export default defineComponent({
       this.$emit('loginGoogle')
     },
     isUser(uid) {
-      return uid && this.users[uid]
+      return uid && this.users[uid] && this.users[uid].name
     },
     isMember (idx) {
       return (this.groups[idx].members || []).indexOf(this.uid) > -1

@@ -26,9 +26,12 @@ export default {
       return text;
     },
     getIcon(h: { photoURL?: string; name?: string }): string {
+      console.log('a')
+      console.log(h)
       if (h && h.photoURL) {
         return h.photoURL;
       } else if (h && h.name) {
+        console.log('b')
         return `https://www.moedict.tw/${h.name}.png`;
       } else {
         return 'https://www.moedict.tw/unknown.png';
