@@ -435,11 +435,16 @@
         const vm = this; // 儲存當前Vue實例
         auth.signOut().then(function() {
           vm.user = null; // 清除用戶資料
+          vm.users = {}; // 清除所有用戶資料
           vm.uid = ''; // 清除用戶ID
           vm.photoURL = ''; // 清除用戶頭像URL
-          console.log(vm.$router); // 輸出路由實例
-          vm.$router.push('/'); // 導航回首頁
-          location.reload();
+          // console.log(vm.$router); // 輸出路由實例
+
+          vm.$nextTick(() => {
+            // 在 DOM 更新後執行操作，例如重新加載資料或重新渲染組件
+            vm.$router.push('/'); // 導航回首頁
+          
+          });
         });
       },
       loginGoogle: function (autoredirect) {
