@@ -26,6 +26,7 @@ export default {
       arround: "Around",
       raise_flag: 'Raise Flag',
       update_flag: 'Update Flag',
+      raise_sucess: 'Raise Flag  Sucessfully',
       update_sucess: 'Updated Sucessfully',
       update_failed: 'Update Failed',
       check_flag: 'My Flag',

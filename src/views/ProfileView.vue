@@ -334,7 +334,7 @@
           this.isNew = false
           this.editing = false
           set(ref(db, 'users/' + this.uid), this.root).then(
-            alert(this.$t('login.fg'))
+            alert(this.$t('login.raise_sucess'))
           )
         }
         this.$emit('locate', this.root, false)

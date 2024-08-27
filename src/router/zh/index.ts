@@ -26,6 +26,7 @@ export default {
       arround: '大約',
       raise_flag: '升起旗幟!!',
       update_flag: '更新旗幟!!',
+      raise_sucess: '升起旗幟成功',
       update_sucess: '更新成功',
       update_failed: '更新失敗',
       check_flag: '查看專屬名片',
