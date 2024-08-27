@@ -254,7 +254,7 @@
       },
       uid(newUid) {
         if (newUid) {
-          this.book = this.books[newUid]
+          this.book = this.books[newUid] || []
           console.log(this.book)
           // 使用 nextTick 確保子組件接收到最新的 props
           this.$nextTick(() => {
@@ -464,7 +464,7 @@
 
             if (vm.uid && vm.users && vm.users[vm.uid]) {
               vm.user = vm.users[vm.uid];
-              vm.notifications = vm.user.notifications || {};
+              vm.notifications = (vm.user || {}).notifications || {};
               vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
               if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
                 this.locate(vm.users[vm.uid], false);
@@ -475,7 +475,7 @@
                 const data = snapshot.val();
                 vm.users = data; // 更新用戶資料狀態
                 vm.user = vm.users[vm.uid];
-                vm.notifications = vm.user.notifications || {};
+                vm.notifications = (vm.user || {}).notifications || {};
                 vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
                 if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
                   this.locate(vm.users[vm.uid], false);
@@ -483,7 +483,6 @@
               }).catch((error) => {
                 console.error("Error fetching users:", error);
               });
-
             }
             if (autoredirect) {
               // 強制重定向的個人頁

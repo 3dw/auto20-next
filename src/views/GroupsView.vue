@@ -1,67 +1,85 @@
 <template lang="pug">
-  .hello
-    .ui.row(v-if="!uid")
-      .sixteen.wide.column 
-        .ui.huge.buttons
-          button.ui.orange.button(@click="loginGoogle")
-            i.google.icon
-            | {{ $t('login.login') }}
-    .ui.container(v-if="users && toList(users).length > 0")
-      .ui.grid
-        .row.ui.form(v-show="uid")
-          .field
-            .ui.labeled.input
-              label.ui.label {{ $t('groups.group_name') }}
-              input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
-          .field.button-field
-            a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
-              | {{ $t('groups.create_group') }}
-        .ui.two.stackable.column.row
-          .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
-            , v-show = "!g.hidden")
-            h3 〈{{g.n}}〉
-            p {{g.intro}}
-              br.thin-only
-              | &nbsp;&nbsp;&nbsp;&nbsp;
-            //  a(@click="edit = !edit")
-                i.edit.icon
-                | {{edit ? '結束' : ''}}編輯社團資料
-            p
-              .ui.buttons
-                router-link.ui.basic.green.button(:to="'/group/' + g.idx")
-                  i.sign-in.icon
-                  | {{$t('groups.go_group')}}
-                a.ui.green.button(v-if="isUser(uid) && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
-                a.ui.red.basic.button(v-if="isUser(uid) && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
-            //.ui.form(v-show="edit")
-              .field(v-if="!uid")
-                button.ui.orange.button(@click="loginGoogle()")
-                  i.google.icon
-                  | 請先登入
-              //.field
-                .ui.labeled.input
-                  label.ui.label 輸入社團簡介  
-                  input(type="text", v-model="newIntro", placeholder="請先輸入社團簡介")
-              //.field
-                a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro(idx)")
-                  | 更新簡介
-            .ui.grid
-              .row
-                p {{$t('groups.members')}}
-                  span(v-for="m in g.members")
-                    router-link(:to = "'/flag/' + m", v-if="isUser(m)")
-                      img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
+.hello
+  .ui.row(v-if="!uid")
+    .sixteen.wide.column 
+      .ui.huge.buttons
+        button.ui.orange.button(@click="loginGoogle")
+          i.google.icon
+          | {{ $t('login.login') }}
+  .ui.container(v-if="users && toList(users).length > 0")
+    .ui.grid
+      .row.ui.form(v-show="uid && users[uid]")
+        .field
+          .ui.labeled.input
+            label.ui.label {{ $t('groups.group_name') }}
+            input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
+        .field.button-field
+          a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
+            | {{ $t('groups.create_group') }}
+      .ui.two.stackable.column.row
+        .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
+          , v-show = "!g.hidden")
+          h3 〈{{g.n}}〉
+          p {{g.intro}}
+            br.thin-only
+            | &nbsp;&nbsp;&nbsp;&nbsp;
+          //  a(@click="edit = !edit")
+              i.edit.icon
+              | {{edit ? '結束' : ''}}編輯社團資料
+          p
+            .ui.buttons
+              router-link.ui.basic.green.button(:to="'/group/' + g.idx")
+                i.sign-in.icon
+                | {{$t('groups.go_group')}}
+              a.ui.green.button(v-if="isUser(uid) && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
+              a.ui.red.basic.button(v-if="isUser(uid) && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
+          //.ui.form(v-show="edit")
+            .field(v-if="!uid")
+              button.ui.orange.button(@click="loginGoogle()")
+                i.google.icon
+                | 請先登入
+            //.field
+              .ui.labeled.input
+                label.ui.label 輸入社團簡介  
+                input(type="text", v-model="newIntro", placeholder="請先輸入社團簡介")
+            //.field
+              a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro(idx)")
+                | 更新簡介
+          .ui.grid
+            .row
+              p {{$t('groups.members')}}
+                span(v-for="m in g.members")
+                  router-link(:to = "'/flag/' + m", v-if="isUser(m)")
+                    img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
 </template>
 
 <script>
 import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
-import { onValue, set, ref } from 'firebase/database'
+import { get, set, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
 
 export default defineComponent({
   name: 'GroupsView',
-  props: ['photoURL', 'users', 'user', 'uid', 'mySearch'],
+  props: {
+    uid: {
+      type: String,
+      required: false
+    },
+    photoURL: {
+      type: String,
+      required: false
+    },
+    users: {
+      type: Object,
+      required: false,
+      default: () => { return {} }
+    },
+    mySearch: {
+      type: String,
+      required: false
+    }
+  },
   metaInfo: {
     title: "$t('login.auto_gp')",
   },
@@ -76,7 +94,30 @@ export default defineComponent({
       groups: []
     }
   },
+  watch: {
+    users(newValue, oldValue) {
+      // console.log('Watcher triggered:', newValue, oldValue);
+      if (this.toList(newValue).length > 0) {
+        this.fetchGroupData();
+      }
+    }
+  },
+  mounted () {
+    // console.log('Component mounted with UID:', this.uid);
+    if (this.uid) {
+      this.fetchGroupData();
+    }
+  },
   methods: {
+    fetchGroupData() {
+      get(groupsRef).then((snapshot) => {
+        const data = snapshot.val();
+        this.groups = data || [];
+        console.log('Groups data updated:', this.groups);
+      }, (error) => {
+        console.error('Error fetching group data:', error);
+      });
+    },
     containsKeyword(message) {
       return keywords.some(keyword => message.includes(keyword));
     },
@@ -177,12 +218,6 @@ export default defineComponent({
         console.log(this.$t('groups.update_sucess'))
       )
     }
-  },
-  mounted () {
-    onValue(groupsRef, (snapshot) => {
-      const data = snapshot.val()
-      this.groups = data || []
-    })
   }
 })
 </script>
