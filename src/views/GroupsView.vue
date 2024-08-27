@@ -95,7 +95,7 @@ export default defineComponent({
     }
   },
   watch: {
-    users(newValue, oldValue) {
+    users(newValue) {
       // console.log('Watcher triggered:', newValue, oldValue);
       if (this.toList(newValue).length > 0) {
         this.fetchGroupData();

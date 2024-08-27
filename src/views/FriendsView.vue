@@ -70,7 +70,7 @@ export default defineComponent({
   computed: {
     visibleCards() {
       const filteredCards = this.allCards.filter(h => {
-        const today = new Date().getTime();
+        // const today = new Date().getTime();
         if (isNaN(h.lastUpdate)) {
           return false;
         }

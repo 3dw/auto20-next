@@ -13,7 +13,7 @@
 <script>
 
 import { defineComponent } from 'vue';
-import { onValue, set, ref } from 'firebase/database'
+import { onValue, ref } from 'firebase/database'
 import { db } from '../firebase'; // 導入Firebase相關配置和參考
 
 export default defineComponent({
