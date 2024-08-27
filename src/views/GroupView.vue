@@ -71,7 +71,7 @@
                   .item(v-for="(c, index) in latestChats" :key="index")
                     img.ui.avatar(:src="c.photoURL")    
                     | {{c.n}} : {{c.t}}
-                  .item.ui.form(v-if="uid")
+                  .item.ui.form(v-if="isMember(groups[$route.params.idx].idx)")
                     .field
                       .ui.labeled.input
                         img.ui.avatar(:src="photoURL")

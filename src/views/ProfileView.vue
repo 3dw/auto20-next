@@ -182,7 +182,7 @@
   import mix from '../mixins/mix.ts'
   // import Loader from './Loader'
   import Card from '../components/Card'
-  import { db } from '../firebase'
+  import { db, groupsRef } from '../firebase'
   import { set, get, ref, remove } from 'firebase/database'
   import 'leaflet/dist/leaflet.css';
   import * as L from 'leaflet';
@@ -208,7 +208,7 @@
         editing: false
       }
     },
-    emit: ['loginGoogle', 'locate'],
+    emits: ['loginGoogle', 'locate'],
     watch: {
       uid (newU) {
         if (newU) {
@@ -345,13 +345,35 @@
         }
       },
       deleteFlag() {
-        remove(ref(db, 'users/' + this.uid)).then(
-          alert(this.$t('login.delete_confirm3'))
-        ).catch(
-          error => alert(this.$t('login.delete_failed') + error.message)
-        );
-        this.root = {};
-        this.$emit('logout')
+        const uid = this.uid;
+        // 刪除使用者數據
+        remove(ref(db, 'users/' + uid))
+          .then(() => {
+            // 取得所有群組的數據
+            return get(groupsRef);
+          })
+          .then((snapshot) => {
+            const data = snapshot.val();
+            let groups = [...data]; // 複製群組數據
+            // 更新群組中的成員資料
+            const updatePromises = groups.map((g, idx) => {
+              g.members = (g.members || []).filter((m) => m !== uid);
+              // 回存更新後的群組成員資料到 Firebase
+              return set(ref(db, 'groups/' + idx + '/members'), g.members);
+            });
+            // 使用 Promise.all 確保所有更新操作完成後再進行下一步
+            return Promise.all(updatePromises);
+          })
+          .then(() => {
+            // 成功更新後顯示提示訊息
+            alert(this.$t('login.delete_confirm3'));
+            this.root = {}; // 清空 root 資料
+            this.$emit('logout'); // 觸發登出事件
+          })
+          .catch((error) => {
+            // 錯誤處理
+            alert(this.$t('login.delete_failed') + error.message);
+          });
       },
       loginFB: function () {
         this.$emit('loginFB')
