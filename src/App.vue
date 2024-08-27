@@ -439,6 +439,7 @@
           vm.photoURL = ''; // 清除用戶頭像URL
           console.log(vm.$router); // 輸出路由實例
           vm.$router.push('/'); // 導航回首頁
+          location.reload();
         });
       },
       loginGoogle: function (autoredirect) {
