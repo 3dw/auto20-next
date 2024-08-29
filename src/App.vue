@@ -681,6 +681,10 @@ border-radius: 50%;
 background-color: red;
 }
 
+.filler {
+  flex-grow: 1;
+}
+
 .invisible {
 color: transparent !important;
 }

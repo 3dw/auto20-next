@@ -17,10 +17,15 @@
             button.ui.orange.button(@click="loginGoogle")
               i.google.icon
               | {{ $t('login.login') }}
+
       .ui.stackable.two.column.row(v-if="!editing")
-        .ten.wide.column
+        .ten.wide.column(v-show="!isNew")
           .ui.fluid.card.container(v-show="!isNew && !editing")
             card(:h="root", :full="true", :book="book", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle", :uid="uid")
+
+
+        .filler(v-if="isNew")
+
         .six.wide.column
           .ui.massive.green.button(v-show="uid && !editing" @click="startEdit")
             i.edit.icon
@@ -28,6 +33,8 @@
             span(v-if="isNew") {{ $t('profile.start') }}
             span(v-else) {{ $t('profile.edit') }}
   
+        .filler(v-if="isNew")
+
     .ui.container(v-if="editing")
       .ui.warning.message(v-if="longTimeNoSee() > 0.25")
         .header {{ $t('profile.update1')}}
