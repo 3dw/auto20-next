@@ -50,9 +50,12 @@
         img.ui.avatar.image(v-if="photoURL" :src="photoURL")
         i.user.icon(v-else)
         .menu
-          router-link.item(to="/profile")
+          router-link.item(v-if="uid", to="/profile")
             i.flag.icon
             | {{ $t('login.fg') }}
+          button.no-border.item(v-else, @click="loginGoogle")
+            i.google.icon
+            | {{ $t('login.login' )}}
   
           .ui.divider(v-show = "myGroupIdx().length > 0")
   
