@@ -17,7 +17,7 @@
     option(value="age_nearest", v-if="uid && users[uid] && users[uid].child_birth") {{$t('friends.similar_age_kid')}}
     option(v-for="(c, idx) in cities", :value="'near_' + c.c.join(',')", :key="idx") {{c.t}}{{ $t('friends.area') }}
   br
-  .ui.divider
+  //.ui.divider
   br
   .ui.two.doubling.cards.container(@scroll="handleScroll", ref="scrollContainer")
     .ui.card(v-for="(h, index) in visibleCards", :key="index")
@@ -295,4 +295,121 @@ export default defineComponent({
   max-height: 80vh;
   overflow-y: auto;
 }
+
+.hello {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+.ui.segment {
+  background-color: #f7f8fa; /* 淺灰色背景 */
+  border: 1px solid #dee2e6; /* 邊框顏色 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+  border-radius: 8px; /* 圓角 */
+  padding: 20px; /* 內邊距 */
+}
+
+
+
+.ui.button.orange {
+  background-color: #f39c12; /* 橙色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.orange:hover {
+  background-color: #e67e22; /* 懸停時更深的橙色 */
+}
+
+.ui.button.green {
+  background-color: #28a745; /* 綠色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.green:hover {
+  background-color: #218838; /* 懸停時更深的綠色 */
+}
+
+.ui.button.red {
+  background-color: #dc3545; /* 紅色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.red:hover {
+  background-color: #c82333; /* 懸停時更深的紅色 */
+}
+
+.ui.labeled.input .ui.label {
+  background-color: #0056b3; /* 藍色標籤 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.labeled.input input {
+  border: 1px solid #ced4da; /* 邊框顏色 */
+  border-radius: 4px; /* 圓角 */
+  padding: 10px; /* 內邊距 */
+}
+
+img.ui.avatar {
+  position: relative;
+  top: .6em;
+  width: 40px; /* 調整圖片寬度 */
+  height: 40px; /* 調整圖片高度 */
+  border-radius: 50%; /* 圓形圖片 */
+  border: 2px solid #e9ecef; /* 添加邊框 */
+}
+
+.ui.divided.list .item {
+  padding: 15px 0; /* 項目間距 */
+  border-bottom: 1px solid #dee2e6; /* 底部邊框 */
+}
+
+.ui.divided.list .item:last-child {
+  border-bottom: none; /* 最後一個項目無底部邊框 */
+}
+
+.ui.container {
+  margin-top: 30px; /* 頂部外邊距 */
+}
+
+p {
+  margin-left: 2em;
+  text-align: left;
+}
+
+.item {
+  text-align: left;
+}
+
+a {
+  cursor: pointer;
+  color: #0056b3; /* 超連結顏色 */
+  text-decoration: underline; /* 超連結下劃線 */
+}
+
+a:hover {
+  color: #004494; /* 懸停時超連結顏色 */
+}
+
+.ui.form .field {
+  margin-bottom: 15px; /* 字段間距 */
+}
+
+.ui.form .button {
+  margin-top: 10px; /* 按鈕頂部外邊距 */
+}
+
+p {
+  text-align: left;
+  font-size: 16px;
+  white-space: pre-line !important;
+}
+
+textarea {
+  padding: 10px; /* 添加內邊距 */
+  border: 1px solid #ced4da; /* 邊框顏色 */
+  border-radius: 4px; /* 圓角 */
+  font-size: 16px; /* 字體大小 */
+}
+
+
 </style>

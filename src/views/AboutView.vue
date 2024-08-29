@@ -1,9 +1,9 @@
 <template lang="pug">
   .hello
-    h1.ui.header
-      img(src="../assets/handshake1.webp", alt="互助互惠")
-      | {{ $t('about.intro') }}
-      img(src="../assets/handshake1.webp", alt="互助互惠")
+    //- h1.ui.header
+    //-   img(src="../assets/handshake1.webp", alt="互助互惠")
+    //-   | {{ $t('about.intro') }}
+    //-   img(src="../assets/handshake1.webp", alt="互助互惠")
   
     .ui.grid.container
       .ui.two.column.stackable.row

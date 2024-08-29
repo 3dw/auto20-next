@@ -236,19 +236,17 @@ export default defineComponent({
   padding: 20px; 
 }
 
-.ui.buttons .button {
-  font-size: 16px; 
-  padding: 12px 16px; 
-  margin-right: 10px; 
-}
+button.no-border {
+    border: none;
+  }
 
 .ui.button.orange {
-  background-color: #f39c12; 
-  color: #fff; 
+  background-color: #f39c12; /* 橙色背景 */
+  color: #fff; /* 白色文字 */
 }
 
 .ui.button.orange:hover {
-  background-color: #e67e22; 
+  background-color: #e67e22; /* 懸停時更深的橙色 */
 }
 
 .ui.button.green {

@@ -3,10 +3,10 @@
   .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
     .sixteen.wide.column 
       .ui.huge.buttons
-        button.ui.orange.button(@click="loginGoogle")
+        button.ui.orange.button(@click="loginGoogle(false)")
           i.google.icon
           | {{ $t('login.login') }}
-  .ui.container(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
+  loader(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
     .ui.grid
       .ui.one.column.row(v-if="groups[$route.params.idx].n")
         .ui.column.ui.segment
@@ -287,6 +287,7 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>/* Scoped CSS */
 
+
 .hello {
   font-family: 'Arial', sans-serif;
   color: #333;
@@ -300,10 +301,7 @@ export default defineComponent({
   padding: 20px; /* 內邊距 */
 }
 
-.ui.buttons .button {
-  font-size: 18px; /* 字體大小 */
-  padding: 15px 20px; /* 內邊距 */
-}
+
 
 .ui.button.orange {
   background-color: #f39c12; /* 橙色背景 */

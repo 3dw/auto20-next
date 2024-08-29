@@ -166,6 +166,18 @@ export default defineComponent({
 </script>
 
 <style>
+
+
+
+.ui.button.orange {
+  background-color: #f39c12; /* 橙色背景 */
+  color: #fff; /* 白色文字 */
+}
+
+.ui.button.orange:hover {
+  background-color: #e67e22; /* 懸停時更深的橙色 */
+}
+
 .leaflet-marker-icon {
   border-radius: 50%;
   
@@ -204,4 +216,7 @@ export default defineComponent({
   z-index: 1;
   position: relative; /* Ensure it has a position context */
 }
+
+
+
 </style>
