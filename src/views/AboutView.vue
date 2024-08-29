@@ -8,6 +8,7 @@
     .ui.grid.container
       .ui.two.column.stackable.row
         .ui.padded.segment.column
+          img(src="../assets/handshake1.webp")
           h2.ui.header {{$t('about.what_is_auto20')}}
           p 
             b {{$t('about.auto20')}}
@@ -152,6 +153,15 @@
     border-radius: 8px;
     margin-bottom: 1em;
   }
+  .ui.grid.container .ui.padded.segment.column img {
+  max-width: 100%;
+  width: auto; /* 統一寬度 */
+  height: 300px; /* 根據寬度自動調整高度 */
+  border-radius: 8px;
+  margin-bottom: 1em;
+  object-fit: cover; /* 使圖片以填滿的方式顯示，避免變形 */
+}
+
   
   .ui.divider {
     margin: 2em 0;
