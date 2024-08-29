@@ -1,0 +1,35 @@
+
+ /* Sidebar CSS */
+
+.ui.sidebar {
+  z-index: 99999 !important;
+}
+
+.ui.sidebar {
+  transition: transform .3s ease, opacity .3s ease, visibility .3s ease !important;
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100%;
+  background-color: #f5f5f5; /* 更改背景色 */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 添加陰影效果 */
+  opacity: 1;
+  visibility: visible !important;
+  padding: 20px; /* 增加內邊距 */
+}
+  
+.ui.sidebar.bg {
+  z-index: 2 !important; /* 設定一個低值 */
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+  width: 100vw;
+  cursor: pointer;
+}
+
+.ui.sidebar.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0s linear !important;
+  transform: translateX(-100%); /* 隱藏時向左滑動 */
+}

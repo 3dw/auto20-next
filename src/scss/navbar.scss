@@ -1,0 +1,60 @@
+
+nav.ui.menu, .ui.sidebar.vertical.menu {
+  background-color: #ffffff; /* 白色背景 */
+  border-bottom: 1px solid #dee2e6; /* 添加底部邊框 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加陰影效果 */
+  margin-bottom: 0;
+}
+
+nav.ui.menu a.item, .ui.sidebar.vertical.menu a.item {
+  color: #495057; /* 深色文字 */
+  font-weight: bold;
+  padding: 15px 20px; /* 調整內邊距 */
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+align-items: center; /* 垂直對齊圖標和文字 */
+}
+
+nav.ui.menu a.item:hover, .ui.sidebar.vertical.menu a.item:hover {
+  background-color: #e2e6ea; /* 懸停時淺灰色背景 */
+  color: #0056b3; /* 懸停時深藍色文字 */
+}
+
+nav.ui.menu a.item.active, .ui.sidebar.vertical.menu a.item.active {
+  background-color: #0056b3; /* 活動項目深藍色背景 */
+  color: #ffffff; /* 活動項目白色文字 */
+}
+
+
+.ui.menu .item .icon.bell {
+  position: relative;
+}
+
+.ui.menu .item .ui.red.small.label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -1.5em;
+  left: .5em;
+  padding: 0.4em;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
+
+.red.note {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  top: -10px;
+  font-size: 16px;
+  padding: .4em !important;
+  border-radius: 50%;
+  background-color: red;
+}

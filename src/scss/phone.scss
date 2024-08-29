@@ -1,0 +1,12 @@
+
+/* Media Query for devices thiner than 769px */
+
+@media (max-width: 768px) {
+  .fat-only {
+    display: none !important;
+  }
+
+  .flex-row-col {
+    flex-direction: column;
+  }
+}

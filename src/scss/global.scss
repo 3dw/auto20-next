@@ -1,0 +1,54 @@
+/* 一般性的廣域設計宣告  */
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.filler {
+  flex-grow: 1;
+}
+
+button.no-border {
+  border: none !important;
+  cursor: pointer;
+}
+
+.no-float {
+  float: none !important;
+  margin: .6em .6em !important;
+}
+
+.left.aligned {
+  text-align: left;
+  margin-left: .6em;
+}
+
+.ui.avatar.image {
+  width: 40px; /* 調整圖片寬度 */
+  height: 40px; /* 調整圖片高度 */
+  border-radius: 50%; /* 圓形圖片 */
+  border: 2px solid #e9ecef; /* 添加邊框 */
+}
+
+.ui.menu a.item {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+a.router-link-exact-active {
+  background-color: #42b983 !important;
+}
+
+.invisible {
+  color: transparent !important;
+}
+
+.highlightedText {
+  background-color: yellow;
+}
+
+  

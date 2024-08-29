@@ -1,0 +1,48 @@
+/* 主畫面 */
+
+.carousel {
+  padding: 1em;
+  background-color: #ffc107; /* 黃色背景 */
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 8px; /* 圓角 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加陰影效果 */
+}
+
+.carousel_item {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#ch {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da; /* 添加邊框 */
+  border-radius: 4px; /* 圓角 */
+  padding: 5px 10px; /* 增加內邊距 */
+  background-color: #ffffff; /* 白色背景 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加陰影效果 */
+}
+
+.search-input input {
+  width: 100%;
+  border: none;
+  padding-right: 30px; /* 確保圖示不會覆蓋到文字 */
+}
+
+.search-input .search.icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}

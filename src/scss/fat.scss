@@ -1,0 +1,6 @@
+/* Media Query for devices wider than 768px */
+@media (min-width: 769px) {
+  .phone-only {
+    display: none !important; /* 在較大螢幕上隱藏 */
+  }
+}
