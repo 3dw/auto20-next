@@ -117,7 +117,7 @@
   }
   
   p {
-    font-size: 1em;
+    font-size: 16px;
     line-height: 1.5;
     color: #555;
     text-align: left;
