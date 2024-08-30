@@ -137,6 +137,9 @@
   
   <script lang="ts">
   import { defineComponent } from 'vue';
+
+  import { showLogin } from './testOnly'; // 導入測試開關
+
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
   import { get, set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
@@ -180,6 +183,7 @@
     },
     data () {
       return {
+        showLogin: showLogin, // Login測試開關
         mySearch: '',
         news: [
           'upgrading',
