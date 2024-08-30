@@ -133,6 +133,8 @@
   
   chatbox#ch(@loginGoogle = "loginGoogle", :uid = "uid", :user="user", :photoURL="photoURL")
   
+  login(v-if="showLogin")
+
   </template>
   
   <script lang="ts">
@@ -146,6 +148,7 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
   
+  import Login from './components/Login.vue'; // 導入Login
   import Chatbox from './components/Chatbox.vue';
   
   // If you are using PurgeCSS, make sure to whitelist the carousel CSS classes
@@ -179,7 +182,8 @@
       Slide,
       Pagination,
       Navigation,
-      Chatbox
+      Chatbox,
+      Login
     },
     data () {
       return {

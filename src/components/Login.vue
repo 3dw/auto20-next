@@ -7,7 +7,7 @@
             .content Login to your account
           
           //- Google Login Button
-          .ui.fluid.large.blue.button
+          .ui.fluid.large.orange.button
             i.google.icon
             | Login with Google
 
