@@ -45,7 +45,7 @@
 <script>
     import { keywords } from '../data/keywords.js';
     import { defineComponent } from 'vue';
-    import { onValue, set, ref } from 'firebase/database';
+    import { onValue, push, ref } from 'firebase/database';
     import { db, chatsRef } from '../firebase';
     import mix from '../mixins/mix.ts';
     
@@ -115,14 +115,16 @@
             photoURL: this.photoURL || '',
             time: (new Date()).getTime()
           };
-          const rid = (new Date()).getFullYear() + '' + (Math.random() + '').slice(0, 8).replace('.', '');
+          
+          // const rid = (new Date()).getFullYear() + '' + (Math.random() + '').slice(0, 8).replace('.', '');
             
           if (this.msg) {
-            this.chats[rid] = o;
+            // this.chats[rid] = o;
             this.msg = '';
             this.p = '';
           }
-          set(ref(db, 'chats/' + rid), o).then(
+
+          push(ref(db, 'chats/'), o).then(
             console.log('chats更新成功')
           );
         },
