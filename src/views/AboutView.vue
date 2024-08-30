@@ -120,6 +120,7 @@
     font-size: 1em;
     line-height: 1.5;
     color: #555;
+    text-align: left;
   }
   
   a {
@@ -167,6 +168,8 @@
     margin: 2em 0;
   }
   
+  
+
   @media (max-width: 768px) {
     .ui.grid.container {
       padding: 1em;
