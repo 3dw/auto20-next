@@ -282,8 +282,12 @@
         const userRef = ref(db, 'users/' + this.uid);
         get(userRef).then((snapshot) => {
           if (snapshot.exists()) {
-            this.isNew = false
-            this.root = snapshot.val();
+              this.isNew = false;
+              this.root = snapshot.val();
+              this.root.email = this.root.email || this.email;
+              this.root.connect_me = this.root.connect_me || this.email;
+              this.root.name = this.root.name || this.user.providerData[0].displayName || '新朋友';
+              this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";        
             } else {
             console.log("No data available for user: " + this.uid);
             this.root = {
@@ -291,7 +295,7 @@
               uid: this.uid,
               email: this.email,
               connect_me: this.email,
-              photoURL: this.photoURL || '',
+              photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
               latlngColumn: '23.5330,121.0654',
               note: ''
             };
