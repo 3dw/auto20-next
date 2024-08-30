@@ -210,9 +210,28 @@ export default defineComponent({
       members.forEach((uid) => {
         if (uid !== this.uid) {
           let route = '/group/' + idx;
-          this.addNotificationByUid(uid, '在社團「' + this.groups[idx].n + '」有新消息', route)
+          this.addNotificationByUid(uid, '在社團「' + this.groups[idx].n + '」有新留言', route)
         }
       })
+    },
+    addRes (idx) {
+      this.groups[idx].res = this.groups[idx].res || []
+      this.groups[idx].res.push(
+        { n: this.newResName, href: this.newHref })
+      this.newResName = ''
+      this.newHref = ''
+      set(ref(db, 'groups'), this.groups).then(
+        //console.log('groups更新成功')
+        console.log(this.$t('groups.update_sucess'))
+      )
+      const members = this.groups[idx].members || []
+      members.forEach((uid) => {
+        if (uid !== this.uid) {
+          let route = '/group/' + idx;
+          this.addNotificationByUid(uid, '在社團「' + this.groups[idx].n + '」有新增社團資源', route)
+        }
+      })
+      // console.log(this.groups)
     },
     addNotificationByUid(uid, text, route) {
       const notification = {
@@ -246,19 +265,6 @@ export default defineComponent({
         //console.log('groups更新成功')
         console.log(this.$t('groups.update_sucess'))
       )
-    },
-    addRes (idx) {
-      this.groups[idx].res = this.groups[idx].res || []
-      this.groups[idx].res.push(
-        { n: this.newResName, href: this.newHref })
-      this.newResName = ''
-      this.newHref = ''
-      set(ref(db, 'groups'), this.groups).then(
-        //console.log('groups更新成功')
-        console.log(this.$t('groups.update_sucess'))
-
-      )
-      // console.log(this.groups)
     },
     addIntro(idx) {
       if (this.newIntro.trim().length) { // 確保不提交空白或只有空格的字符串
@@ -300,8 +306,6 @@ export default defineComponent({
   border-radius: 8px; /* 圓角 */
   padding: 20px; /* 內邊距 */
 }
-
-
 
 .ui.button.orange {
   background-color: #f39c12; /* 橙色背景 */
