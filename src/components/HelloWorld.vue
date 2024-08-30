@@ -161,7 +161,7 @@ export default defineComponent({
       this.$emit('locate', h, bool);
     },
     loginGoogle() {
-      this.$emit('loginGoogle');
+      this.$emit('loginGoogle', true); // autoredirect
     }
   }
 });

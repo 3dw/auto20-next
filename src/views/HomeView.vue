@@ -70,7 +70,7 @@ export default defineComponent({
       this.$emit('locate', h, bool)
     },
     loginGoogle: function () {
-      this.$emit('loginGoogle')
+      this.$emit('loginGoogle', true) //autoredirect
     }
   }
 });
