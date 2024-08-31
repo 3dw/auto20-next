@@ -28,7 +28,9 @@
                 .ui.checkbox
                   input(type="checkbox" tabindex="0" class="hidden")
                   label Remember Me
-              .ui.fluid.large.teal.submit.button Login
+              .ui.two.buttons
+                .ui.fluid.large.teal.submit.button Login
+                .ui.fluid.large.blue.button Sign Up
 </template>
 
 <script>
