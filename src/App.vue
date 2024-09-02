@@ -472,7 +472,7 @@
             const pvdata = user.providerData; // 讓providerData保留
 
             if (vm.users && vm.users[vm.uid]) {
-              vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+              vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData
               vm.updateNotifications();
               if (vm.user.latlngColumn) {
                 vm.locate(vm.user, false);
@@ -481,13 +481,13 @@
               get(usersRef).then((snapshot) => {
                 const data = snapshot.val();
                 vm.users = data;
-                vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+                vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData 
                 vm.updateNotifications();
                 if (vm.user.latlngColumn) {
                   vm.locate(vm.user, false);
                 }
               }).catch((error) => {
-                vm.user = { providerData: pvdata };
+                vm.user = { providerData: pvdata };  //無論如何保留住providerData
                 console.error("Error fetching users:", error);
               });
             }
