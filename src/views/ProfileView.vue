@@ -286,7 +286,7 @@
               this.root = snapshot.val();
               this.root.email = this.root.email || this.email;
               this.root.connect_me = this.root.connect_me || this.email;
-              this.root.name = this.root.name || this.user.providerData[0].displayName || '新朋友';
+              this.root.name = this.root.name || this.user.name || this.user.providerData[0].displayName || '新朋友';
               this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";        
             } else {
             console.log("No data available for user: " + this.uid);
