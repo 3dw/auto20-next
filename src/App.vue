@@ -460,6 +460,7 @@
         } else {
           signInWithPopup(auth, provider).then((result) => {
             const user = result.user;
+            console.log(user)
             vm.showLogin = false;
             vm.user = user;
             vm.email = user.providerData[0].email;
@@ -468,9 +469,10 @@
             console.log(vm.uid);
             vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
 
-            if (vm.uid && vm.users && vm.users[vm.uid]) {
+            if (vm.uid && vm.users && vm.users[vm.uid] && vm.users[vm.uid].email) {
               
               const pvdata = user.providerData; // 讓providerData保留 
+              console.log(pvdata)
 
               vm.user = vm.users[vm.uid];
               vm.user.providerData = pvdata; // 讓providerData保留
@@ -485,7 +487,12 @@
               get(usersRef).then((snapshot) => {
                 const data = snapshot.val();
                 vm.users = data; // 更新用戶資料狀態
+                const pvdata = user.providerData; // 讓providerData保留 
+              
                 vm.user = vm.users[vm.uid];
+                
+                vm.user.providerData = pvdata; // 讓providerData保留
+                
                 vm.notifications = (vm.user || {}).notifications || {};
                 vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
                 if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {

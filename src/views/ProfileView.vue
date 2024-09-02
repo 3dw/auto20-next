@@ -303,6 +303,18 @@
           }
         }).catch((error) => {
           console.error(error);
+          console.log("No data available for user: " + this.uid);
+          console.log(this.user)
+          this.root = {
+            name: this.user.providerData[0].displayName || '新朋友',
+            uid: this.uid,
+            email: this.email,
+            connect_me: this.email,
+            photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
+            latlngColumn: '23.5330,121.0654',
+            note: ''
+          };
+          this.isNew = true
         });
       },
       setMapAndMarker() {
