@@ -470,10 +470,10 @@
 
             if (vm.uid && vm.users && vm.users[vm.uid]) {
               
-              const pvdata = user.providerData;
+              const pvdata = user.providerData; // 讓providerData保留 
 
               vm.user = vm.users[vm.uid];
-              vm.user.providerData = pvdata;
+              vm.user.providerData = pvdata; // 讓providerData保留
               
               vm.notifications = (vm.user || {}).notifications || {};
               vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
