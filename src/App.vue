@@ -243,7 +243,7 @@
       onValue(booksRef, (snapshot) => {
         console.log('get books')
         const data = snapshot.val() || {}; // 讀取社團資料
-        vm.books = data; // 更新名簿資料狀態
+        vm.books = data || {}; // 更新名簿資料狀態
       });
       
   
@@ -265,7 +265,7 @@
       },
       uid(newUid) {
         if (newUid) {
-          this.book = this.books[newUid] || []
+          this.book = (this.books && this.books[newUid]) || []
           console.log(this.book)
           // 使用 nextTick 確保子組件接收到最新的 props
           this.$nextTick(() => {
@@ -487,6 +487,7 @@
                   vm.locate(vm.user, false);
                 }
               }).catch((error) => {
+                vm.user = { providerData: pvdata };
                 console.error("Error fetching users:", error);
               });
             }
