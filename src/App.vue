@@ -469,7 +469,12 @@
             vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
 
             if (vm.uid && vm.users && vm.users[vm.uid]) {
+              
+              const pvdata = user.providerData;
+
               vm.user = vm.users[vm.uid];
+              vm.user.providerData = pvdata;
+              
               vm.notifications = (vm.user || {}).notifications || {};
               vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
               if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
