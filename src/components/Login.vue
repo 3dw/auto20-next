@@ -7,7 +7,7 @@
             .content Login to your account
           
           //- Google Login Button
-          .ui.fluid.large.orange.button
+          .ui.fluid.large.orange.button(@click="loginGoogle")
             i.google.icon
             | Login with Google
 
@@ -39,6 +39,11 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: "LoginBox",
+  methods: {
+    loginGoogle: function () {
+      this.$emit('loginGoogle', true);
+    }
+  }
 });
 </script>
 

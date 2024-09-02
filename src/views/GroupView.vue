@@ -42,7 +42,7 @@
               p 成員：
                 span(v-for="m in groups[$route.params.idx].members")
                   router-link(:to="'/flag/' + m", v-if="isUser(m)")
-                    img.ui.avatar(:src="users[m].photoURL", alt="users[m].n")
+                    img.ui.avatar(:src="users[m].photoURL", :alt="users[m].n")
                 span(v-if="uid")
                   a.ui.green.tiny.button(v-if="isUser(uid) && !isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
                   a.ui.red.tiny.button(v-if="isUser(uid) && isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}

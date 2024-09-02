@@ -133,7 +133,7 @@
   
   chatbox#ch(@loginGoogle = "loginGoogle", :uid = "uid", :user="user", :photoURL="photoURL")
   
-  login(v-if="showLogin")
+  login(v-if="showLogin", @loginGoogle="loginGoogle")
 
   </template>
   
@@ -460,6 +460,7 @@
         } else {
           signInWithPopup(auth, provider).then((result) => {
             const user = result.user;
+            vm.showLogin = false;
             vm.user = user;
             vm.email = user.providerData[0].email;
             vm.uid = user.uid;
