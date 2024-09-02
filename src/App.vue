@@ -462,52 +462,38 @@
         } else {
           signInWithPopup(auth, provider).then((result) => {
             const user = result.user;
-            console.log(user)
+            console.log(user);
+
             vm.showLogin = false;
-            vm.user = user;
             vm.email = user.providerData[0].email;
             vm.uid = user.uid;
-
-            console.log(vm.uid);
             vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
 
-            if (vm.uid && vm.users && vm.users[vm.uid] && vm.users[vm.uid].email) {
-              
-              const pvdata = user.providerData; // 讓providerData保留 
-              console.log(pvdata)
+            const pvdata = user.providerData; // 讓providerData保留
 
-              vm.user = vm.users[vm.uid];
-              vm.user.providerData = pvdata; // 讓providerData保留
-              
-              vm.notifications = (vm.user || {}).notifications || {};
-              vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
-              if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
-                this.locate(vm.users[vm.uid], false);
+            if (vm.users && vm.users[vm.uid]) {
+              vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+              vm.updateNotifications();
+              if (vm.user.latlngColumn) {
+                vm.locate(vm.user, false);
               }
             } else {
-              // 用GET的方法，用usersRef一次性取得users的資料，再加上.then
               get(usersRef).then((snapshot) => {
                 const data = snapshot.val();
-                vm.users = data; // 更新用戶資料狀態
-                const pvdata = user.providerData; // 讓providerData保留 
-              
-                vm.user = vm.users[vm.uid];
-                
-                vm.user.providerData = pvdata; // 讓providerData保留
-                
-                vm.notifications = (vm.user || {}).notifications || {};
-                vm.unreadCount = Object.values(vm.notifications as object).filter(n => !n.isRead).length;
-                if (vm.uid && vm.users[vm.uid] && vm.users[vm.uid].latlngColumn) {
-                  this.locate(vm.users[vm.uid], false);
+                vm.users = data;
+                vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+                vm.updateNotifications();
+                if (vm.user.latlngColumn) {
+                  vm.locate(vm.user, false);
                 }
               }).catch((error) => {
                 console.error("Error fetching users:", error);
               });
             }
+
             if (autoredirect) {
-              // 強制重定向的個人頁
-              this.$nextTick().then(() => {
-                vm.$router.push('/profile');                
+              vm.$nextTick().then(() => {
+                vm.$router.push('/profile');
               });
             }
           }).catch((error) => {
@@ -517,7 +503,15 @@
             }
           });
         }
+      },
+
+      updateNotifications: function () {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const vm = this;
+        vm.notifications = (vm.user || {}).notifications || {};
+        vm.unreadCount = Object.values(vm.notifications).filter(n => !n.isRead).length;
       }
+
     }
   });
   
