@@ -449,7 +449,9 @@
           vm.users = {}; // 清除所有用戶資料
           vm.uid = ''; // 清除用戶ID
           vm.photoURL = ''; // 清除用戶頭像URL
-          vm.$router.push('/'); // 導航回首頁          
+          vm.$nextTick().then(() => {
+            vm.$router.push('/'); // 導航回首頁          
+          })
         });
       },
       loginGoogle: function (autoredirect) {
@@ -504,9 +506,9 @@
             }
             if (autoredirect) {
               // 強制重定向的個人頁
-              setTimeout(() => {
+              this.$nextTick().then(() => {
                 vm.$router.push('/profile');                
-              }, 300);
+              });
             }
           }).catch((error) => {
             console.error("Login error:", error);
