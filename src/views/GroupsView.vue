@@ -223,6 +223,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+html, body {
+  overscroll-behavior: none;
+}
+
 .hello {
   font-family: 'Arial', sans-serif;
   color: #333;
