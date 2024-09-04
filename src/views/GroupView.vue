@@ -293,6 +293,9 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>/* Scoped CSS */
 
+html, body {
+  overscroll-behavior: none;
+}
 
 .hello {
   font-family: 'Arial', sans-serif;
