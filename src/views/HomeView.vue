@@ -30,7 +30,8 @@
           canvas: canvas.value,
           //src: "https://cdn.rive.app/animations/vehicles.riv",
           //src: "./assets/vehicles.riv",
-          src: "https://we.alearn.org.tw/vehicles.riv",
+          //src: "https://we.alearn.org.tw/vehicles.riv",
+          src: "https://we.alearn.org.tw/face_tracking.riv",
           //src: "http://localhost:8091/#/vehicles.riv",
           autoplay: true,
           onLoad: () => {
