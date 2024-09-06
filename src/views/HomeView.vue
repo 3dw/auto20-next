@@ -1,104 +1,121 @@
 <template lang="pug">
-.home
-  //.rive-container
-    // 使用正確的路徑載入 Rive 動畫檔案
-    //RiveComponent(:animationFile="new URL('@/assets/face_tracking.riv', import.meta.url).href")
-    //RiveComponent(:animationFile="require('@/assets/face_tracking.riv')")
-  RiveComponent(:animationFile="animationFile") <!-- 使用 script 中的變數 -->
-
-  img#main-img(src="../assets/handshake1.webp", alt="互助互惠")
-  HelloWorld(:uid="uid", :users = "users", :places = "places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")
-
-</template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
-import RiveComponent from '@/components/RiveComponent.vue'; // 導入 RiveComponent
-
-export default defineComponent({
-  name: 'HomeView',
-  components: {
-    HelloWorld,
-    RiveComponent // 在這裡註冊 RiveComponent
-  },
-  setup() {
-    // 在 setup 中處理 `import.meta.url`
-    const animationFile = new URL('face_tracking.riv', import.meta.url).href;
-
-    return {
-      animationFile
-    };
-  },
-  props: {
-    uid: {
-      type: String,
-      required: false,
-      default: () => { 
-        return ''
+  .home
+    img#main-img(src="../assets/handshake1.webp", alt="互助互惠")
+    HelloWorld(:uid="uid", :users="users", :places="places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")
+  
+    .flex.justify-center
+      canvas(ref="canvas" width="400" height="400" class="w-full max-w-[400px]")
+  </template>
+  
+  <script lang="ts">
+  import { defineComponent, onMounted, ref } from 'vue';
+  import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+  import { Rive } from "@rive-app/canvas"; // 引入 Rive
+  
+  export default defineComponent({
+    name: 'HomeView',
+    components: {
+      HelloWorld
+    },
+    setup() {
+      const canvas = ref<HTMLCanvasElement | null>(null);
+  
+      // 在 setup 中處理 Rive 動畫的掛載
+      onMounted(() => {
+        if (!canvas.value) {
+          throw new Error("canvas not found");
+        }
+  
+        const rive = new Rive({
+          canvas: canvas.value,
+          //src: "https://cdn.rive.app/animations/vehicles.riv",
+          //src: "./assets/vehicles.riv",
+          src: "https://auto20-next.pages.dev/vehicles.riv",
+          autoplay: true,
+          onLoad: () => {
+            rive.resizeDrawingSurfaceToCanvas();
+          },
+        });
+      });
+  
+      return {
+        canvas, // 綁定 canvas 到模板
+      };
+    },
+    props: {
+      uid: {
+        type: String,
+        required: false,
+        default: () => { 
+          return ''
+        }
+      },
+      users: {
+        type: Object,
+        required: false,
+        default: () => { 
+          return {}
+        }
+      },
+      places: {
+        type: Object,
+        required: false,
+        default: () => { 
+          return {}
+        }
+      },
+      book: {
+        type: Array,
+        required: false,
+        default: () => { 
+          return []
+        }
+      },
+      mySearch: {
+        type: String,
+        required: false,
+        default: () => { 
+          return ''
+        }
+      },
+      isInApp: {
+        type: Boolean,
+        required: true
       }
     },
-    users: {
-      type: Object,
-      required: false,
-      default: () => { 
-        return {}
+    emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
+    methods: {
+      addBook(uid: string) {
+        console.log(uid);
+        this.$emit('addBook', uid);
+      },
+      removeBook(index: number) {
+        console.log(index);
+        this.$emit('removeBook', index);
+      },
+      locate(h: any, bool: boolean) {
+        this.$emit('locate', h, bool);
+      },
+      loginGoogle() {
+        this.$emit('loginGoogle', true); // 自動重定向
       }
-    },
-    places: {
-      type: Object,
-      required: false,
-      default: () => { 
-        return {}
-      }
-    },
-    book: {
-      type: Array,
-      required: false,
-      default: () => { 
-        return []
-      }
-    },
-    mySearch: {
-      type: String,
-      required: false,
-      default: () => { 
-        return ''
-      }
-    },
-    isInApp: {
-      type: Boolean,
-      required: true
     }
-  },
-  emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
-  methods: {
-    addBook: function (uid:string) {
-      console.log(uid)
-      this.$emit('addBook', uid)
-    },
-    removeBook: function (index:number) {
-      console.log(index)
-      this.$emit('removeBook', index)
-    },
-    // eslint-disable-next-line
-    locate: function (h:any, bool:Boolean) {
-      this.$emit('locate', h, bool)
-    },
-    loginGoogle: function () {
-      this.$emit('loginGoogle', true) //autoredirect
-    }
+  });
+  </script>
+  
+  <style scoped>
+  img#main-img {
+    width: 33vmin !important;
+    border-radius: 50%;
   }
-});
-</script>
-
-<style type="text/css" scoped>
-img#main-img {
-  width: 33vmin !important;
-  border-radius: 50%;
-}
-.rive-container {
-  width: 100%;
-  height: 300px; /* 根據需求調整 */
-}
-</style>
+  .flex.justify-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  canvas {
+    width: 100%;
+    max-width: 400px;
+  }
+  </style>
+  
