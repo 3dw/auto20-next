@@ -1,5 +1,11 @@
 <template lang="pug">
 .home
+  //.rive-container
+    // 使用正確的路徑載入 Rive 動畫檔案
+    //RiveComponent(:animationFile="new URL('@/assets/face_tracking.riv', import.meta.url).href")
+    //RiveComponent(:animationFile="require('@/assets/face_tracking.riv')")
+  RiveComponent(:animationFile="animationFile") <!-- 使用 script 中的變數 -->
+
   img#main-img(src="../assets/handshake1.webp", alt="互助互惠")
   HelloWorld(:uid="uid", :users = "users", :places = "places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")
 
@@ -8,11 +14,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import RiveComponent from '@/components/RiveComponent.vue'; // 導入 RiveComponent
 
 export default defineComponent({
   name: 'HomeView',
   components: {
     HelloWorld,
+    RiveComponent // 在這裡註冊 RiveComponent
+  },
+  setup() {
+    // 在 setup 中處理 `import.meta.url`
+    const animationFile = new URL('face_tracking.riv', import.meta.url).href;
+
+    return {
+      animationFile
+    };
   },
   props: {
     uid: {
@@ -80,5 +96,9 @@ export default defineComponent({
 img#main-img {
   width: 33vmin !important;
   border-radius: 50%;
+}
+.rive-container {
+  width: 100%;
+  height: 300px; /* 根據需求調整 */
 }
 </style>

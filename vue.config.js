@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
+
 module.exports = defineConfig({
   transpileDependencies: true,
   pwa: {
@@ -11,6 +12,18 @@ module.exports = defineConfig({
       exclude: [/\.gitkeep/],
       skipWaiting: true,
       clientsClaim: true
-   }
+    }
+  },
+  chainWebpack: config => {
+    config.module
+      .rule('riv')
+      .test(/\.riv$/)
+      .use('file-loader')
+      .loader('file-loader')
+      .options({
+        name: '[name].[hash].[ext]',
+        outputPath: 'assets/animations',
+      })
+      .end();
   },
 })
