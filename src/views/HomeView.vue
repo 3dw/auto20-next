@@ -28,9 +28,10 @@
   
         const rive = new Rive({
           canvas: canvas.value,
-          src: "https://cdn.rive.app/animations/vehicles.riv",
+          //src: "https://cdn.rive.app/animations/vehicles.riv",
           //src: "./assets/vehicles.riv",
-          //src: "https://auto20-next.pages.dev/vehicles.riv",
+          src: "https://we.alearn.org.tw/vehicles.riv",
+          //src: "http://localhost:8091/#/vehicles.riv",
           autoplay: true,
           onLoad: () => {
             rive.resizeDrawingSurfaceToCanvas();
