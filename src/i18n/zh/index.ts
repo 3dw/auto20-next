@@ -155,6 +155,7 @@ export default {
       update_intro: '更新社團簡介',
       resources: '資源',
       hide_resource: '隱藏該資源',
+      show_resource: '顯示該資源',
       enter_resource: '輸入資源名稱',
       enter_resource_first: '請先輸入資源名稱',
       enter_link: '輸入資源網址',

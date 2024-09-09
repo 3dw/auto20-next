@@ -154,6 +154,7 @@ export default {
       update_intro: "Update Group Introduction",
       resources: "Resources",
       hide_resource: 'Hide Resource',
+      show_resource: 'Show Resource',
       enter_resource: "Enter Resource",
       enter_resource_first: "Please enter the resource first",
       enter_link: "Enter Link",
