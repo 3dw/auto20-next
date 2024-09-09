@@ -54,6 +54,7 @@
                     a(:href="r.href", target="_blank", rel="noopener noreferrer")
                       img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
                       | {{r.n}}
+                    .filler
                     a.ui.basic.red.button(v-if="edit", @click="hideResource($route.params.idx, index)")
                       i.hide.icon
                       | {{$t('group.hide_resource')}}
