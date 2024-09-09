@@ -50,10 +50,13 @@
               .column
                 .ui.divided.list
                   .item.left.aligned {{$t('group.resources')}}
-                  .item.left.aligned(v-for="(r, index) in groups[$route.params.idx].res", :key="index + r.n + r.href")
+                  .item.left.aligned(v-for="(r, index) in groups[$route.params.idx].res" :key="index + r.n + r.href", v-show="!r.hidden")
                     a(:href="r.href", target="_blank", rel="noopener noreferrer")
                       img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
                       | {{r.n}}
+                    a.ui.basic.red.button(v-if="edit", @click="hideResource($route.params.idx, index)")
+                      i.hide.icon
+                      | {{$t('group.hide_resource')}}
                   .item.ui.form(v-show="uid && edit")
                     .field
                       .ui.labeled.input
@@ -232,6 +235,17 @@ export default defineComponent({
         }
       })
       // console.log(this.groups)
+    },
+    hideResource(idx, resIndex) {
+      // 設定該資源的 hidden 為 true
+      this.groups[idx].res[resIndex].hidden = true;
+      set(ref(db, 'groups/' + idx + '/res/' + resIndex + '/hidden'), true)
+        .then(() => {
+          console.log(this.$t('groups.update_sucess'));
+        })
+        .catch(error => {
+          console.error(this.$t('groups.update_failed'), error);
+        });
     },
     addNotificationByUid(uid, text, route) {
       const notification = {

@@ -10,7 +10,7 @@
   <script lang="ts">
   import { defineComponent, onMounted, ref } from 'vue';
   import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
-  import { Rive } from "@rive-app/canvas"; // 引入 Rive
+  // import { Rive } from "@rive-app/canvas"; // 引入 Rive
   
   export default defineComponent({
     name: 'HomeView',
@@ -22,7 +22,7 @@
   
       // 在 setup 中處理 Rive 動畫的掛載
       onMounted(() => {
-        if (!canvas.value) {
+        /* if (!canvas.value) {
           throw new Error("canvas not found");
         }
   
@@ -37,7 +37,7 @@
           onLoad: () => {
             rive.resizeDrawingSurfaceToCanvas();
           },
-        });
+        }); */
       });
   
       return {
