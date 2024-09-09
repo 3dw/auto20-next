@@ -32,7 +32,7 @@
           //src: "./assets/vehicles.riv",
           //src: "https://we.alearn.org.tw/vehicles.riv",
           //src: "https://we.alearn.org.tw/Area_Multiplication.riv",
-          //src: "http://localhost:8091/#/vehicles.riv",
+          //src: "./vehicles.riv",
           autoplay: true,
           onLoad: () => {
             rive.resizeDrawingSurfaceToCanvas();
