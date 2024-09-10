@@ -225,10 +225,14 @@ export default defineComponent({
     addRes (idx) {
       this.groups[idx].res = this.groups[idx].res || []
       this.groups[idx].res.push(
-        { n: this.newResName, href: this.newHref })
+        { 
+          n: this.newResName,
+          href: this.newHref,
+          likes: [this.uid]
+        })
       this.newResName = ''
       this.newHref = ''
-      set(ref(db, 'groups'), this.groups).then(
+      set(ref(db, 'groups/' + idx), this.groups[idx]).then(
         //console.log('groups更新成功')
         console.log(this.$t('groups.update_sucess'))
       )
