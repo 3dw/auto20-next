@@ -74,6 +74,9 @@
     template(#addons)
       // navigation
       // pagination
+  // 教學組件，根據登錄狀態和顯示狀態來控制顯示
+  //Tutorial(v-if="isLoggedIn && showTutorial" @hideTutorial="showTutorial = false")    
+  Tutorial(v-if="uid&& showTutorial" @hideTutorial="showTutorial = false" :uid="uid", :users="users", :places="places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")  
   
   .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
     router-link.item(to="/")
@@ -139,7 +142,7 @@
   
   <script lang="ts">
   import { defineComponent } from 'vue';
-
+  import Tutorial from './components/TutorialComponent.vue'; // 引入 Tutorial.vue 組件
   import { showLogin } from './testOnly'; // 導入測試開關
 
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
@@ -183,7 +186,8 @@
       Pagination,
       Navigation,
       Chatbox,
-      Login
+      Login,
+      Tutorial,  // 加入 Tutorial 組件
     },
     data () {
       return {
@@ -218,6 +222,9 @@
         idx_for_no: null as [any] | null, // 定義社團資料變量
         notifications: [] as any[],
         unreadCount: 0,
+        //isLoggedIn: false, // 定義是否登入
+        showTutorial: true // 控制 Tutorial 組件顯示狀態
+        
       }
     },
     mounted () {
@@ -227,6 +234,7 @@
       onValue(usersRef, (snapshot) => {
         const data = snapshot.val(); // 讀取用戶資料
         vm.users = data; // 更新用戶資料狀態
+        //vm.isLoggedIn = !!this.uid; // 根據 uid 判斷是否登入
       });
       /* onValue(placesRef, (snapshot) => {
         const data = snapshot.val(); // 讀取地點資料
