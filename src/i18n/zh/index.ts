@@ -147,6 +147,8 @@ export default {
       out_confirm: '確認您要退出社團嗎？',
     },
     group: {
+      like: '推薦',
+      likes: '人推薦',
       edit_group: '編輯社團資料',
       delete_group: '刪除該社團',
       explore_groups: '探索所有社團',

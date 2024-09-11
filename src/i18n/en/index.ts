@@ -146,6 +146,8 @@ export default {
       out_confirm: "Are you sure you want to leave the group?",
     },
     group: {
+      like: "Like",
+      lites: "Likes",
       edit_group: " Group Editing",
       delete_group: 'Detele This Group',
       explore_groups: "Explore All Groups",

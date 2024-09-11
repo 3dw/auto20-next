@@ -1,7 +1,7 @@
 <template lang="pug">
 .tutorial
   h2 新手任務
-  progress(:value="someTaskCompleted.filter((b) => { return b}).length * 25" max="100")
+  progress(:value="(someTaskCompleted || []).filter((b) => { return b}).length * 25" max="100")
   .ui.list
     .item.left-aligned(v-for="(task, index) in tasks" :key="index")
       router-link(:to = "task.route") {{ task.name }}
@@ -20,12 +20,13 @@ export default {
       tasks: [
         { name: '升起互助旗', route: '/profile' },
         { name: '將一位夥伴加入名簿', route: '/book' },
-        { name: '加入一個社團', route: '/group' },
-        { name: '在社團中建立一個資源', route: '/group' },
+        { name: '加入或創建一個社團', route: '/group' },
+        { name: '在社團中推薦一個資源', route: '/group' },
       ],
       allTasksCompleted: false,
     };
   },
+  props: ['someTaskCompleted'],
   methods: {
     hideTutorial() {
       this.$emit('hideTutorial');

@@ -55,13 +55,21 @@
                       img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
                       | {{r.n}}
                     .filler
-
                     a.ui.basic.green.button(v-if="edit && r.hidden", @click="showResource($route.params.idx, index)")
                       i.eye.icon
                       | {{$t('group.show_resource')}}
                     a.ui.basic.red.button(v-if="edit && !r.hidden", @click="hideResource($route.params.idx, index)")
                       i.hide.icon
                       | {{$t('group.hide_resource')}}
+                    
+                    // 新增喜歡按鈕
+                    a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", @click="likeResource($route.params.idx, index)")
+                      i.thumbs.up.icon
+                      | {{$t('group.like')}}
+                    span.red(v-if="r.likes && r.likes.length > 0")
+                      i.heart.icon
+                      | {{r.likes.length}} {{$t('group.likes')}}
+
                   .item.ui.form(v-show="uid && edit")
                     .field
                       .ui.labeled.input
@@ -194,6 +202,24 @@ export default defineComponent({
       return list.filter(function (g) {
         return JSON.stringify(g).indexOf(k) > -1
       })
+    },
+    likeResource(idx, resIndex) {
+      // 檢查該資源是否已經存在推薦人列表
+      this.groups[idx].res[resIndex].likes = this.groups[idx].res[resIndex].likes || [];
+
+      // 如果使用者尚未推薦，則將他們的 uid 加入到推薦人列表中
+      if (!(this.groups[idx].res[resIndex].likes || []).includes(this.uid)) {
+        this.groups[idx].res[resIndex].likes.push(this.uid);
+
+        // 將更新後的資源列表儲存到 Firebase
+        set(ref(db, 'groups/' + idx + '/res/' + resIndex), this.groups[idx].res[resIndex])
+          .then(() => {
+            console.log(this.$t('groups.update_sucess'));
+          })
+          .catch(error => {
+            console.error(this.$t('groups.update_failed'), error);
+          });
+      }
     },
     addChat (idx) {
       var o = {
