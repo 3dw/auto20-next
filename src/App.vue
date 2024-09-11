@@ -76,7 +76,9 @@
       // pagination
   // 教學組件，根據登錄狀態和顯示狀態來控制顯示
   //Tutorial(v-if="isLoggedIn && showTutorial" @hideTutorial="showTutorial = false")    
-  Tutorial(v-if="uid&& showTutorial" @hideTutorial="showTutorial = false" :uid="uid", :users="users", :places="places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")  
+  Tutorial(v-if="uid && showTutorial && !allTasksCompleted",
+  @hideTutorial="showTutorial = false",
+  :someTaskCompleted = "someTaskCompleted")  
   
   .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
     router-link.item(to="/")
@@ -192,6 +194,8 @@
     data () {
       return {
         showLogin: showLogin, // Login測試開關
+        allTasksCompleted: false,
+        someTaskCompleted: [false, false, false, false],
         mySearch: '',
         news: [
           'upgrading',
@@ -364,6 +368,17 @@
           return g.idx
         })
       },
+      likesGroupRes () {
+        var ans = false;
+        for (let i = 0; i < (this.groups || []).length; i++) {
+          for (let j = 0; j < ((this.groups || [])[i].res || []).length; j++) {
+            if (((this.groups || [])[i].res.likes || []).indexOf(this.uid) > -1) {
+              ans = true
+            }
+          }
+        }
+        return ans;
+      },
       changeZh() {
         this.$i18n.locale = 'zh';
         localStorage.setItem('lang', 'zh');
@@ -462,6 +477,44 @@
           })
         });
       },
+      checkAllTasks() {
+        this.allTasksCompleted = this.user.allTasksCompleted || false;
+        
+        // check Task1: 是否有升起旗幟
+        if ( this.users && this.users[this.uid] && this.users[this.uid].name ) {
+          this.someTaskCompleted[0] = true
+        }
+        // check Task2: 是否有加入名簿
+        if ( this.books && this.books[this.uid] && this.books[this.uid][0]) {
+          this.someTaskCompleted[1] = true
+        }   
+        // check Task3: 是否有參與或創建社團
+        if ( this.myGroupIdx().length > 0 ) {
+          this.someTaskCompleted[2] = true
+        }
+
+        // check Task4: 是否有推薦資源
+        if ( this.likesGroupRes())   {  
+          this.someTaskCompleted[3] = true
+        }
+
+        var allTasksCompleted = true
+        for (let i = 0; i < this.someTaskCompleted.length; i++) {
+          if (!this.someTaskCompleted[i]) {
+            allTasksCompleted = false
+          }
+        }
+        this.allTasksCompleted = allTasksCompleted
+
+        if (this.allTasksCompleted) {
+          set(ref(db, 'users/' + this.uid + '/allTaskComleted'), true).then(() => {
+            console.log('All Task Completed.');
+          }).catch((err) => {
+            console.error(err)
+          })
+        }
+
+      },
       loginGoogle: function (autoredirect) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
@@ -482,6 +535,7 @@
             if (vm.users && vm.users[vm.uid]) {
               vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData
               vm.updateNotifications();
+              vm.checkAllTasks(); // 檢查是否完成所有新手任務
               if (vm.user.latlngColumn) {
                 vm.locate(vm.user, false);
               }
@@ -491,6 +545,7 @@
                 vm.users = data;
                 vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData 
                 vm.updateNotifications();
+                vm.checkAllTasks(); // 檢查是否完成所有新手任務
                 if (vm.user.latlngColumn) {
                   vm.locate(vm.user, false);
                 }
