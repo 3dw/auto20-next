@@ -483,6 +483,8 @@
         // check Task1: 是否有升起旗幟
         if ( this.users && this.users[this.uid] && this.users[this.uid].name ) {
           this.someTaskCompleted[0] = true
+        } else {
+          this.someTaskCompleted[0] = false
         }
         // check Task2: 是否有加入名簿
         if ( this.books && this.books[this.uid] && this.books[this.uid][0]) {
@@ -540,7 +542,8 @@
                 vm.locate(vm.user, false);
               }
             } else {
-              get(usersRef).then((snapshot) => {
+              //get(usersRef).then((snapshot) => {
+              onValue(usersRef, (snapshot) => {  
                 const data = snapshot.val();
                 vm.users = data;
                 vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData 
@@ -549,7 +552,8 @@
                 if (vm.user.latlngColumn) {
                   vm.locate(vm.user, false);
                 }
-              }).catch((error) => {
+              //}).catch((error) => {
+              }, (error) => {  
                 vm.user = { providerData: pvdata };  //無論如何保留住providerData
                 console.error("Error fetching users:", error);
               });
