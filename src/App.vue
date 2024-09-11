@@ -372,7 +372,7 @@
         var ans = false;
         for (let i = 0; i < (this.groups || []).length; i++) {
           for (let j = 0; j < ((this.groups || [])[i].res || []).length; j++) {
-            if (((this.groups || [])[i].res.likes || []).indexOf(this.uid) > -1) {
+            if (((this.groups || [])[i].res[j].likes || []).indexOf(this.uid) > -1) {
               ans = true
             }
           }
