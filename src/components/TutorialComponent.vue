@@ -1,11 +1,12 @@
 <template lang="pug">
 .tutorial
-  h2 新手任務
-  progress(:value="(someTaskCompleted || []).filter((b) => { return b}).length * 25" max="100")
-  .ui.list
-    .item.left-aligned(v-for="(task, index) in tasks" :key="index")
-      router-link(:to = "task.route") {{ task.name }}
-      span(v-show="someTaskCompleted[index]") ✔️
+  #tutorial-container.ui.container
+    h2 新手任務
+    progress.ui.progress(:value="(someTaskCompleted || []).filter((b) => { return b}).length * 25" max="100")
+    .ui.list
+      .item.left.aligned(v-for="(task, index) in tasks" :key="index")
+        router-link(:to = "task.route") {{ task.name }}
+        span(v-show="someTaskCompleted[index]") ✔️
   button.ui.green.button(v-if="allTasksCompleted" @click="hideTutorial")
     i.hide.icon
     | 隱藏新手任務
@@ -40,18 +41,32 @@ export default {
   padding: 20px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#tutorial-container {
+  margin: 0 auto;
+  display: flex;
+  width: fit-content !important;
+  flex-direction: column;
 }
 ul {
   list-style: none;
   padding: 0;
 }
+
 li {
   margin: 10px 0;
 }
-progress {
+
+progress.ui.progress {
   margin-left: 10px;
   vertical-align: middle;
+  border-radius: 10px !important;
+  overflow: hidden;
 }
+
 button {
   margin-top: 20px;
   padding: 10px 20px;

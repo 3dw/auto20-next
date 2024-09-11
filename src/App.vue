@@ -78,7 +78,7 @@
   //Tutorial(v-if="isLoggedIn && showTutorial" @hideTutorial="showTutorial = false")    
   Tutorial(v-if="uid && showTutorial && !allTasksCompleted",
   @hideTutorial="showTutorial = false",
-  :someTaskCompleted = "someTaskCompleted")  
+  :someTaskCompleted = "checkAllTasks()")  
   
   .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
     router-link.item(to="/")
@@ -148,7 +148,7 @@
   import { showLogin } from './testOnly'; // 導入測試開關
 
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { get, set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
@@ -195,7 +195,8 @@
       return {
         showLogin: showLogin, // Login測試開關
         allTasksCompleted: false,
-        someTaskCompleted: [false, false, false, false],
+        taskEventFired: false,
+        //someTaskCompleted: [false, false, false, false],
         mySearch: '',
         news: [
           'upgrading',
@@ -478,43 +479,48 @@
         });
       },
       checkAllTasks() {
-        this.allTasksCompleted = this.user.allTasksCompleted || false;
+        var someTaskCompleted = [ false, false, false, false]
+
+        this.allTasksCompleted = (this.user || {}).allTasksCompleted || false;
         
         // check Task1: 是否有升起旗幟
         if ( this.users && this.users[this.uid] && this.users[this.uid].name ) {
-          this.someTaskCompleted[0] = true
+          someTaskCompleted[0] = true
         } else {
-          this.someTaskCompleted[0] = false
+          someTaskCompleted[0] = false
         }
         // check Task2: 是否有加入名簿
         if ( this.books && this.books[this.uid] && this.books[this.uid][0]) {
-          this.someTaskCompleted[1] = true
+          someTaskCompleted[1] = true
         }   
         // check Task3: 是否有參與或創建社團
         if ( this.myGroupIdx().length > 0 ) {
-          this.someTaskCompleted[2] = true
+          someTaskCompleted[2] = true
         }
 
         // check Task4: 是否有推薦資源
         if ( this.likesGroupRes())   {  
-          this.someTaskCompleted[3] = true
+          someTaskCompleted[3] = true
         }
 
         var allTasksCompleted = true
-        for (let i = 0; i < this.someTaskCompleted.length; i++) {
-          if (!this.someTaskCompleted[i]) {
+        for (let i = 0; i < someTaskCompleted.length; i++) {
+          if (!someTaskCompleted[i]) {
             allTasksCompleted = false
           }
         }
         this.allTasksCompleted = allTasksCompleted
 
-        if (this.allTasksCompleted) {
+        if (this.allTasksCompleted && !this.taskEventFired) {
           set(ref(db, 'users/' + this.uid + '/allTaskComleted'), true).then(() => {
+            this.taskEventFired = true;
             console.log('All Task Completed.');
           }).catch((err) => {
             console.error(err)
           })
         }
+
+        return someTaskCompleted
 
       },
       loginGoogle: function (autoredirect) {
@@ -537,7 +543,6 @@
             if (vm.users && vm.users[vm.uid]) {
               vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData
               vm.updateNotifications();
-              vm.checkAllTasks(); // 檢查是否完成所有新手任務
               if (vm.user.latlngColumn) {
                 vm.locate(vm.user, false);
               }
@@ -548,7 +553,6 @@
                 vm.users = data;
                 vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData 
                 vm.updateNotifications();
-                vm.checkAllTasks(); // 檢查是否完成所有新手任務
                 if (vm.user.latlngColumn) {
                   vm.locate(vm.user, false);
                 }
