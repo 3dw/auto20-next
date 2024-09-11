@@ -1,4 +1,7 @@
 /* 一般性的廣域設計宣告  */
+html, body {
+  overscroll-behavior: none;
+}
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
