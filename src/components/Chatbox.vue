@@ -128,8 +128,8 @@
             console.log('chats更新成功')
           );
         },
-        loginGoogle() {
-          this.$emit('loginGoogle');
+        loginGoogle(autoredirect, keeploggedin) {
+          this.$emit('loginGoogle', autoredirect, keeploggedin);
         },
         toggleLogin() {
           this.$emit('toggleLogin');

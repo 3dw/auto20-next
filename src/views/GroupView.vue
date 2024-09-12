@@ -168,8 +168,8 @@ export default defineComponent({
         return Object.values(obj)
       }
     },
-    loginGoogle: function (autoredirect) {
-      this.$emit('loginGoogle', autoredirect)
+    loginGoogle(autoredirect, keeploggedin) {
+      this.$emit('loginGoogle', autoredirect, keeploggedin);
     },
     toggleLogin() {
       this.$emit('toggleLogin');

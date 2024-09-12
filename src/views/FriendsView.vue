@@ -137,8 +137,8 @@ export default defineComponent({
     }
   },
   methods: {
-    loginGoogle (autoredirect) {
-      this.$emit('loginGoogle', autoredirect)
+    loginGoogle(autoredirect, keeploggedin) {
+      this.$emit('loginGoogle', autoredirect, keeploggedin);
     },
     toggleLogin() {
       this.$emit('toggleLogin');

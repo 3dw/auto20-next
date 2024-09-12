@@ -1,27 +1,27 @@
 <template lang="pug">
 #login-bg.ui.dimmer.modals.visible.active.clickable(style="background: rgba(0, 0, 0, 0.5);", 
   @click="toggleLogin()")
-  .ui.middle.aligned.center.aligned.grid(style="height: 100vh;")
+  #login-main.ui.middle.aligned.center.aligned.grid(style="height: 100vh;")
     .column(style="max-width: 450px;")
       .ui.segment
         h2.ui.teal.image.header
           .content 登入您的帳戶
         
         //- Google Login Button
-        .ui.fluid.large.orange.button(@click="loginGoogle")
+        .ui.fluid.large.orange.button(@click.stop="loginGoogle")
           i.google.icon
           | 以Google帳號登入
 
-        // form.ui.large.form
+        form.ui.large.form
           .ui.segment
-              .field
-                .ui.checkbox
-                      input(type="checkbox" tabindex="0" class="hidden")
-                      label 維持登入狀態
+            .field
+            .ui.checkbox(@click.stop)
+              input(type="checkbox" v-model="keeploggedin")
+              label 維持登入狀態
 
         .ui.horizontal.divider Or
 
-        router-link.ui.large.purple.button(to="/about", @click="toggleLogin()") 瞭解更多
+        router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()") 瞭解更多
 
         //- Email & Password Login Form
         //form.ui.large.form
@@ -44,35 +44,54 @@
 </template>
 
 <script>
-
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   name: "LoginBox",
+  data () {
+    return {
+      keeploggedin: false
+    }
+  },
+  watch: {
+    keeploggedin(newVal) {
+      // 當 keeploggedin 變化時，將其保存到 localStorage
+      localStorage.setItem('keeploggedin', JSON.stringify(newVal));
+    }
+  },
+  mounted() {
+    // 從 localStorage 讀取 keeploggedin 的值
+    const storedValue = localStorage.getItem('keeploggedin');
+    if (storedValue !== null) {
+      this.keeploggedin = JSON.parse(storedValue);
+    }
+  },
   methods: {
     loginGoogle: function () {
       var autoredirect = true;
-      
-      // 檢查當前路由是否是 '/friends' 或 '/maps'
+
       if (this.$route.path === '/friends' || this.$route.path === '/maps') {
         autoredirect = false;
       }
-      
-      // 觸發 loginGoogle 事件，並將 autoredirect 作為參數傳遞
-      this.$emit('loginGoogle', autoredirect);
+
+      this.$emit('loginGoogle', autoredirect, this.keeploggedin);
     },
     toggleLogin: function () {
       this.$emit('toggleLogin');
     }
   }
 });
-
 </script>
+
 
 <style scoped>
 #login-bg {
   position: fixed;
   z-index: 999901 !important;
+}
+
+#login-main {
+  position: relative;
+  z-index: 999902 !important;
 }
 
 .column {

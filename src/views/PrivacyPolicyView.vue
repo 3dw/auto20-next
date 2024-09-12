@@ -28,10 +28,10 @@
     p {{$t('privacy.contact_manager')}}
     ul
       li {{$t('login.em')}}
-        a(href="mailto:bestian@gmail.com") bestian@gmail.com
+        a(href="mailto:leechiuhui@gmail.com") leechiuhui@gmail.com
     button.ui.primary.button(@click="downloadBackup" v-if="user && user.uid") {{$t('privacy.download_backup')}}
-    button.ui.primary.button(@click="loginGoogle" v-else)
-      i.google.icon
+    button.ui.primary.button(@click="toggleLogin" v-else)
+      // i.google.icon
       | {{$t('privacy.lg_download_backup')}}
   </template>
   
@@ -60,8 +60,11 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       },
-      loginGoogle () {
-        this.$emit('loginGoogle')
+      loginGoogle(autoredirect, keeploggedin) {
+        this.$emit('loginGoogle', autoredirect, keeploggedin);
+      },
+      toggleLogin() {
+        this.$emit('toggleLogin')
       }
     }
   };

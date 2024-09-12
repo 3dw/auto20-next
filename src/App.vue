@@ -152,7 +152,11 @@
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
   import { set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
+  import { getAuth, GoogleAuthProvider, signInWithPopup,
+    setPersistence,
+    browserSessionPersistence,
+    browserLocalPersistence
+  } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
   
   import Login from './components/Login.vue'; // 導入Login
@@ -243,29 +247,89 @@
         vm.users = data; // 更新用戶資料狀態
         //vm.isLoggedIn = !!this.uid; // 根據 uid 判斷是否登入
       });
-      /* onValue(placesRef, (snapshot) => {
-        const data = snapshot.val(); // 讀取地點資料
-        vm.places = data; // 更新地點資料狀態
-      }); */
       
+      // 檢查使用者的登入狀態
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // 使用者已登入，讀取基本資料
+          vm.uid = user.uid;
+          vm.email = user.providerData[0].email;
+          vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+
+          const pvdata = user.providerData;
+          
+          // 更新用戶資料和通知
+          if (vm.users && vm.users[vm.uid]) {
+            vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+            vm.updateNotifications();
+            if (vm.user.latlngColumn) {
+              vm.locate(vm.user, false);
+            }
+          } else {
+            const usersPromise: Promise<void> = new Promise((resolve) => {
+              onValue(usersRef, (snapshot) => {
+                const data = snapshot.val();
+                vm.users = data;
+                vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
+                vm.updateNotifications();
+                if (vm.user.latlngColumn) {
+                  vm.locate(vm.user, false);
+                }
+                resolve();
+              }, (error) => {
+                vm.user = { providerData: pvdata };
+                console.error("Error fetching users:", error);
+              });
+            });
+            const booksPromise: Promise<void> = new Promise((resolve) => {
+              onValue(booksRef, (snapshot) => {
+                vm.books = snapshot.val() || {};
+                vm.book = vm.books[vm.uid] || [];
+                resolve();
+              });
+            });
+
+            const groupsPromise: Promise<void> = new Promise((resolve) => {
+              onValue(groupsRef, (snapshot) => {
+                vm.groups = snapshot.val();
+                resolve();
+              });
+            });
+
+            // 等待所有資料加載完成後執行
+            Promise.all([usersPromise, booksPromise, groupsPromise]).then(() => {
+              vm.$nextTick(() => {
+                vm.checkAllTasks();  // 所有資料準備好後再檢查任務
+              });
+            });
+            
+          }
+
+          // 1. 更新書本資料
+          vm.book = (vm.books && vm.books[vm.uid]) || [];
+          console.log(vm.book);
+          
+          // 使用 nextTick 確保子組件接收到最新的 props
+          vm.$nextTick(() => {
+            console.log('Book updated and propagated to children');
+          });
+
+          // 2. 路由重定向到 /profile
+          vm.$router.push('/profile');
+        }
+      });
+
+      // 其他 onValue 監聽
       onValue(groupsRef, (snapshot) => {
-        const data = snapshot.val(); // 讀取社團資料
-        vm.groups = data; // 更新社團資料狀態
-        // vm.setupGroupListeners(); // 設置監聽器
+        const data = snapshot.val();
+        vm.groups = data;
       });
-      
-      
+
       onValue(booksRef, (snapshot) => {
-        console.log('get books')
-        const data = snapshot.val() || {}; // 讀取社團資料
-        vm.books = data || {}; // 更新名簿資料狀態
+        console.log('get books');
+        const data = snapshot.val() || {};
+        vm.books = data || {};
       });
-      
-  
-      /* if (localStorage.getItem('book')) {
-        console.log(localStorage.getItem('book'))
-        this.book = JSON.parse(localStorage.getItem('book') || '') // 讀取名簿資料變量 ;
-      } */
     },
     watch: {
       $route (to, from) {
@@ -280,7 +344,7 @@
       },
       uid(newUid) {
         if (newUid) {
-          this.book = (this.books && this.books[newUid]) || []
+          this.book = (this.books && this.books[newUid]) || [];
           console.log(this.book)
           // 使用 nextTick 確保子組件接收到最新的 props
           this.$nextTick(() => {
@@ -528,60 +592,63 @@
         return someTaskCompleted
 
       },
-      loginGoogle: function (autoredirect) {
+      loginGoogle: function (autoredirect, keeploggedin) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
         if (this.isInApp) {
           window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
         } else {
-          signInWithPopup(auth, provider).then((result) => {
-            const user = result.user;
-            console.log(user);
+          const persistence = keeploggedin ? browserLocalPersistence : browserSessionPersistence;
+          
+          setPersistence(auth, persistence).then(() => {
+            signInWithPopup(auth, provider).then((result) => {
+              const user = result.user;
+              console.log(user);
 
-            vm.showLogin = false;
-            vm.email = user.providerData[0].email;
-            vm.uid = user.uid;
-            vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+              vm.showLogin = false;
+              vm.email = user.providerData[0].email;
+              vm.uid = user.uid;
+              vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
 
-            const pvdata = user.providerData; // 讓providerData保留
+              const pvdata = user.providerData;
 
-            if (vm.users && vm.users[vm.uid]) {
-              vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData
-              vm.updateNotifications();
-              if (vm.user.latlngColumn) {
-                vm.locate(vm.user, false);
-              }
-            } else {
-              //get(usersRef).then((snapshot) => {
-              onValue(usersRef, (snapshot) => {  
-                const data = snapshot.val();
-                vm.users = data;
-                vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };  //無論如何保留住providerData 
+              if (vm.users && vm.users[vm.uid]) {
+                vm.user = { ...vm.users[vm.uid], providerData: pvdata };
                 vm.updateNotifications();
                 if (vm.user.latlngColumn) {
                   vm.locate(vm.user, false);
                 }
-              //}).catch((error) => {
-              }, (error) => {  
-                vm.user = { providerData: pvdata };  //無論如何保留住providerData
-                console.error("Error fetching users:", error);
-              });
-            }
+              } else {
+                onValue(usersRef, (snapshot) => {
+                  const data = snapshot.val();
+                  vm.users = data;
+                  vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
+                  vm.updateNotifications();
+                  if (vm.user.latlngColumn) {
+                    vm.locate(vm.user, false);
+                  }
+                }, (error) => {
+                  vm.user = { providerData: pvdata };
+                  console.error("Error fetching users:", error);
+                });
+              }
 
-            if (autoredirect) {
-              vm.$nextTick().then(() => {
-                vm.$router.push('/profile');
-              });
-            }
+              if (autoredirect) {
+                vm.$nextTick().then(() => {
+                  vm.$router.push('/profile');
+                });
+              }
+            }).catch((error) => {
+              console.error("Login error:", error);
+              if (error.message.includes('sessionStorage')) {
+                window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
+              }
+            });
           }).catch((error) => {
-            console.error("Login error:", error);
-            if (error.message.includes('sessionStorage')) {
-              window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
-            }
+            console.error("Persistence error:", error);
           });
         }
       },
-
       updateNotifications: function () {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;

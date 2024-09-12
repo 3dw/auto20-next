@@ -32,8 +32,8 @@ export default defineComponent({
     const router = useRouter();
 
     // Added loginGoogle method
-    function loginGoogle(autoredirect) {
-      emit('loginGoogle', autoredirect);
+    function loginGoogle(autoredirect, keeploggedin) {
+      emit('loginGoogle', autoredirect, keeploggedin);
     }
 
     function toggleLogin () {

@@ -100,8 +100,8 @@
       locate(h: any, bool: boolean) {
         this.$emit('locate', h, bool);
       },
-      loginGoogle() {
-        this.$emit('loginGoogle', true); // 自動重定向
+      loginGoogle(autoredirect, keeploggedin) {
+        this.$emit('loginGoogle', autoredirect, keeploggedin);
       },
       toggleLogin() {
         console.log('b');

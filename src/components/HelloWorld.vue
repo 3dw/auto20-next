@@ -160,8 +160,8 @@ export default defineComponent({
     locate(h: any, bool: boolean) {
       this.$emit('locate', h, bool);
     },
-    loginGoogle() {
-      this.$emit('loginGoogle', true); // autoredirect
+    loginGoogle(autoredirect, keeploggedin) {
+      this.$emit('loginGoogle', autoredirect, keeploggedin);
     },
     toggleLogin() {
       this.$emit('toggleLogin'); // 切換login鈕

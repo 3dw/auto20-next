@@ -63,8 +63,8 @@ export default defineComponent({
       console.log(uid);
       this.$emit('addBook', uid);
     },
-    loginGoogle() {
-      this.$emit('loginGoogle');
+    loginGoogle(autoredirect, keeploggedin) {
+      this.$emit('loginGoogle', autoredirect, keeploggedin);
     },
     toggleLogin() {
       this.$emit('toggleLogin');

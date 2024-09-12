@@ -190,8 +190,8 @@
       gotoMail (email) {
       window.location.href = `mailto:${email}`
       },
-      loginGoogle: function () {
-        this.$emit('loginGoogle')
+      loginGoogle(autoredirect, keeploggedin) {
+        this.$emit('loginGoogle', autoredirect, keeploggedin);
       },
       toggleLogin() {
         this.$emit('toggleLogin');
