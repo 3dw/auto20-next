@@ -37,6 +37,9 @@ export default {
 </script>
 
 <style scoped>
+
+/*@import "../scss/progressbar.scss"; 會跑版，暫時先不用*/
+
 /* 全域字體與顏色 */
 .tutorial {
   padding: 10px; /* 減少 padding */
