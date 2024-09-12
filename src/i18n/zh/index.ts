@@ -18,6 +18,7 @@ export default {
       logout: '登出',
       lm: '瞭解更多',
       login: '登入',
+      login_to_see_data: '登入以檢視內容',
       login_sucess: '登入成功',
       login_first: '請先登入',
       go_flag: '前往我的旗幟',

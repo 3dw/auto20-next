@@ -18,6 +18,7 @@ export default {
       logout: "Logout",
       lm: "Learn more",
       login: "Login",
+      login_to_see_data: 'Please login first',
       login_sucess: 'Login successfully',
       login_first: 'Please log in first',
       go_flag: "Go to My Flag",
