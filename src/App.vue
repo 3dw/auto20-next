@@ -53,8 +53,8 @@
           router-link.item(v-if="uid", to="/profile")
             i.flag.icon
             | {{ $t('login.fg') }}
-          button.no-border.item(v-else, @click="loginGoogle")
-            i.google.icon
+          button.no-border.item(v-else, @click="toggleLogin")
+            // i.google.icon
             | {{ $t('login.login' )}}
   
           .ui.divider(v-show = "myGroupIdx().length > 0")
@@ -313,9 +313,6 @@
           vm.$nextTick(() => {
             console.log('Book updated and propagated to children');
           });
-
-          // 2. 路由重定向到 /profile
-          vm.$router.push('/profile');
         }
       });
 

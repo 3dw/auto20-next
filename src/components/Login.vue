@@ -69,6 +69,8 @@ export default defineComponent({
     loginGoogle: function () {
       var autoredirect = true;
 
+      console.log(this.$route.path)
+
       if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag')) {
         autoredirect = false;
       }
