@@ -8,7 +8,7 @@
     .ui.grid.container
       .ui.two.column.stackable.row
         .ui.padded.segment.column
-          img(src="../assets/handshake1.webp")
+          img#about-main(src="../assets/handshake1.webp")
           h2.ui.header {{$t('about.what_is_auto20')}}
           p 
             b {{$t('about.auto20')}}

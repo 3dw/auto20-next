@@ -69,7 +69,7 @@ export default defineComponent({
     loginGoogle: function () {
       var autoredirect = true;
 
-      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path.startsWith('/flag')) {
+      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag')) {
         autoredirect = false;
       }
 
