@@ -1,6 +1,7 @@
 //zh 中文语言包
 export default {
     login:{
+      small_hint: '小秘訣：',
       welcome:'歡迎來到自學2.0公益尋友平台',
       hp: '首頁',
       ab: '關於我們',

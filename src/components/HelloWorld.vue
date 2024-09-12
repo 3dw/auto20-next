@@ -1,21 +1,27 @@
 <template lang="pug">
 .hello
-  h4.ui.header {{ $t('login.hd') }}
-  //h4.ui.header 請先登入，升起互助旗，和
-    span {{ toList(users).length > 0 ? toList(users).length : '各' }}
-    | 各位朋友相互認識
+  h4.ui.header(v-if="!uid") {{ $t('login.hd') }}
+  h4.ui.header(v-else) {{ $t('login.small_hint') }}{{ myHint }}
+  
 br
-.ui.huge.buttons
-  button.ui.basic.orange.button(@click="toggleLogin", v-if="!user || !user.uid", :class="{disabled: isInApp}")
+.ui.huge.buttons(v-if="!uid")
+  button.ui.basic.orange.button(@click="toggleLogin", :class="{disabled: isInApp}")
     // i.google.icon
     | {{ $t('login.login' )}}
-  router-link.ui.blue.button(to="/profile", v-else)
-    | {{ $t('login.go_flag' )}}
   .or
   router-link(to="/about").ui.blue.button {{ $t('login.lm' )}}
-  //router-link.ui.basic.orange.button(to="/profile", v-if="!user || !user.uid", :class="{disabled: isInApp}")
-    i.google.icon
-    | 登入
+
+.ui.huge.buttons(v-else)
+  router-link.ui.basic.orange.button(to="/groups")
+    i.object.group.outline.icon.no-float
+    | {{ $t('login.gp') }}
+  .or
+  router-link(to="/book").ui.green.button
+    i.book.icon.no-float
+    | {{ $t('login.bk')}}
+
+
+
 p(v-if="isInApp") 本系統不支援facebook, line等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
 
 //.ui.divider
@@ -35,6 +41,7 @@ loader(v-if = "uid && toList(users).length == 0")
 import { defineComponent } from 'vue';
 import Card from './Card.vue';
 import Loader from './Loader.vue';
+import { hints } from '../data/hints';
 
 interface UserOrPlace {
   lastUpdate?: number;
@@ -82,47 +89,15 @@ export default defineComponent({
   },
   data() {
     return {
-      logic: 'random',
-      shuffledList: [] as UserOrPlace[],
-      newestList: [] as UserOrPlace[]
-    };
+      hints: hints,
+      myHint: '地圖介面讓您能夠根據地理位置就近尋找夥伴。'
+    }
   },
   emits: ['addBook', 'removeBook', 'locate', 'loginGoogle', 'toggleLogin'], // Declare your custom events here
-  computed: {
-    ordered_list(): UserOrPlace[] { // Explicit return type
-      if (this.logic === 'random') {
-        return this.shuffledList;
-      } else {
-        return this.newestList;
-      }
-    }
-  },
   watch: {
-    logic(newVal: string) {
-      if (newVal === 'random') {
-        this.shuffleList();
-      } else if (newVal === 'newest') {
-        this.sortByNewest();
-      }
-    },
-    users: {
-      handler() {
-        this.shuffleList();
-        this.sortByNewest();
-      },
-      deep: true
-    },
-    places: {
-      handler() {
-        this.shuffleList();
-        this.sortByNewest();
-      },
-      deep: true
-    }
   },
   mounted() {
-    this.shuffleList();
-    this.sortByNewest();
+    this.myHint = this.hints[Math.floor(Math.random()*this.hints.length)];
   },
   methods: {
     toList(obj: any): UserOrPlace[] {
@@ -131,23 +106,6 @@ export default defineComponent({
       } else {
         return Object.values(obj);
       }
-    },
-    shuffleList() {
-      const list = this.toList(this.users).concat(this.toList(this.places));
-      for (let i = list.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [list[i], list[j]] = [list[j], list[i]];
-      }
-      this.shuffledList = list;
-    },
-    sortByNewest() {
-      const list = this.toList(this.users).slice().sort((a, b) => {  //.concat(this.toList(this.places))
-        if (!b.lastUpdate || isNaN(b.lastUpdate)) {
-          return -1;
-        }
-        return (b.lastUpdate as number) - (a.lastUpdate as number);
-      });
-      this.newestList = list;
     },
     addBook(uid: string) {
       console.log(uid);

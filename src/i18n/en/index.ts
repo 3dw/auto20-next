@@ -1,6 +1,7 @@
 //en英文语言包 用雙引號取代單引號，因為所包覆的英文句子需要使用單引號，如：it's 或是重點單字都用單引號
 export default {
     login: {
+      small_hint: 'Hint: ',
       welcome:"Welcome to Autonomous Learning 2.0(Auto20) non-profit friend search platform",
       hp:"Home page",
       ab:"About us",

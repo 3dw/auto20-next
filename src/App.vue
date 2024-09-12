@@ -100,7 +100,7 @@
       i.comments.icon.no-float
       | {{ $t('login.polis') }}
     router-link.item(to="/groups")
-      i.object.group.outlin.icon.no-float
+      i.object.group.outline.icon.no-float
       | {{ $t('login.gp') }}
     // router-link.item(to="/polis")
       i.comments.icon.no-float
