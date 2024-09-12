@@ -4,7 +4,7 @@
       h2.ui.header 新手任務
       .progress-container
         progress.ui.progress(:value="!someTaskCompleted[0] ? 0 : (someTaskCompleted || []).filter((b) => { return b}).length * 25" max="100")
-      .ui.divided.list
+      .ui.left.aligned.list
         .item.center.aligned(v-for="(task, index) in tasks" :key="index")
           router-link(:to = "task.route", v-if="index == 0 || someTaskCompleted[0]") 任務{{index+1}}： {{ task.name }}
           span.gray(v-else) 任務{{index+1}}： {{ task.name }}
@@ -58,7 +58,7 @@ export default {
   margin: 0 auto;
   display: flex;
   width: 100%; 
-  max-width: 800px;
+  max-width: 320px !important;
   flex-direction: column;
 }
 
@@ -75,22 +75,22 @@ h2.ui.header {
   padding: 10px 0; /* 減少 padding */
   font-size: 16px; /* 調整字體大小 */
   color: #333;
-  border-bottom: 1px solid #e6e6e6;
+  /* border-bottom: 1px solid #e6e6e6; */
   background-color: #ffffff;
   transition: background-color 0.3s ease;
 }
 
-.ui.list .item:hover {
+/* .ui.list .item:hover {
   background-color: #f0f0f0;
 }
 
 .ui.list .item:nth-child(odd) {
   background-color: #fafafa;
-}
+} 
 
 .ui.list .item:last-child {
   border-bottom: none;
-}
+}  */
 
 /* 進度條容器 */
 .progress-container {
@@ -101,7 +101,7 @@ h2.ui.header {
   padding: 5px 0; /* 減少 padding */
   background-color: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
 }
 
 /* 進度條本身 */
