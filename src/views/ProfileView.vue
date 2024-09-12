@@ -219,8 +219,13 @@
     watch: {
       uid (newU) {
         if (newU) {
-          this.fetchUserData()
+          this.fetchUserData();
         }
+      }
+    },
+    mounted() {
+      if (this.uid) {
+        this.fetchUserData();
       }
     },
     methods: {
