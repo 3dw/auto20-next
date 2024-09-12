@@ -1,6 +1,11 @@
 <template lang="pug">
   .hello
-    loader(v-show="!users")
+    .ui.row(v-if="!users || toList(users).length == 0")
+      .sixteen.wide.column 
+        .ui.huge.buttons
+          button.ui.orange.button(@click="toggleLogin")
+            // i.google.icon
+            | {{ $t('login.login') }}
     .ui.segment.container#flag
       .ui.fluid.card(v-for="(h, index) in toList(users)", v-show="h.uid == $route.params.uid")
         card(v-if="h.uid == $route.params.uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", 
