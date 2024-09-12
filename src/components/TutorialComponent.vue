@@ -3,11 +3,12 @@
     #tutorial-container.ui.container
       h2.ui.header 新手任務
       .progress-container
-        progress.ui.progress(:value="(someTaskCompleted || []).filter((b) => { return b}).length * 25" max="100")
+        progress.ui.progress(:value="!someTaskCompleted[0] ? 0 : (someTaskCompleted || []).filter((b) => { return b}).length * 25" max="100")
       .ui.divided.list
         .item.center.aligned(v-for="(task, index) in tasks" :key="index")
-          router-link(:to = "task.route") 任務{{index+1}}： {{ task.name }}
-          span(v-show="someTaskCompleted[index]")  ✔️
+          router-link(:to = "task.route", v-if="index == 0 || someTaskCompleted[0]") 任務{{index+1}}： {{ task.name }}
+          span.gray(v-else) 任務{{index+1}}： {{ task.name }}
+          span(v-show="someTaskCompleted[index] && someTaskCompleted[0]")  ✔️
     button.ui.button.primary(v-if="allTasksCompleted" @click="hideTutorial")
       i.hide.icon
       | 隱藏新手任務
