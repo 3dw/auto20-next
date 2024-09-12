@@ -42,9 +42,34 @@ button.no-border {
   color: #2c3e50;
 }
 
+// a.router-link-exact-active {
+//   background-color: #ffc107 !important;
+// }
+
 a.router-link-exact-active {
-  background-color: #42b983 !important;
+  background-color: #ffc107 !important; /* 背景色 */
+  color: #fff !important; /* 文字顏色 */
+  border-radius: 5px; /* 圓角 */
+  padding: 10px 15px; /* 增加內邊距 */
+  font-weight: bold; /* 加粗文字 */
+  text-decoration: none; /* 移除底線 */
+  transition: all 0.3s ease; /* 添加過渡效果 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加陰影 */
 }
+
+a.router-link-exact-active:hover {
+  background-color: #e0a800 !important; /* 懸停時的背景色變化 */
+  transform: translateY(-2px); /* 懸停時使元素稍微上移 */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 懸停時增加陰影深度 */
+}
+
+a.router-link-exact-active:active {
+  background-color: #d99e00 !important; /* 點擊時的背景色變化 */
+  transform: translateY(0); /* 點擊時恢復原來位置 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 點擊時縮小陰影 */
+}
+
+
 
 .invisible {
   color: transparent !important;
