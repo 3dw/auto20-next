@@ -3,8 +3,8 @@
   .ui.row(v-if="!uid")
     .sixteen.wide.column 
       .ui.huge.buttons
-        button.ui.orange.button(@click="loginGoogle")
-          i.google.icon
+        button.ui.orange.button(@click="toggleLogin")
+          // i.google.icon
           | {{ $t('login.login') }}
   .ui.container(v-if="users && toList(users).length > 0")
     .ui.grid
@@ -138,6 +138,9 @@ export default defineComponent({
     },
     loginGoogle: function () {
       this.$emit('loginGoogle')
+    },
+    toggleLogin() {
+      this.$emit('toggleLogin');
     },
     isUser(uid) {
       return uid && this.users[uid] && this.users[uid].name

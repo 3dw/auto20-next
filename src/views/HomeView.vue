@@ -1,7 +1,9 @@
 <template lang="pug">
   .home
     img#main-img(src="../assets/handshake1.webp", alt="互助互惠")
-    HelloWorld(:uid="uid", :users="users", :places="places", :book="book", :isInApp="isInApp", @addBook="addBook", @locate="locate", @removeBook="removeBook", @loginGoogle="loginGoogle")
+    HelloWorld(:uid="uid", :users="users", :places="places", :book="book", :isInApp="isInApp", 
+      @addBook="addBook", @locate="locate", @removeBook="removeBook", 
+      @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
   
     .flex.justify-center
       canvas(ref="canvas" width="400" height="400" class="w-full max-w-[400px]")
@@ -85,7 +87,7 @@
         required: true
       }
     },
-    emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
+    emits: ['addBook', 'removeBook', 'locate', 'loginGoogle', 'toggleLogin'], // Declare your custom events here
     methods: {
       addBook(uid: string) {
         console.log(uid);
@@ -100,6 +102,10 @@
       },
       loginGoogle() {
         this.$emit('loginGoogle', true); // 自動重定向
+      },
+      toggleLogin() {
+        console.log('b');
+        this.$emit('toggleLogin'); // 切換login鈕
       }
     }
   });

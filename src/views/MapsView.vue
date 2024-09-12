@@ -3,8 +3,8 @@
   .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
         .sixteen.wide.column 
           .ui.huge.buttons
-            button.ui.orange.button(@click="loginGoogle(false)")
-              i.google.icon
+            button.ui.orange.button(@click="toggleLogin")
+              // i.google.icon
               | {{ $t('login.login' )}}
   loader(v-else-if="!users || toList(users).length == 0")
   .ui.container#map(style="width: 100%; height: 600px;")
@@ -23,7 +23,7 @@ import mix from '../mixins/mix.ts';
 
 export default defineComponent({
   name: 'MapsView',
-  props: ['mySearch', 'zoom', 'center', 'cities', 'users', 'places'],
+  props: ['mySearch', 'zoom', 'center', 'cities', 'users', 'places', 'uid'],
   components: { Loader },
   mixins: [mix],
   setup(props, { emit }) {
@@ -34,6 +34,10 @@ export default defineComponent({
     // Added loginGoogle method
     function loginGoogle(autoredirect) {
       emit('loginGoogle', autoredirect);
+    }
+
+    function toggleLogin () {
+      emit('toggleLogin');
     }
 
     function noHTML (s) {
@@ -159,8 +163,10 @@ export default defineComponent({
     });
 
     return { map, toList, countLatLng, getIcon, getAnIcon,
-      loginGoogle // Make sure to return this method to make it available in the template
-     };
+      loginGoogle,
+      toggleLogin // Make sure to return this method to make it available in the template
+     
+    };
   }
 });
 </script>

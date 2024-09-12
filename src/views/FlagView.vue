@@ -3,7 +3,8 @@
     loader(v-show="!users")
     .ui.segment.container#flag
       .ui.fluid.card(v-for="(h, index) in toList(users)", v-show="h.uid == $route.params.uid")
-        card(v-if="h.uid == $route.params.uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", @loginGoogle="loginGoogle")
+        card(v-if="h.uid == $route.params.uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", 
+        @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
 </template>
 
 <script>
@@ -65,6 +66,9 @@ export default defineComponent({
     loginGoogle() {
       this.$emit('loginGoogle');
     },
+    toggleLogin() {
+      this.$emit('toggleLogin');
+    }
   },
 });
 </script>

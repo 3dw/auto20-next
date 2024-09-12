@@ -3,8 +3,8 @@
   .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
     .sixteen.wide.column 
       .ui.huge.buttons
-        button.ui.orange.button(@click="loginGoogle(false)")
-          i.google.icon
+        button.ui.orange.button(@click="toggleLogin")
+          // i.google.icon
           | {{ $t('login.login') }}
   loader(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
     .ui.grid
@@ -170,6 +170,9 @@ export default defineComponent({
     },
     loginGoogle: function (autoredirect) {
       this.$emit('loginGoogle', autoredirect)
+    },
+    toggleLogin() {
+      this.$emit('toggleLogin');
     },
     isUser(uid) {
       return uid && this.users[uid]

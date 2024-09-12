@@ -193,6 +193,9 @@
       loginGoogle: function () {
         this.$emit('loginGoogle')
       },
+      toggleLogin() {
+        this.$emit('toggleLogin');
+      },
       copyFlagURL (uid) {
         if (!document.hasFocus()) {
           alert("Document does not have focus, cannot copy link.");

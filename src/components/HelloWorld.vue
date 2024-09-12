@@ -6,8 +6,8 @@
     | 各位朋友相互認識
 br
 .ui.huge.buttons
-  button.ui.basic.orange.button(@click="loginGoogle", v-if="!user || !user.uid", :class="{disabled: isInApp}")
-    i.google.icon
+  button.ui.basic.orange.button(@click="toggleLogin", v-if="!user || !user.uid", :class="{disabled: isInApp}")
+    // i.google.icon
     | {{ $t('login.login' )}}
   router-link.ui.blue.button(to="/profile", v-else)
     | {{ $t('login.go_flag' )}}
@@ -87,7 +87,7 @@ export default defineComponent({
       newestList: [] as UserOrPlace[]
     };
   },
-  emits: ['addBook', 'removeBook', 'locate', 'loginGoogle'], // Declare your custom events here
+  emits: ['addBook', 'removeBook', 'locate', 'loginGoogle', 'toggleLogin'], // Declare your custom events here
   computed: {
     ordered_list(): UserOrPlace[] { // Explicit return type
       if (this.logic === 'random') {
@@ -162,6 +162,9 @@ export default defineComponent({
     },
     loginGoogle() {
       this.$emit('loginGoogle', true); // autoredirect
+    },
+    toggleLogin() {
+      this.$emit('toggleLogin'); // 切換login鈕
     }
   }
 });

@@ -131,14 +131,16 @@
   
   br
   
-  router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", @loginGoogle="loginGoogle", @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout")
+  router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
+    @loginGoogle="loginGoogle", @toggleLogin="toggleLogin",
+    @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout")
   
   br
   br
   
-  chatbox#ch(@loginGoogle = "loginGoogle", :uid = "uid", :user="user", :photoURL="photoURL")
+  chatbox#ch(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
   
-  login(v-if="showLogin", @loginGoogle="loginGoogle")
+  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
 
   </template>
   
@@ -321,6 +323,9 @@
             return; // 跳出迴圈
         }
       },*/
+      toggleLogin () {
+        this.showLogin = !this.showLogin;
+      },
       addNotification(text, route) {
         const notification = {
           time: new Date().toISOString(),

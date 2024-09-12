@@ -37,8 +37,8 @@
               a.ui.green.small.button(@click="submitChat") {{ $t('chat.submit') }}
       .item(v-else)
         .ui.big.buttons
-          button.ui.orange.button(@click="loginGoogle()")
-            i.google.icon
+          button.ui.orange.button(@click="toggleLogin")
+            // i.google.icon
             | 登入以留言
 </template>
     
@@ -131,6 +131,9 @@
         loginGoogle() {
           this.$emit('loginGoogle');
         },
+        toggleLogin() {
+          this.$emit('toggleLogin');
+        },
         fil(list) {
           var k = this.key;
           const ks = Object.keys(list);
@@ -172,7 +175,7 @@
     
       .chats {
         position: fixed;
-        z-index: 999999;
+        z-index: 999900;
         bottom: 0;
         right: 0;
         width: 33vw;
