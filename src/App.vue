@@ -148,7 +148,7 @@
   import { showLogin } from './testOnly'; // 導入測試開關
 
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { get, set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
@@ -547,11 +547,11 @@
                 vm.locate(vm.user, false);
               }
             } else {
-              //get(usersRef).then((snapshot) => {
-              onValue(usersRef, (snapshot) => {  
+              get(usersRef).then((snapshot) => {
+              // onValue(usersRef, (snapshot) => {  
                 const data = snapshot.val();
                 vm.users = data;
-                vm.user = { ...vm.users[vm.uid], providerData: pvdata };  //無論如何保留住providerData 
+                vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };  //無論如何保留住providerData 
                 vm.updateNotifications();
                 if (vm.user.latlngColumn) {
                   vm.locate(vm.user, false);
