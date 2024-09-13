@@ -4,7 +4,7 @@
       .column(style="max-width: 400px;")
         .ui.raised.segment
           h2.ui.teal.image.header
-            i.user.circle.outline.icon(style="font-size: 3rem; color: #2185d0;")
+            i.user.circle.icon(style="font-size: 3rem; color: #2185d0;")
             .content(style="padding-left: 10px;") 登入您的帳戶
   
           //- Google Login Button
