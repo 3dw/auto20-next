@@ -8,7 +8,8 @@
             | {{ $t('login.login_to_see_data') }}
     .ui.segment.container#flag(v-if="users && toList(users).length > 0")
       .ui.fluid.card(v-for="(h, index) in toList(users)", v-show="h.uid == $route.params.uid")
-        card(v-if="h.uid == $route.params.uid", :uid="uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", 
+        card(v-if="h.uid == $route.params.uid", :uid="uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", 
+        @addBook="addBook", @removeBook="removeBook",
         @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
     
 </template>
@@ -75,6 +76,10 @@ export default defineComponent({
     addBook(uid) {
       console.log(uid);
       this.$emit('addBook', uid);
+    },
+    removeBook(index) {
+      console.log(index);
+      this.$emit('removeBook', index);
     },
     loginGoogle(autoredirect, keeploggedin) {
       this.$emit('loginGoogle', autoredirect, keeploggedin);
