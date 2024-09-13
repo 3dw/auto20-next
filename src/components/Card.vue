@@ -201,7 +201,7 @@
           alert("Document does not have focus, cannot copy link.");
           return;
         }
-        const copyText = 'https://we.alearn.org.tw/#/flag/' + uid;
+        const copyText = 'https://we.alearn.org.tw/flag/' + uid;
         navigator.clipboard.writeText(copyText)
           .then(() => {
             window.alert("已複製該名片");
