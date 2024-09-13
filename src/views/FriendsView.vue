@@ -5,7 +5,7 @@
       .ui.huge.buttons
         button.ui.orange.button(@click="toggleLogin")
           // i.google.icon
-          | {{ $t('login.login') }}
+          | {{ $t('login.login_to_see_data') }}
   loader(v-else-if="!users || toList(users).length == 0")
   select.ui.dropdown(v-else, v-model="logic")
     option(value="newest") {{$t('friends.recent_updates')}}
