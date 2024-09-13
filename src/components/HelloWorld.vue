@@ -11,7 +11,7 @@ br
   .or
   router-link(to="/about").ui.blue.button {{ $t('login.lm' )}}
 
-.ui.huge.buttons(v-show="!uid")
+.ui.huge.buttons(v-show="uid")
   router-link.ui.basic.orange.button(to="/groups")
     i.object.group.outline.icon.no-float
     | {{ $t('login.gp') }}
