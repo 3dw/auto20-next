@@ -1,101 +1,121 @@
 <template lang="pug">
-.hello
-  .ui.row(v-if="!uid && (!users || toList(users).length == 0)")
-    .sixteen.wide.column 
-      .ui.huge.buttons
-        button.ui.orange.button(@click="toggleLogin")
-          // i.google.icon
-          | {{ $t('login.login_to_see_data') }}
-  loader(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
-    .ui.grid
-      .ui.one.column.row(v-if="groups[$route.params.idx].n")
-        .ui.column.ui.segment
-          h3 〈{{groups[$route.params.idx].n}}〉
-          p {{groups[$route.params.idx].intro}}
-            br.thin-only
-            | &nbsp;&nbsp;&nbsp;&nbsp;
-            a(@click="toggleEdit($route.params.idx)" v-if="isMember(groups[$route.params.idx].idx)")
-              i.edit.icon
-              | {{edit ? $t('login.end') : ''}}{{ $t('group.edit_group') }}
-          p
-            router-link.ui.basic.green.button(to="/groups")
-              i.globe.icon
-              | {{$t('group.explore_groups')}}
-          .ui.form(v-show="edit")
-            .field(v-if="!uid")
-              button.ui.orange.button(@click="loginGoogle()")
-                i.google.icon
-                | {{$t('login.login_first')}}
-            .field
-              .ui.labeled.input
-                label.ui.label {{$t('group.enter_intro')}}
-                textarea(v-model="newIntro" @input="filterInput('newIntro', $event)" :placeholder="$t('group.enter_intro_first')" rows="5" style="width: 100%")
-            .field
-              a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
-                | {{$t('group.update_intro')}}
-          p(v-if="(groups[$route.params.idx].members || []).length === 0")
-            button.ui.red.button(@click="hideGroup($route.params.idx)")
-              i.delete.icon
-              | {{ $t('group.delete_group') }}
-          .ui.grid
-            .row
-              p 成員：
-                span(v-for="m in groups[$route.params.idx].members")
-                  router-link(:to="'/flag/' + m", v-if="isUser(m)")
-                    img.ui.avatar(:src="users[m].photoURL", :alt="users[m].n")
-                span(v-if="uid")
-                  a.ui.green.tiny.button(v-if="isUser(uid) && !isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
-                  a.ui.red.tiny.button(v-if="isUser(uid) && isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}
-            .two.column.stackable.row
-              .column
-                .ui.divided.list
-                  .item.left.aligned {{$t('group.resources')}}
-                  .item.left.aligned(v-for="(r, index) in sortedResources" :key="index + r.n + r.href", v-show="!r.hidden || edit")
-                    .resource-content
-                      a(:href="r.href", target="_blank", rel="noopener noreferrer")
-                        img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
-                        | {{r.n}}
-                      .filler
-                    .resource-buttons
-                      a.ui.basic.green.button(v-if="edit && r.hidden", @click="showResource($route.params.idx, index)")
-                        i.eye.icon
-                        | {{$t('group.show_resource')}}
-                      a.ui.basic.red.button(v-if="edit && !r.hidden", @click="hideResource($route.params.idx, index)")
-                        i.hide.icon
-                        | {{$t('group.hide_resource')}}
-                      a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", v-show="!edit", @click="likeResource($route.params.idx, index)")
-                        i.thumbs.up.icon
-                        | {{$t('group.like')}}
-                      span.red(v-if="r.likes && r.likes.length > 0")
-                        i.heart.icon
-                        | {{r.likes.length}} {{$t('group.likes')}}
+  .hello
+    .ui.container.center.aligned.grid
+      .sixteen.wide.column(v-if="!uid && (!users || toList(users).length == 0)")
+        .ui.huge.buttons.center.aligned
+          button.ui.orange.button(@click="toggleLogin")
+            i.google.icon
+            | {{ $t('login.login_to_see_data') }}
+  
+      loader(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
+        .ui.center.aligned.grid
+          .ui.column.center.aligned(ui-if="groups[$route.params.idx].n")
+            .ui.raised.segment.center.aligned(style="margin-top: 30px; max-width: 800px;")
+              h3.ui.header 〈{{groups[$route.params.idx].n}}〉
+              p.center.aligned {{groups[$route.params.idx].intro}}
+                br.thin-only
+                a(@click="toggleEdit($route.params.idx)" v-if="isMember(groups[$route.params.idx].idx)")
+                  i.edit.icon
+                  | {{edit ? $t('login.end') : ''}}{{ $t('group.edit_group') }}
+            
+              router-link.ui.basic.green.button(to="/groups")
+                i.globe.icon
+                | {{$t('group.explore_groups')}}
+  
+              .ui.form(v-show="edit")
+                .field(v-if="!uid")
+                  button.ui.orange.button(@click="loginGoogle()")
+                    i.google.icon
+                    | {{$t('login.login_first')}}
+                .field
+                  .ui.labeled.input
+                    label.ui.label {{$t('group.enter_intro')}}
+                    textarea(v-model="newIntro" @input="filterInput('newIntro', $event)" :placeholder="$t('group.enter_intro_first')" rows="5", style="width: 100%; font-size: 18px;")
+                .field
+                  a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro($route.params.idx)")
+                    | {{$t('group.update_intro')}}
+              
+              p(v-if="(groups[$route.params.idx].members || []).length === 0")
+                button.ui.red.button(@click="hideGroup($route.params.idx)")
+                  i.delete.icon
+                  | {{ $t('group.delete_group') }}
+              
+              .ui.grid.center.aligned
+                .row
+                  p.center.aligned 成員：
+                    span(v-for="m in groups[$route.params.idx].members")
+                      router-link(:to="'/flag/' + m", v-if="isUser(m)")
+                        img.ui.avatar(:src="users[m].photoURL", :alt="users[m].n")
+                    span(v-if="uid")
+                      a.ui.green.tiny.button(v-if="isUser(uid) && !isMember(groups[$route.params.idx].idx)", @click="join(groups[$route.params.idx].idx)") {{$t('groups.join_group')}}
+                      a.ui.red.tiny.button(v-if="isUser(uid) && isMember(groups[$route.params.idx].idx)", @click="out(groups[$route.params.idx].idx)") {{$t('groups.out_group')}}
+  
+                .two.column.stackable.row
+                  .column
+                    .ui.divided.list.center.aligned
+                      .item.center.aligned {{$t('group.resources')}}
+                      .item.center.aligned(v-for="(r, index) in sortedResources" :key="index + r.n + r.href", v-show="!r.hidden || edit")
+                        .resource-content
+                          a(:href="r.href", target="_blank", rel="noopener noreferrer")
+                            img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
+                            | {{r.n}}
+                          .filler
+                        .resource-buttons
+                          a.ui.basic.green.button(v-if="edit && r.hidden", @click="showResource($route.params.idx, index)")
+                            i.eye.icon
+                            | {{$t('group.show_resource')}}
+                          a.ui.basic.red.button(v-if="edit && !r.hidden", @click="hideResource($route.params.idx, index)")
+                            i.hide.icon
+                            | {{$t('group.hide_resource')}}
+                          a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", v-show="!edit", @click="likeResource($route.params.idx, index)")
+                            i.thumbs.up.icon
+                            | {{$t('group.like')}}
+                          span.red(v-if="r.likes && r.likes.length > 0")
+                            i.heart.icon
+                            | {{r.likes.length}} {{$t('group.likes')}}
+  
+                      //- .item.ui.form.v-show="uid"
+                      //-   .ui.three.stackable.fields
+                      //-     .field.no-margin.no-padding
+                      //-       .ui.labeled.input
+                      //-         label.ui.label {{$t('group.enter_resource')}}
+                      //-         input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 18px; padding: 10px;")
+                      //-     .field.no-margin.no-padding
+                      //-       .ui.labeled.input
+                      //-         label.ui.label {{$t('group.enter_link')}}
+                      //-         input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 18px; padding: 10px;")
+                      //-     .field.no-padding
+                      //-       a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
+                      //-         | {{$t('group.add_resource')}}
+                      .item.ui.form.v-show="uid"
+                        .ui.three.stackable.fields
+                          .field.no-margin.no-padding
+                            .ui.labeled.input
+                              label.ui.label {{$t('group.enter_resource')}}
+                              input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 20px; padding: 15px;")
+                          .field.no-margin.no-padding
+                            .ui.labeled.input
+                              label.ui.label {{$t('group.enter_link')}}
+                              input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 20px; padding: 15px;")
+                          .field.no-padding
+                            a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
+                              | {{$t('group.add_resource')}}
 
-                    
-                  .item.ui.form(v-show="uid")
-                    .ui.three.stackable.fields
-                      .field.no-margin.no-padding
-                        .ui.labeled.input
-                          label.ui.label {{$t('group.enter_resource')}}
-                          input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')")
-                      .field.no-margin.no-padding
-                        .ui.labeled.input
-                          label.ui.label {{$t('group.enter_link')}}
-                          input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')")
-                      .field.no-padding
-                        a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                          | {{$t('group.add_resource')}}
-              .column {{ $t('login.leave_messages') }}
-                .ui.divided.list
-                  .item(v-for="(c, index) in latestChats" :key="index")
-                    img.ui.avatar(:src="c.photoURL")    
-                    | {{c.n}} : {{c.t}}
-                  .item.ui.form(v-if="isMember(groups[$route.params.idx].idx)")
-                    .field
-                      .ui.labeled.input
-                        img.ui.avatar(:src="photoURL")
-                        input.input(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')")
-                        a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}  
+                  
+                  .column.center.aligned {{ $t('login.leave_messages') }}
+                    .ui.divided.list.left.aligned
+                      .item(v-for="(c, index) in latestChats" :key="index")
+                        img.ui.avatar(:src="c.photoURL")    
+                        | {{c.n}} : {{c.t}}
+                      .item.ui.form(v-if="isMember(groups[$route.params.idx].idx)")
+                        .field
+                          .ui.labeled.input
+                            img.ui.avatar(:src="photoURL")
+                            input.input(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')" style="font-size: 18px; padding: 10px;")
+                            a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}
 </template>
+
+  
     
 
 <script>
@@ -367,139 +387,123 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>/* Scoped CSS */
-
-html, body {
+<style scoped>html, body {
   overscroll-behavior: none;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
 }
 
 .hello {
-  font-family: 'Arial', sans-serif;
   color: #333;
 }
 
+.ui.container {
+  margin-top: 40px;
+}
+
 .ui.segment {
-  background-color: #f7f8fa; /* 淺灰色背景 */
-  border: 1px solid #dee2e6; /* 邊框顏色 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
-  border-radius: 8px; /* 圓角 */
-  padding: 20px; /* 內邊距 */
+  background-color: #f7f8fa;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .ui.button.orange {
-  background-color: #f39c12; /* 橙色背景 */
-  color: #fff; /* 白色文字 */
+  background-color: #f39c12;
+  color: #fff;
+  font-weight: bold;
 }
 
 .ui.button.orange:hover {
-  background-color: #e67e22; /* 懸停時更深的橙色 */
+  background-color: #e67e22;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
 .ui.button.green {
-  background-color: #28a745; /* 綠色背景 */
-  color: #fff; /* 白色文字 */
+  background-color: #28a745;
+  color: #fff;
 }
 
 .ui.button.green:hover {
-  background-color: #218838; /* 懸停時更深的綠色 */
+  background-color: #218838;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
 .ui.button.red {
-  background-color: #dc3545; /* 紅色背景 */
-  color: #fff; /* 白色文字 */
+  background-color: #dc3545;
+  color: #fff;
 }
 
 .ui.button.red:hover {
-  background-color: #c82333; /* 懸停時更深的紅色 */
+  background-color: #c82333;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
+/* 增加輸入欄位的大小及視覺效果 */
 .ui.labeled.input .ui.label {
-  background-color: #0056b3; /* 藍色標籤 */
-  color: #fff; /* 白色文字 */
+  background-color: #0056b3;
+  color: #fff;
+  font-size: 18px;
 }
 
 .ui.labeled.input input {
-  border: 1px solid #ced4da; /* 邊框顏色 */
-  border-radius: 4px; /* 圓角 */
-  padding: 10px; /* 內邊距 */
-}
-
-img.ui.avatar {
-  position: relative;
-  top: .6em;
-  width: 40px; /* 調整圖片寬度 */
-  height: 40px; /* 調整圖片高度 */
-  border-radius: 50%; /* 圓形圖片 */
-  border: 2px solid #e9ecef; /* 添加邊框 */
-}
-
-.ui.divided.list .item {
-  padding: 15px 0; /* 項目間距 */
-  border-bottom: 1px solid #dee2e6; /* 底部邊框 */
-}
-
-.ui.divided.list .item:last-child {
-  border-bottom: none; /* 最後一個項目無底部邊框 */
-}
-
-.ui.container {
-  margin-top: 30px; /* 頂部外邊距 */
-}
-
-p {
-  margin-left: 2em;
-  text-align: left;
-}
-
-.item {
-  text-align: left;
-}
-
-a {
-  cursor: pointer;
-  color: #0056b3; /* 超連結顏色 */
-  text-decoration: underline; /* 超連結下劃線 */
-}
-
-a:hover {
-  color: #004494; /* 懸停時超連結顏色 */
-}
-
-.ui.form .field {
-  margin-bottom: 15px; /* 字段間距 */
-}
-
-.ui.form .button {
-  margin-top: 10px; /* 按鈕頂部外邊距 */
-}
-
-p {
-  text-align: left;
-  font-size: 16px;
-  white-space: pre-line !important;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 20px;
+  width: 100%;
 }
 
 textarea {
-  padding: 10px; /* 添加內邊距 */
-  border: 1px solid #ced4da; /* 邊框顏色 */
-  border-radius: 4px; /* 圓角 */
-  font-size: 16px; /* 字體大小 */
+  padding: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 20px;
+  width: 100%;
+}
+
+img.ui.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e9ecef;
+}
+
+.ui.divided.list .item {
+  padding: 15px 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.ui.divided.list .item:last-child {
+  border-bottom: none;
 }
 
 .resource-content {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  flex: 1; /* 讓內容佔據左側 */
 }
 
 .resource-buttons {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 10px; /* 控制按鈕之間的間距 */
-  flex-shrink: 0; /* 防止按鈕區域縮小 */
+  gap: 10px;
 }
 
+a {
+  color: #0056b3;
+  text-decoration: underline;
+}
 
+a:hover {
+  color: #004494;
+}
 </style>
