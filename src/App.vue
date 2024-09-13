@@ -154,7 +154,7 @@
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, signInWithPopup,
     setPersistence,
-    browserSessionPersistence,
+    // browserSessionPersistence,
     browserLocalPersistence
   } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
