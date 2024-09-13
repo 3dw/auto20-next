@@ -8,24 +8,13 @@
           | {{ $t('login.login') }}
   .ui.container(v-if="users && toList(users).length > 0")
     .ui.grid
-      .row.ui.form(v-show="uid && users[uid]")
-        .field
-          .ui.labeled.input
-            label.ui.label {{ $t('groups.group_name') }}
-            input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
-        .field.button-field
-          a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
-            | {{ $t('groups.create_group') }}
       .ui.two.stackable.column.row
-        .ui.eight.wide.column.ui.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
+        .ui.eight.wide.column.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
           , v-show = "!g.hidden")
           h3 〈{{g.n}}〉
           p {{g.intro}}
             br.thin-only
             | &nbsp;&nbsp;&nbsp;&nbsp;
-          //  a(@click="edit = !edit")
-              i.edit.icon
-              | {{edit ? '結束' : ''}}編輯社團資料
           p
             .ui.buttons
               router-link.ui.basic.green.button(:to="'/group/' + g.idx")
@@ -33,24 +22,23 @@
                 | {{$t('groups.go_group')}}
               a.ui.green.button(v-if="isUser(uid) && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
               a.ui.red.basic.button(v-if="isUser(uid) && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
-          //.ui.form(v-show="edit")
-            .field(v-if="!uid")
-              button.ui.orange.button(@click="loginGoogle()")
-                i.google.icon
-                | 請先登入
-            //.field
-              .ui.labeled.input
-                label.ui.label 輸入社團簡介  
-                input(type="text", v-model="newIntro", placeholder="請先輸入社團簡介")
-            //.field
-              a.ui.green.button(:class="{disabled: !newIntro}", @click="addIntro(idx)")
-                | 更新簡介
           .ui.grid
             .row
               p {{$t('groups.members')}}
                 span(v-for="m in g.members")
                   router-link(:to = "'/flag/' + m", v-if="isUser(m)")
                     img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
+        .ui.eight.wide.column.form(v-show="uid && users[uid]")
+          br
+          br
+          h4 {{ $t('groups.create_group') }}
+          .field
+            .ui.labeled.input
+              label.ui.label {{ $t('groups.group_name') }}
+              input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
+          .field.button-field
+            a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
+              | {{ $t('groups.create_group') }}
 </template>
 
 <script>

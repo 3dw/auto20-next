@@ -8,7 +8,7 @@
       a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
         | {{$t('chat.gc')}}
-        .red.note(v-show="fil(chats).length > read") {{ fil(chats).length - read }}
+        span.red(v-show="fil(chats).length > read") ({{ fil(chats).length - read }})
       a.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | {{$t('chat.cp')}}
