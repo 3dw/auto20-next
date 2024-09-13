@@ -50,38 +50,40 @@
               .column
                 .ui.divided.list
                   .item.left.aligned {{$t('group.resources')}}
-                  .item.left.aligned(v-for="(r, index) in groups[$route.params.idx].res" :key="index + r.n + r.href", v-show="!r.hidden || edit")
-                    a(:href="r.href", target="_blank", rel="noopener noreferrer")
-                      img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
-                      | {{r.n}}
-                    .filler
-                    a.ui.basic.green.button(v-if="edit && r.hidden", @click="showResource($route.params.idx, index)")
-                      i.eye.icon
-                      | {{$t('group.show_resource')}}
-                    a.ui.basic.red.button(v-if="edit && !r.hidden", @click="hideResource($route.params.idx, index)")
-                      i.hide.icon
-                      | {{$t('group.hide_resource')}}
-                    
-                    // 新增喜歡按鈕
-                    a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", @click="likeResource($route.params.idx, index)")
-                      i.thumbs.up.icon
-                      | {{$t('group.like')}}
-                    span.red(v-if="r.likes && r.likes.length > 0")
-                      i.heart.icon
-                      | {{r.likes.length}} {{$t('group.likes')}}
+                  .item.left.aligned(v-for="(r, index) in sortedResources" :key="index + r.n + r.href", v-show="!r.hidden || edit")
+                    .resource-content
+                      a(:href="r.href", target="_blank", rel="noopener noreferrer")
+                        img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
+                        | {{r.n}}
+                      .filler
+                    .resource-buttons
+                      a.ui.basic.green.button(v-if="edit && r.hidden", @click="showResource($route.params.idx, index)")
+                        i.eye.icon
+                        | {{$t('group.show_resource')}}
+                      a.ui.basic.red.button(v-if="edit && !r.hidden", @click="hideResource($route.params.idx, index)")
+                        i.hide.icon
+                        | {{$t('group.hide_resource')}}
+                      a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", v-show="!edit", @click="likeResource($route.params.idx, index)")
+                        i.thumbs.up.icon
+                        | {{$t('group.like')}}
+                      span.red(v-if="r.likes && r.likes.length > 0")
+                        i.heart.icon
+                        | {{r.likes.length}} {{$t('group.likes')}}
 
-                  .item.ui.form(v-show="uid && edit")
-                    .field
-                      .ui.labeled.input
-                        label.ui.label {{$t('group.enter_resource')}}
-                        input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')")
-                    .field
-                      .ui.labeled.input
-                        label.ui.label {{$t('group.enter_link')}}
-                        input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')")
-                    .field
-                      a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                        | {{$t('group.add_resource')}}
+                    
+                  .item.ui.form(v-show="uid")
+                    .ui.three.stackable.fields
+                      .field.no-margin.no-padding
+                        .ui.labeled.input
+                          label.ui.label {{$t('group.enter_resource')}}
+                          input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')")
+                      .field.no-margin.no-padding
+                        .ui.labeled.input
+                          label.ui.label {{$t('group.enter_link')}}
+                          input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')")
+                      .field.no-padding
+                        a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
+                          | {{$t('group.add_resource')}}
               .column {{ $t('login.leave_messages') }}
                 .ui.divided.list
                   .item(v-for="(c, index) in latestChats" :key="index")
@@ -125,6 +127,17 @@ export default defineComponent({
       const idx = this.$route.params.idx;
       const chats = this.groups[idx]?.chats || [];
       return chats.slice(-10);
+    },
+    // 排序資源，推薦數多的放在上面
+    sortedResources() {
+      const idx = this.$route.params.idx;
+      return (this.groups[idx]?.res || []).filter((r) => {
+        return !this.mySearch || r.n.indexOf(this.mySearch) > -1 || r.href.indexOf(this.mySearch) > -1 || ((r.des && r.des.indexOf(this.mySearch) > -1))
+      }).sort((a, b) => {
+        const likesA = a.likes ? a.likes.length : 0;
+        const likesB = b.likes ? b.likes.length : 0;
+        return likesB - likesA;
+      });
     }
   },
   methods: {    
@@ -472,5 +485,21 @@ textarea {
   border-radius: 4px; /* 圓角 */
   font-size: 16px; /* 字體大小 */
 }
+
+.resource-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1; /* 讓內容佔據左側 */
+}
+
+.resource-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px; /* 控制按鈕之間的間距 */
+  flex-shrink: 0; /* 防止按鈕區域縮小 */
+}
+
 
 </style>
