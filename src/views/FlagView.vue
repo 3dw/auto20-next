@@ -8,7 +8,7 @@
             | {{ $t('login.login_to_see_data') }}
     .ui.segment.container#flag(v-if="users && toList(users).length > 0")
       .ui.fluid.card(v-for="(h, index) in toList(users)", v-show="h.uid == $route.params.uid")
-        card(v-if="h.uid == $route.params.uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", 
+        card(v-if="h.uid == $route.params.uid", :uid="uid", :h="h", :clickable="false", :full="true", :book="book", :mySearch="mySearch", @locate="locate", @addBook="addBook", 
         @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
     
 </template>
@@ -24,6 +24,13 @@ export default defineComponent({
   components: { Card, Loader },
   mixins: [mix],
   props: {
+    uid: {
+      type: String,
+      required: false,
+      default: () => {
+        return ''
+      }
+    },
     users: {
       type: Object,
       required: false,
