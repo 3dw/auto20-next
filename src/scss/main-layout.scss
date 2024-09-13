@@ -26,11 +26,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  border: 1px solid #ced4da; /* 添加邊框 */
   border-radius: 4px; /* 圓角 */
   padding: 5px 10px; /* 增加內邊距 */
   background-color: #ffffff; /* 白色背景 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 添加陰影效果 */
 }
 
 .search-input input {
