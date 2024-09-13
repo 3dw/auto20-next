@@ -5,7 +5,7 @@
       .ui.huge.buttons
         button.ui.orange.button(@click="toggleLogin")
           // i.google.icon
-          | {{ $t('login.login') }}
+          | {{ $t('login.login_to_see_data') }}
   loader(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
     .ui.grid
       .ui.one.column.row(v-if="groups[$route.params.idx].n")

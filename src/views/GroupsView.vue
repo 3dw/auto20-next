@@ -5,7 +5,7 @@
       .ui.huge.buttons
         button.ui.orange.button(@click="toggleLogin")
           // i.google.icon
-          | {{ $t('login.login') }}
+          | {{ $t('login.login_to_see_data') }}
   .ui.container(v-if="users && toList(users).length > 0")
     .ui.grid
       .ui.two.stackable.column.row
