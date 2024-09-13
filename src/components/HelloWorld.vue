@@ -4,14 +4,14 @@
   h4.ui.header(v-else) {{ $t('login.small_hint') }}{{ myHint }}
   
 br
-.ui.huge.buttons(v-if="!uid")
+.ui.huge.buttons(v-show="!uid")
   button.ui.basic.orange.button(@click="toggleLogin", :class="{disabled: isInApp}")
     // i.google.icon
     | {{ $t('login.login' )}}
   .or
   router-link(to="/about").ui.blue.button {{ $t('login.lm' )}}
 
-.ui.huge.buttons(v-else)
+.ui.huge.buttons(v-show="!uid")
   router-link.ui.basic.orange.button(to="/groups")
     i.object.group.outline.icon.no-float
     | {{ $t('login.gp') }}

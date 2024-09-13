@@ -250,6 +250,7 @@
       
       // 檢查使用者的登入狀態
       auth.onAuthStateChanged((user) => {
+        vm.showLogin = false;
         if (user) {
           // 使用者已登入，讀取基本資料
           vm.uid = user.uid;
@@ -592,58 +593,68 @@
       loginGoogle: function (autoredirect, keeploggedin) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
+        vm.showLogin = false;
         if (this.isInApp) {
           window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
         } else {
-          const persistence = keeploggedin ? browserLocalPersistence : browserSessionPersistence;
-          
-          setPersistence(auth, persistence).then(() => {
-            signInWithPopup(auth, provider).then((result) => {
-              const user = result.user;
-              console.log(user);
+          // 如果 keeploggedin 為 true，設置持久性為 localStorage，否則不設置
+          const handleLogin = () => {
+            signInWithPopup(auth, provider)
+              .then((result) => {
+                const user = result.user;
+                console.log(user);
+                vm.email = user.providerData[0].email;
+                vm.uid = user.uid;
+                vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
 
-              vm.showLogin = false;
-              vm.email = user.providerData[0].email;
-              vm.uid = user.uid;
-              vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+                const pvdata = user.providerData;
 
-              const pvdata = user.providerData;
-
-              if (vm.users && vm.users[vm.uid]) {
-                vm.user = { ...vm.users[vm.uid], providerData: pvdata };
-                vm.updateNotifications();
-                if (vm.user.latlngColumn) {
-                  vm.locate(vm.user, false);
-                }
-              } else {
-                onValue(usersRef, (snapshot) => {
-                  const data = snapshot.val();
-                  vm.users = data;
-                  vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
+                if (vm.users && vm.users[vm.uid]) {
+                  vm.user = { ...vm.users[vm.uid], providerData: pvdata };
                   vm.updateNotifications();
                   if (vm.user.latlngColumn) {
                     vm.locate(vm.user, false);
                   }
-                }, (error) => {
-                  vm.user = { providerData: pvdata };
-                  console.error("Error fetching users:", error);
-                });
-              }
+                } else {
+                  onValue(usersRef, (snapshot) => {
+                    const data = snapshot.val();
+                    vm.users = data;
+                    vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
+                    vm.updateNotifications();
+                    if (vm.user.latlngColumn) {
+                      vm.locate(vm.user, false);
+                    }
+                  }, (error) => {
+                    vm.user = { providerData: pvdata };
+                    console.error("Error fetching users:", error);
+                  });
+                }
 
-              if (autoredirect) {
-                vm.$nextTick().then(() => {
-                  vm.$router.push('/profile');
-                });
-              }
-            }).catch((error) => {
-              console.error("Login error:", error);
-              if (error.message.includes('sessionStorage')) {
-                window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
-              }
-            });
-          }).catch((error) => {
-            console.error("Persistence error:", error);
-          });
+                if (autoredirect) {
+                  vm.$nextTick().then(() => {
+                    vm.$router.push('/profile');
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error("Login error:", error);
+                if (error.message.includes('sessionStorage')) {
+                  window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
+                }
+              });
+          };
+
+          if (keeploggedin) {
+            setPersistence(auth, browserLocalPersistence)
+              .then(() => {
+                handleLogin();
+              })
+              .catch((error) => {
+                console.error("Persistence error:", error);
+              });
+          } else {
+            handleLogin();
+          }
         }
       },
       updateNotifications: function () {
