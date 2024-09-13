@@ -1,13 +1,13 @@
 <template lang="pug">
   .hello
-    .ui.container.center.aligned.grid
+    .ui.center.aligned.grid
       .sixteen.wide.column(v-if="!uid && (!users || toList(users).length == 0)")
         .ui.huge.buttons.center.aligned
           button.ui.orange.button(@click="toggleLogin")
             i.google.icon
             | {{ $t('login.login_to_see_data') }}
   
-      loader(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
+      div(v-if="users && toList(users).length > 0 && groups[$route.params.idx] && !groups[$route.params.idx].hidden")
         .ui.center.aligned.grid
           .ui.column.center.aligned(ui-if="groups[$route.params.idx].n")
             .ui.raised.segment.center.aligned(style="margin-top: 30px; max-width: 800px;")
@@ -16,7 +16,7 @@
                 br.thin-only
                 a(@click="toggleEdit($route.params.idx)" v-if="isMember(groups[$route.params.idx].idx)")
                   i.edit.icon
-                  | {{edit ? $t('login.end') : ''}}{{ $t('group.edit_group') }}
+                  | {{edit ? $t('login.end') : ''}} {{ $t('group.edit_group') }}
             
               router-link.ui.basic.green.button(to="/groups")
                 i.globe.icon
@@ -52,57 +52,62 @@
   
                 .two.column.stackable.row
                   .column
-                    .ui.divided.list.center.aligned
+                    .ui.divided.list.center.aligned(v-if="!edit")
                       .item.center.aligned {{$t('group.resources')}}
-                      .item.center.aligned(v-for="(r, index) in sortedResources" :key="index + r.n + r.href", v-show="!r.hidden || edit")
+                      .item.center.aligned(v-for="(r, index) in sortedResources" :key="index + r.n + r.href", v-show="!r.hidden")
                         .resource-content
                           a(:href="r.href", target="_blank", rel="noopener noreferrer")
                             img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
                             | {{r.n}}
                           .filler
+                        
                         .resource-buttons
-                          a.ui.basic.green.button(v-if="edit && r.hidden", @click="showResource($route.params.idx, index)")
-                            i.eye.icon
-                            | {{$t('group.show_resource')}}
-                          a.ui.basic.red.button(v-if="edit && !r.hidden", @click="hideResource($route.params.idx, index)")
-                            i.hide.icon
-                            | {{$t('group.hide_resource')}}
                           a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", v-show="!edit", @click="likeResource($route.params.idx, index)")
                             i.thumbs.up.icon
                             | {{$t('group.like')}}
                           span.red(v-if="r.likes && r.likes.length > 0")
                             i.heart.icon
                             | {{r.likes.length}} {{$t('group.likes')}}
-  
-                      //- .item.ui.form.v-show="uid"
-                      //-   .ui.three.stackable.fields
-                      //-     .field.no-margin.no-padding
-                      //-       .ui.labeled.input
-                      //-         label.ui.label {{$t('group.enter_resource')}}
-                      //-         input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 18px; padding: 10px;")
-                      //-     .field.no-margin.no-padding
-                      //-       .ui.labeled.input
-                      //-         label.ui.label {{$t('group.enter_link')}}
-                      //-         input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 18px; padding: 10px;")
-                      //-     .field.no-padding
-                      //-       a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                      //-         | {{$t('group.add_resource')}}
-                      .item.ui.form.v-show="uid"
-                        .ui.three.stackable.fields
-                          .field.no-margin.no-padding
+
+
+                    .ui.divided.list.center.aligned(v-else)
+                      .item.center.aligned {{$t('group.resources')}}
+
+                      .item.left.aligned(v-for="(r, index) in groups[$route.params.idx].res" :key="index + r.n + r.href", v-show="!r.hidden")
+                          // 編輯模式下顯示的輸入框
+                          .resource-content
+                          a(@click="toggleEditResource(r, index)")
+                            img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
+                            | {{r.n}}
+
+                          div(v-if="edit && editResourceIndex === index")
                             .ui.labeled.input
                               label.ui.label {{$t('group.enter_resource')}}
-                              input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 20px; padding: 15px;")
-                          .field.no-margin.no-padding
+                              input(type="text", v-model="tempResource.n", style="width: 100%; font-size: 20px; padding: 15px;")
+
                             .ui.labeled.input
                               label.ui.label {{$t('group.enter_link')}}
-                              input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 20px; padding: 15px;")
-                          .field.no-padding
-                            a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                              | {{$t('group.add_resource')}}
+                              input(type="text", v-model="tempResource.href", :placeholder="$t('group.enter_link_first')", style="width: 100%; font-size: 20px; padding: 15px;")
+
+                            a.ui.green.button(@click="saveResource($route.params.idx)") {{ $t('group.save') }}
+                            a.ui.red.button(@click="edit = false") {{ $t('group.cancel') }}
+
+
+                      .item.ui.form(v-show="uid && !edit")
+                        .field.no-margin.no-padding
+                          .ui.labeled.input
+                            label.ui.label {{$t('group.enter_resource')}}
+                            input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 20px; padding: 15px;")
+                        .field.no-margin.no-padding
+                          .ui.labeled.input
+                            label.ui.label {{$t('group.enter_link')}}
+                            input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 20px; padding: 15px;")
+                        .field.no-padding
+                          a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
+                            | {{$t('group.add_resource')}}
 
                   
-                  .column.center.aligned {{ $t('login.leave_messages') }}
+                  .column.center.aligned(v-show="!edit") {{ $t('login.leave_messages') }}
                     .ui.divided.list.left.aligned
                       .item(v-for="(c, index) in latestChats" :key="index")
                         img.ui.avatar(:src="c.photoURL")    
@@ -139,7 +144,9 @@ export default defineComponent({
       newResName: '',
       newHref: '',
       msg: '',
-      groups: []
+      groups: [],
+      editResourceIndex: Infinity,
+      tempResource: {} // 用來暫存編輯的資源資料
     }
   },
   computed: {
@@ -319,15 +326,34 @@ export default defineComponent({
         });
     },
     showResource(idx, resIndex) {
-      // 設定該資源的 hidden 為 false
-      this.groups[idx].res[resIndex].hidden = false;
-      set(ref(db, 'groups/' + idx + '/res/' + resIndex + '/hidden'), false)
+        // 設定該資源的 hidden 為 false
+        this.groups[idx].res[resIndex].hidden = false;
+        set(ref(db, 'groups/' + idx + '/res/' + resIndex + '/hidden'), false)
+          .then(() => {
+            console.log(this.$t('groups.update_sucess'));
+          })
+          .catch(error => {
+            console.error(this.$t('groups.update_failed'), error);
+          });
+      },
+      toggleEditResource (resource, index) {
+      // 複製要編輯的資源到暫存區，避免直接修改資料源
+      this.tempResource = JSON.parse(JSON.stringify(resource)); // 深拷貝
+      this.editResourceIndex = index;
+      this.edit = true;
+    },
+    saveResource (idx) {
+      // 保存編輯結果到 groups 中
+      this.groups[idx].res[this.editResourceIndex] = {...this.tempResource};
+      set(ref(db, 'groups/' + idx + '/res/' + this.editResourceIndex), this.groups[idx].res[this.editResourceIndex])
         .then(() => {
           console.log(this.$t('groups.update_sucess'));
+          this.editResourceIndex = Infinity;
         })
         .catch(error => {
           console.error(this.$t('groups.update_failed'), error);
         });
+      this.edit = false; // 編輯完成，退出編輯模式
     },
     addNotificationByUid(uid, text, route) {
       const notification = {

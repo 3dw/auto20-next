@@ -94,3 +94,7 @@ a.router-link-exact-active:active {
 .no-margin {
   margin: 0 !important;
 }
+
+a, button {
+  cursor: pointer !important;
+}

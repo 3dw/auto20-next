@@ -148,6 +148,8 @@ export default {
       out_confirm: "Are you sure you want to leave the group?",
     },
     group: {
+      save: 'Save',
+      cancel: 'Cancel',
       like: "Like",
       lites: "Likes",
       edit_group: " Group Editing",

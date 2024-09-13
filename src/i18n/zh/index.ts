@@ -149,6 +149,8 @@ export default {
       out_confirm: '確認您要退出社團嗎？',
     },
     group: {
+      save: '存檔',
+      cancel: '取消',
       like: '推薦',
       likes: '人推薦',
       edit_group: '編輯社團資料',
