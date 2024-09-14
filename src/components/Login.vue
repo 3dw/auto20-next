@@ -5,23 +5,23 @@
         .ui.raised.segment
           h2.ui.teal.image.header
             i.user.circle.icon(style="font-size: 3rem; color: #2185d0;")
-            .content(style="padding-left: 10px;") 登入您的帳戶
+            .content(style="padding-left: 10px;") {{$t('login.login_into_your_account')}}
   
           //- Google Login Button
           .ui.fluid.large.orange.button(@click.stop="loginGoogle", style="background-color: #FF6F00; color: white; font-weight: bold;")
             i.google.icon
-            | 以 Google 帳號登入
+            | {{$t('login.login_with_google')}}
   
           form.ui.large.form
             .ui.segment(style="border: none; padding-top: 10px;")
               .field
                 .ui.checkbox(@click.stop)
                   input(type="checkbox" v-model="keeploggedin")
-                  label 維持登入狀態
+                  label {{$t('login.keep_me_logged_in')}}
   
-          .ui.horizontal.divider(style="color: #bbb;") 或
+          .ui.horizontal.divider(style="color: #bbb;") {{$t('login.or')}}
   
-          router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()", style="background-color: #6a1b9a; color: white; font-weight: bold;") 瞭解更多
+          router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()", style="background-color: #6a1b9a; color: white; font-weight: bold;") {{$t('login.lm')}}
   
           //- Email & Password Login Form
           //.ui.stacked.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")

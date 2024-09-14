@@ -90,11 +90,11 @@
             a(href="https://github.com/3dw/auto20-next/issues") {{$t('about.bugreport_go')}}
               i.chevron.right.icon
   
-          h2.ui.header {{$t('about.github_is')}}
-          p
+          // h2.ui.header {{$t('about.github_is')}}
+          // p
             | {{ $t('about.github_content') }}
   
-          p
+          // p
             a(href="https://github.com/3dw/github-tutorial/blob/main/README.md") {{ $t('about.github_go') }}
               i.chevron.right.icon
   </template>
