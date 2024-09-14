@@ -127,7 +127,7 @@
   .ui.form.container(v-if="doSearch($route.path)", v-show="uid")
     .search-input
       input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
-      i.search.icon
+      i.search.icon(@click="navTo('/friends')")
   
   br
   
@@ -352,6 +352,9 @@
       }
     },
     methods: {
+      navTo (path) {
+        this.$router.push(path)
+      },
       
       /* setupGroupListeners() {
         // eslint-disable-next-line @typescript-eslint/no-this-alias

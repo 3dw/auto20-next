@@ -1,11 +1,11 @@
 <template lang="pug">
 .hello
   h1
-    router-link(v-if="book && uid && book.length == 0", to="/friends") 您的名簿目前沒有人，按此找朋友
+    router-link(v-if="book && uid && book.length == 0", to="/friends") 按此找朋友
   loader(v-show="!users")
   .ui.divider
 
-  table.ui.celled.striped.collapsing.table
+  table.ui.celled.striped.collapsing.table(v-if="book && uid && users")
     thead
       tr
         th
