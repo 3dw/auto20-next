@@ -46,6 +46,15 @@ export default {
       leave_messages: "Leave a message",
       source_github: "Github Source Code",
     },
+    tutorial: {
+      新手任務: 'Missions for Bigginer',
+      任務: 'Mission',
+      隱藏新手任務: 'Hide Bigginer\'s Missions',
+      升起互助旗: 'Raise the Flag',
+      將一位夥伴加入名簿: 'Add a Partner to the Roster',
+      加入或創建一個社團: 'Join or Create a Group',
+      在社團中推薦一個資源: 'Recommend a Resource in the Group',
+    },    
     profile: {
       announce1: "Please read our ",
       announce2: "privacy policy",
