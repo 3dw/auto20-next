@@ -140,7 +140,7 @@
   
   chatbox#ch(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
   
-  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @loginSuccess="handleLoginSuccess")
+  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
 
   </template>
   
@@ -155,7 +155,7 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup,
     setPersistence,
     // browserSessionPersistence,
-    browserLocalPersistence
+    browserLocalPersistence,createUserWithEmailAndPassword, signInWithEmailAndPassword
   } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
   
@@ -388,9 +388,112 @@
             return; // 跳出迴圈
         }
       },*/
+        registerWithEmail(email: string, password: string, keeploggedin: boolean) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias  
+        const vm = this;
+        const auth = getAuth();
+        const handleRegistration = () => {
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              vm.email = user.email;
+              vm.uid = user.uid;
+              vm.photoURL = null; // or set a default photo URL
+              vm.user = { email: vm.email };
+
+              // Optionally set default user data in Firebase Database
+              set(ref(db, 'users/' + vm.uid), {
+                email: vm.email,
+                name: '',
+                // Add any other default fields you need
+              });
+
+              // Navigate to profile
+              vm.$nextTick().then(() => {
+                vm.$router.push('/profile');
+              });
+            })
+            .catch((error) => {
+              console.error("Registration error:", error);
+              alert("註冊失敗: " + error.message);
+            });
+        };
+
+        if (keeploggedin) {
+          setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+              handleRegistration();
+            })
+            .catch((error) => {
+              console.error("Persistence error:", error);
+            });
+        } else {
+          handleRegistration();
+        }
+      },
+
+      loginWithEmail(email: string, password: string, keeploggedin: boolean) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const vm = this;
+        const auth = getAuth();
+        const handleLogin = () => {
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              vm.email = user.email;
+              vm.uid = user.uid;
+              vm.photoURL = null; // or get from user.photoURL
+
+              // Fetch user data
+              if (vm.users && vm.users[vm.uid]) {
+                vm.user = vm.users[vm.uid];
+                vm.updateNotifications();
+                if (vm.user.latlngColumn) {
+                  vm.locate(vm.user, false);
+                }
+              } else {
+                onValue(usersRef, (snapshot) => {
+                  const data = snapshot.val();
+                  vm.users = data;
+                  vm.user = vm.users[vm.uid] || {};
+                  vm.updateNotifications();
+                  if (vm.user.latlngColumn) {
+                    vm.locate(vm.user, false);
+                  }
+                }, (error) => {
+                  vm.user = {};
+                  console.error("Error fetching users:", error);
+                });
+              }
+
+              // Navigate to profile
+              vm.$nextTick().then(() => {
+                vm.$router.push('/profile');
+              });
+            })
+            .catch((error) => {
+              console.error("Login error:", error);
+              alert("登入失敗: " + error.message);
+            });
+        };
+
+        if (keeploggedin) {
+          setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+              handleLogin();
+            })
+            .catch((error) => {
+              console.error("Persistence error:", error);
+            });
+        } else {
+          handleLogin();
+        }
+      },
       toggleLogin () {
         this.showLogin = !this.showLogin;
       },
+
+
       addNotification(text, route) {
         const notification = {
           time: new Date().toISOString(),
@@ -659,25 +762,6 @@
             handleLogin();
           }
         }
-      },
-      handleLoginSuccess(user) {
-        this.uid = user.uid;
-        this.email = user.email;
-        this.photoURL = user.photoURL || 'https://we.alearn.org.tw/logo-new.png';
-        // 重新監聽使用者資料
-        this.listenToUserData();
-        // 關閉登入視窗
-        this.showLogin = false;
-        // 根據需要導航到特定頁面
-        this.$router.push('/profile');
-      },
-      listenToUserData() {
-        // 監聽使用者資料的變化
-        const userRef = ref(db, 'users/' + this.uid);
-        onValue(userRef, (snapshot) => {
-          this.user = snapshot.val();
-          // 根據需要更新其他狀態
-        });
       },
       updateNotifications: function () {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
