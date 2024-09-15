@@ -23,17 +23,20 @@
   
           router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()", style="background-color: #6a1b9a; color: white; font-weight: bold;") {{$t('login.lm')}}
   
-          //- Email & Password Login Form
+         
           //- Email & Password Login Form
           .ui.stacked.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
             .field
               .ui.left.icon.input
                 i.user.icon
-                input(type="text" name="email" placeholder="E-mail address", style="font-size: 14px;", v-model="email")
+                //input(type="text" name="email" placeholder="E-mail address", style="font-size: 14px;", v-model="email")
+                input(type="text" name="notgoogleemail" placeholder="E-mail address", style="font-size: 14px;", v-model="notgoogleemail", @click.stop)
+
             .field
               .ui.left.icon.input
                 i.lock.icon
-                input(type="password" name="password" placeholder="Password", style="font-size: 14px;", v-model="password")
+                input(type="password" name="notgooglepassword" placeholder="Password", style="font-size: 14px;", v-model="notgooglepassword", @click.stop)
+
             .field
               .ui.checkbox
                 input(type="checkbox" tabindex="0" class="hidden" v-model="keeploggedin")
@@ -51,9 +54,9 @@ export default defineComponent({
   name: "LoginBox",
   data () {
     return {
-      keeploggedin: false,
-      email: '',
-      password: ''
+      notgoogleemail: '',
+      notgooglepassword: '',
+      keeploggedin: false
     }
   },
   watch: {
@@ -85,10 +88,40 @@ export default defineComponent({
       this.$emit('toggleLogin');
     },
     registerWithEmail: function () {
-      this.$emit('registerWithEmail', this.email, this.password, this.keeploggedin);
+      var autoredirect = true;
+      console.log("notgoogleEmail:", this.notgoogleemail);
+      console.log("notgooglePassword:", this.notgooglepassword); // 確認密碼值
+      console.log('Register clicked'); // 確認方法是否被觸發
+      console.log(this.$route.path)
+
+      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
+        autoredirect = false;
+      }
+      //this.$emit('registerWithEmail', this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
+      if (!this.notgooglepassword || typeof this.notgooglepassword !== 'string') {
+        alert('密碼無效，請重新輸入');
+        return;
+      }
+      this.$emit('registerWithEmail', this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
+
+
+
     },
     loginWithEmail: function () {
-      this.$emit('loginWithEmail', this.email, this.password, this.keeploggedin);
+      var autoredirect = true;
+      console.log('Login clicked'); // 確認方法是否被觸發
+      console.log(this.$route.path)
+
+      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
+        autoredirect = false;
+      }
+      //this.$emit('loginWithEmail', this.email, this.password, this.keeploggedin);
+      if (!this.notgooglepassword || typeof this.notgooglepassword !== 'string') {
+        alert('密碼無效，請重新輸入');
+        return;
+      }
+      this.$emit('loginWithEmail', this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
+
     }
   }
 });

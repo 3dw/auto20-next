@@ -133,14 +133,14 @@
   
   router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
     @loginGoogle="loginGoogle", @toggleLogin="toggleLogin",
-    @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout")
+    @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout" ,@registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
   
   br
   br
   
   chatbox#ch(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
   
-  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
+  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
 
   </template>
   
@@ -388,12 +388,20 @@
             return; // 跳出迴圈
         }
       },*/
-        registerWithEmail(email: string, password: string, keeploggedin: boolean) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias  
-        const vm = this;
-        const auth = getAuth();
-        const handleRegistration = () => {
-          createUserWithEmailAndPassword(auth, email, password)
+        registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
+          console.log("app.vue接收到的notgoogleemail Received email:", notgoogleemail); // 檢查是否收到正確的email
+
+          console.log("app.vue接收到的notgoogle密碼Received Password:", notgooglepassword); // 檢查是否收到正確的密碼值
+
+          if (!notgooglepassword || typeof notgooglepassword !== 'string') {
+          alert('在app.vue接收的notgoogle密碼無效，請確認輸入');
+          return;
+          }
+          // eslint-disable-next-line @typescript-eslint/no-this-alias  
+          const vm = this;
+          const auth = getAuth();
+          const handleRegistration = () => {
+          createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
             .then((userCredential) => {
               const user = userCredential.user;
               vm.email = user.email;
@@ -409,9 +417,11 @@
               });
 
               // Navigate to profile
-              vm.$nextTick().then(() => {
-                vm.$router.push('/profile');
-              });
+              if (autoredirect) {
+                  vm.$nextTick().then(() => {
+                    vm.$router.push('/profile');
+                  });
+                }
             })
             .catch((error) => {
               console.error("Registration error:", error);
@@ -419,7 +429,7 @@
             });
         };
 
-        if (keeploggedin) {
+        if (notgooglekeeploggedin) {
           setPersistence(auth, browserLocalPersistence)
             .then(() => {
               handleRegistration();
@@ -432,12 +442,12 @@
         }
       },
 
-      loginWithEmail(email: string, password: string, keeploggedin: boolean) {
+      loginWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
         const auth = getAuth();
         const handleLogin = () => {
-          signInWithEmailAndPassword(auth, email, password)
+          signInWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
             .then((userCredential) => {
               const user = userCredential.user;
               vm.email = user.email;
@@ -467,9 +477,11 @@
               }
 
               // Navigate to profile
-              vm.$nextTick().then(() => {
-                vm.$router.push('/profile');
-              });
+              if (autoredirect) {
+                  vm.$nextTick().then(() => {
+                    vm.$router.push('/profile');
+                  });
+                }
             })
             .catch((error) => {
               console.error("Login error:", error);
@@ -477,7 +489,7 @@
             });
         };
 
-        if (keeploggedin) {
+        if (notgooglekeeploggedin) {
           setPersistence(auth, browserLocalPersistence)
             .then(() => {
               handleLogin();
