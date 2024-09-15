@@ -404,8 +404,8 @@
               console.log("app.vue createUserWithEmailAndPasswordeuser ");
               console.log(user);
               vm.email = user.email;
-              //vm.uid = 'user.uid';
-              vm.uid = '878937jjkhkjhk';
+              vm.uid = 'user.uid';
+              //vm.uid = '878937jjkhkjhk';
               vm.photoURL = null; // or set a default photo URL
               vm.user = { email: vm.email };
 
