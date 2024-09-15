@@ -102,7 +102,7 @@ export default defineComponent({
         alert('密碼無效，請重新輸入');
         return;
       }
-      this.$emit('registerWithEmail', this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
+      this.$emit('registerWithEmail', autoredirect, this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
 
 
 
@@ -120,7 +120,7 @@ export default defineComponent({
         alert('密碼無效，請重新輸入');
         return;
       }
-      this.$emit('loginWithEmail', this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
+      this.$emit('loginWithEmail', autoredirect, this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
 
     }
   }
