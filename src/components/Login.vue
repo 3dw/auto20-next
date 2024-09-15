@@ -12,38 +12,42 @@
             i.google.icon
             | {{$t('login.login_with_google')}}
   
+          .ui.horizontal.divider(style="color: #bbb;") {{$t('login.or')}}
+  
+          // router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()", style="background-color: #6a1b9a; color: white; font-weight: bold;") {{$t('login.lm')}}
+  
+         
+          //- Email & Password Login Form
+          .ui.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
+            .field
+              .ui.left.icon.input
+                i.user.icon
+                //input(type="text" name="email" placeholder="E-mail address", style="font-size: 14px;", v-model="email")
+                input(type="text" name="users_email" placeholder="E-mail address", style="font-size: 14px;", v-model="users_email", @click.stop)
+
+            .field
+              .ui.left.icon.input
+                i.lock.icon
+                input(type="password" name="user_password" placeholder="Password", style="font-size: 14px;", v-model="user_password", @click.stop)
+
+
+
+            .field
+              .ui.fluid.large.teal.button(@click.prevent="loginWithEmail", style="background-color: #2185d0; color: white; font-weight: bold;") 登入
+
+              //- 顯示忘記密碼連結
+              a.red.forget-password(@click="resetPassword") {{$t('login.forgot_password')}}
+
           form.ui.large.form
             .ui.segment(style="border: none; padding-top: 10px;")
               .field
                 .ui.checkbox(@click.stop)
                   input(type="checkbox" v-model="keeploggedin")
                   label {{$t('login.keep_me_logged_in')}}
-  
-          .ui.horizontal.divider(style="color: #bbb;") {{$t('login.or')}}
-  
-          router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()", style="background-color: #6a1b9a; color: white; font-weight: bold;") {{$t('login.lm')}}
-  
-         
-          //- Email & Password Login Form
-          .ui.stacked.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
-            .field
-              .ui.left.icon.input
-                i.user.icon
-                //input(type="text" name="email" placeholder="E-mail address", style="font-size: 14px;", v-model="email")
-                input(type="text" name="notgoogleemail" placeholder="E-mail address", style="font-size: 14px;", v-model="notgoogleemail", @click.stop)
 
-            .field
-              .ui.left.icon.input
-                i.lock.icon
-                input(type="password" name="notgooglepassword" placeholder="Password", style="font-size: 14px;", v-model="notgooglepassword", @click.stop)
-
-            .field
-              .ui.checkbox
-                input(type="checkbox" tabindex="0" class="hidden" v-model="keeploggedin")
-                label 維持登入狀態
-            .ui.two.buttons
-              .ui.fluid.large.teal.button(@click.prevent="loginWithEmail", style="background-color: #2185d0; color: white; font-weight: bold;") 登入
-              .ui.fluid.large.blue.button(@click.prevent="registerWithEmail", style="background-color: #007bff; color: white; font-weight: bold;") 註冊
+              
+            p 新用戶？按此
+              .ui.large.basic.blue.button#register-btn(@click.stop="registerWithEmail", ) 註冊
 
   </template>
   
@@ -54,8 +58,8 @@ export default defineComponent({
   name: "LoginBox",
   data () {
     return {
-      notgoogleemail: '',
-      notgooglepassword: '',
+      users_email: '',
+      user_password: '',
       keeploggedin: false
     }
   },
@@ -87,41 +91,56 @@ export default defineComponent({
     toggleLogin: function () {
       this.$emit('toggleLogin');
     },
+    // 驗證email格式的function
+    validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(String(email).toLowerCase());
+    },
     registerWithEmail: function () {
       var autoredirect = true;
-      console.log("notgoogleEmail:", this.notgoogleemail);
-      console.log("notgooglePassword:", this.notgooglepassword); // 確認密碼值
+      console.log("users_email:", this.users_email);
+      console.log("user_password:", this.user_password); // 確認密碼值
       console.log('Register clicked'); // 確認方法是否被觸發
-      console.log(this.$route.path)
+      console.log(this.$route.path);
+
+      // 驗證email格式
+      if (!this.validateEmail(this.users_email)) {
+        alert('email格式錯誤，請重試');
+        return;
+      }
 
       if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
         autoredirect = false;
       }
-      //this.$emit('registerWithEmail', this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
-      if (!this.notgooglepassword || typeof this.notgooglepassword !== 'string') {
+
+      if (!this.user_password || typeof this.user_password !== 'string') {
         alert('密碼無效，請重新輸入');
         return;
       }
-      this.$emit('registerWithEmail', autoredirect, this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
 
-
-
+      this.$emit('registerWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
     },
     loginWithEmail: function () {
       var autoredirect = true;
       console.log('Login clicked'); // 確認方法是否被觸發
-      console.log(this.$route.path)
+      console.log(this.$route.path);
+
+      // 驗證email格式
+      if (!this.validateEmail(this.users_email)) {
+        alert('email格式錯誤，請重試');
+        return;
+      }
 
       if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
         autoredirect = false;
       }
-      //this.$emit('loginWithEmail', this.email, this.password, this.keeploggedin);
-      if (!this.notgooglepassword || typeof this.notgooglepassword !== 'string') {
+
+      if (!this.user_password || typeof this.user_password !== 'string') {
         alert('密碼無效，請重新輸入');
         return;
       }
-      this.$emit('loginWithEmail', autoredirect, this.notgoogleemail, this.notgooglepassword, this.keeploggedin);
 
+      this.$emit('loginWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
     }
   }
 });
@@ -199,10 +218,16 @@ h2.ui.teal.image.header .icon {
   color: #bbb; /* 淡色的分隔線文字 */
 }
 
-.ui.two.buttons .button {
-  font-weight: bold;
-  padding: 10px 0;
-  border-radius: 6px;
+.forget-password {
+  width: 100%;
+  text-align: right;
+  display: inline-block;
+  margin: 1em !important;
+  padding: .2em;
+}
+
+#register-btn {
+  margin-left: .6em;
 }
 
 </style>

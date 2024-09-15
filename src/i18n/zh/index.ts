@@ -4,6 +4,7 @@ export default {
       login_into_your_account: '登入您的帳戶',
       login_with_google: '以 Google 帳號登入',
       keep_me_logged_in: '維持登入狀態',
+      forgot_password: '忘記密碼?',
       or: '或',
       small_hint: '小秘訣：',
       welcome:'歡迎來到自學2.0公益尋友平台',

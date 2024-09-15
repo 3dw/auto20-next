@@ -4,6 +4,7 @@ export default {
       login_into_your_account: 'Login Into Your Account',
       login_with_google: 'Login With Google',
       keep_me_logged_in: 'Keep Me Logged In',
+      forgot_password: 'I forgot my password',
       or: 'or',
       small_hint: 'Hint: ',
       welcome:"Welcome to Autonomous Learning 2.0(Auto20) non-profit friend search platform",

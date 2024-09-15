@@ -391,7 +391,7 @@
         registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
           
           if (!notgooglepassword || typeof notgooglepassword !== 'string') {
-          alert('在app.vue接收的notgoogle密碼無效，請確認輸入');
+          alert('在app.vue接收的密碼無效，請確認輸入');
           return;
           }
           // eslint-disable-next-line @typescript-eslint/no-this-alias  
@@ -404,9 +404,9 @@
               console.log("app.vue createUserWithEmailAndPasswordeuser ");
               console.log(user);
               vm.email = user.email;
-              //vm.uid = 'user.uid';
-              vm.uid = '878937jjkhkjhk';
-              vm.photoURL = null; // or set a default photo URL
+              vm.uid = user.uid;
+              // vm.uid = '878937jjkhkjhk';
+              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // set a default photo URL
               vm.user = { email: vm.email };
 
               // Optionally set default user data in Firebase Database
