@@ -406,8 +406,8 @@
               vm.email = user.email;
               vm.uid = user.uid;
               // vm.uid = '878937jjkhkjhk';
-              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // set a default photo URL
-              vm.user = { email: vm.email };
+              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // set a default p
+              vm.user = { email: vm.email, photoURL: vm.photoURL };
 
               // Optionally set default user data in Firebase Database
               set(ref(db, 'users/' + vm.uid), {
