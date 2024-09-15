@@ -140,7 +140,7 @@
   
   chatbox#ch(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
   
-  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin")
+  login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @loginSuccess="handleLoginSuccess")
 
   </template>
   
@@ -659,6 +659,25 @@
             handleLogin();
           }
         }
+      },
+      handleLoginSuccess(user) {
+        this.uid = user.uid;
+        this.email = user.email;
+        this.photoURL = user.photoURL || 'https://we.alearn.org.tw/logo-new.png';
+        // 重新監聽使用者資料
+        this.listenToUserData();
+        // 關閉登入視窗
+        this.showLogin = false;
+        // 根據需要導航到特定頁面
+        this.$router.push('/profile');
+      },
+      listenToUserData() {
+        // 監聽使用者資料的變化
+        const userRef = ref(db, 'users/' + this.uid);
+        onValue(userRef, (snapshot) => {
+          this.user = snapshot.val();
+          // 根據需要更新其他狀態
+        });
       },
       updateNotifications: function () {
         // eslint-disable-next-line @typescript-eslint/no-this-alias

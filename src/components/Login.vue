@@ -24,32 +24,37 @@
           router-link.ui.large.purple.button(to="/about", @click.stop="toggleLogin()", style="background-color: #6a1b9a; color: white; font-weight: bold;") {{$t('login.lm')}}
   
           //- Email & Password Login Form
-          //.ui.stacked.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
+          .ui.stacked.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
             .field
               .ui.left.icon.input
                 i.user.icon
-                input(type="text" name="email" placeholder="E-mail address", style="font-size: 14px;")
+                input(type="text" name="email" placeholder="E-mail address", v-model="email", style="font-size: 14px;")
             .field
               .ui.left.icon.input
                 i.lock.icon
-                input(type="password" name="password" placeholder="Password", style="font-size: 14px;")
+                input(type="password" name="password" placeholder="Password", v-model="password", style="font-size: 14px;")
             .field
               .ui.checkbox
                 input(type="checkbox" tabindex="0" class="hidden")
                 label 維持登入狀態
             .ui.two.buttons
-              .ui.fluid.large.teal.button(style="background-color: #2185d0; color: white; font-weight: bold;") 登入
-              .ui.fluid.large.blue.button(style="background-color: #007bff; color: white; font-weight: bold;") 註冊
+                .ui.fluid.large.teal.button(@click="loginWithEmail", style="background-color: #2185d0; color: white; font-weight: bold;") 登入
+                .ui.fluid.large.blue.button(@click="registerWithEmail", style="background-color: #007bff; color: white; font-weight: bold;") 註冊
   </template>
   
 
 <script>
 import { defineComponent } from 'vue';
+import { app } from '../firebase'; // 請根據實際路徑修改
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
+    
 export default defineComponent({
   name: "LoginBox",
   data () {
     return {
-      keeploggedin: false
+      keeploggedin: false,
+      email: '',
+        password: ''
     }
   },
   watch: {
@@ -79,7 +84,91 @@ export default defineComponent({
     },
     toggleLogin: function () {
       this.$emit('toggleLogin');
+    },
+    loginWithEmail() {
+    const auth = getAuth(app);
+    const persistence = this.keeploggedin ? browserLocalPersistence : browserSessionPersistence;
+    setPersistence(auth, persistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, this.email, this.password);
+      })
+      .then((userCredential) => {
+        // 登入成功
+        const user = userCredential.user;
+        console.log('登入成功', user);
+        this.$emit('loginSuccess', user);
+        this.toggleLogin();
+      })
+      .catch((error) => {
+        // 處理錯誤
+        const errorCode = error.code;
+        let errorMessage = '';
+        switch (errorCode) {
+          case 'auth/user-not-found':
+            errorMessage = '使用者不存在，請先註冊。';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = '密碼錯誤，請重試。';
+            break;
+          case 'auth/email-already-in-use':
+            errorMessage = '該電子郵件已被註冊。';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = '無效的電子郵件地址。';
+            break;
+          case 'auth/weak-password':
+            errorMessage = '密碼太弱，請輸入至少6位字符的密碼。';
+            break;
+          default:
+            errorMessage = error.message;
+        }
+        console.error('錯誤', errorCode, errorMessage);
+        alert('錯誤：' + errorMessage);
+      });
+    },
+
+
+
+    registerWithEmail() {
+      const auth = getAuth(app);
+      createUserWithEmailAndPassword(auth, this.email, this.password)
+      .then((userCredential) => {
+        // 註冊成功
+        const user = userCredential.user;
+        console.log('註冊成功', user);
+        // 通知父組件更新狀態
+        this.$emit('loginSuccess', user);
+        // 關閉登入視窗
+        this.toggleLogin();
+      })
+      .catch((error) => {
+        // 處理錯誤
+        const errorCode = error.code;
+        let errorMessage = '';
+        switch (errorCode) {
+          case 'auth/user-not-found':
+            errorMessage = '使用者不存在，請先註冊。';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = '密碼錯誤，請重試。';
+            break;
+          case 'auth/email-already-in-use':
+            errorMessage = '該電子郵件已被註冊。';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = '無效的電子郵件地址。';
+            break;
+          case 'auth/weak-password':
+            errorMessage = '密碼太弱，請輸入至少6位字符的密碼。';
+            break;
+          default:
+            errorMessage = error.message;
+        }
+        console.error('錯誤', errorCode, errorMessage);
+        alert('錯誤：' + errorMessage);
+      });
     }
+    
   }
 });
 </script>
