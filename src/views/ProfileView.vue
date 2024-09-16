@@ -153,6 +153,10 @@
             .header {{$t('profile.form66')}}
             p {{$t('profile.form67')}}
   
+
+        .warning(v-if="!emailVerified")
+          | note: 您的Email尚未驗證
+
         .warning(v-if="!isValid(root)")
           | note: {{$t('profile.form68')}}
           i.red.star
@@ -164,7 +168,7 @@
         router-link(target="_blank" to="/privacy-policy") {{$t('profile.form71')}}
   
       .ui.vertical.buttons
-        a.ui.large.blue.button(:class="{disabled: !isValid(root)}", @click="updateFlag")
+        a.ui.large.blue.button(:class="{disabled: !isValid(root) || !emailVerified}", @click="updateFlag")
           span(v-if="isNew")
             i.flag.icon
             | {{$t('login.raise_flag')}}
@@ -197,7 +201,7 @@
   export default {
     name: 'MyFlag',
     mixins: [mix],
-    props: ['uid', 'user', 'email', 'mySearch', 'provider', 'photoURL', 'isInApp'],
+    props: ['uid', 'user', 'emailVerified', 'email', 'mySearch', 'provider', 'photoURL', 'isInApp'],
     components: { Card },
     metaInfo: {
       title: "$t('login.fg')",
@@ -375,6 +379,11 @@
         this.root.uid = this.uid || ''
         this.root.photoURL = this.photoURL || ''
         this.root.lastUpdate = (new Date()).getTime()
+        
+        if (!this.emailVerified) {
+          alert('Email尚未驗證'); // <-- 以後要改成雙語
+        }
+        
         if (!this.isNew) {
           this.isNew = false
           this.editing = false

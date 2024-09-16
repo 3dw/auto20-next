@@ -131,7 +131,9 @@
   
   br
   
-  router-view(:isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
+  router-view(
+    :emailVerified = "emailVerified",
+    :isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
     @loginGoogle="loginGoogle", @toggleLogin="toggleLogin",
     @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout" ,@registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
   
@@ -232,6 +234,7 @@
         group_for_no: null as [any] | null, 
         idx_for_no: null as [any] | null, // 定義社團資料變量
         notifications: [] as any[],
+        emailVerified: false,
         unreadCount: 0,
         //isLoggedIn: false, // 定義是否登入
         showTutorial: true // 控制 Tutorial 組件顯示狀態
@@ -466,6 +469,8 @@
               if (!user.emailVerified) {
                 alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
                 return;
+              } else {
+                vm.emailVerified = true
               }
 
               console.log('登入成功：', user);
@@ -727,6 +732,7 @@
                 vm.email = user.providerData[0].email;
                 vm.uid = user.uid;
                 vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+                vm.emailVerified = true;
 
                 const pvdata = user.providerData;
 
