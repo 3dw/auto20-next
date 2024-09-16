@@ -154,7 +154,9 @@
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
   import { set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
-  import { getAuth, GoogleAuthProvider, signInWithPopup,
+  import { getAuth, GoogleAuthProvider, 
+    signInWithPopup,
+    linkWithCredential,
     setPersistence,
     // browserSessionPersistence,
     browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification
@@ -396,6 +398,7 @@
           alert('接收的密碼無效，請確認輸入');
           return;
         }
+        // eslint-disable-next-line @typescript-eslint/no-this-alias  
         const vm = this;
         const auth = getAuth();
         const handleRegistration = () => {
@@ -716,70 +719,58 @@
       loginGoogle: function (autoredirect, keeploggedin) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
-        vm.showLogin = false;
-        if (this.isInApp) {
-          window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
-        } else {
-          // 如果 keeploggedin 為 true，設置持久性為 localStorage，否則不設置
-          const handleLogin = () => {
-            signInWithPopup(auth, provider)
-              .then((result) => {
-                const user = result.user;
-                console.log(user);
-                vm.email = user.providerData[0].email;
-                vm.uid = user.uid;
-                vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
-                vm.emailVerified = true;
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            const user = result.user;
 
-                const pvdata = user.providerData;
+            const emailCredential = EmailAuthProvider.credential(user.email, prompt('請輸入您的 Email 密碼以連結帳號：'));
 
-                if (vm.users && vm.users[vm.uid]) {
-                  vm.user = { ...vm.users[vm.uid], providerData: pvdata };
-                  vm.updateNotifications();
-                  if (vm.user.latlngColumn) {
-                    vm.locate(vm.user, false);
-                  }
-                } else {
-                  onValue(usersRef, (snapshot) => {
-                    const data = snapshot.val();
-                    vm.users = data;
-                    vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
-                    vm.updateNotifications();
-                    if (vm.user.latlngColumn) {
-                      vm.locate(vm.user, false);
-                    }
-                  }, (error) => {
-                    vm.user = { providerData: pvdata };
-                    console.error("Error fetching users:", error);
-                  });
-                }
-
-                if (autoredirect) {
-                  vm.$nextTick().then(() => {
-                    vm.$router.push('/profile');
-                  });
-                }
-              })
-              .catch((error) => {
-                console.error("Login error:", error);
-                if (error.message.includes('sessionStorage')) {
-                  window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
-                }
+            linkWithCredential(user, emailCredential)
+              .then((linkResult) => {
+                console.log("成功連結帳號: ", linkResult.user);
+              }).catch((error) => {
+                console.error("帳號連結失敗：", error);
               });
-          };
 
-          if (keeploggedin) {
-            setPersistence(auth, browserLocalPersistence)
-              .then(() => {
-                handleLogin();
-              })
-              .catch((error) => {
-                console.error("Persistence error:", error);
+            vm.email = user.providerData[0].email;
+            vm.uid = user.uid;
+            vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+
+            const pvdata = user.providerData;
+
+            if (vm.users && vm.users[vm.uid]) {
+              vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+              vm.updateNotifications();
+              if (vm.user.latlngColumn) {
+                vm.locate(vm.user, false);
+              }
+            } else {
+              onValue(usersRef, (snapshot) => {
+                const data = snapshot.val();
+                vm.users = data;
+                vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
+                vm.updateNotifications();
+                if (vm.user.latlngColumn) {
+                  vm.locate(vm.user, false);
+                }
+              }, (error) => {
+                vm.user = { providerData: pvdata };
+                console.error("Error fetching users:", error);
               });
-          } else {
-            handleLogin();
-          }
-        }
+            }
+
+            if (autoredirect) {
+              vm.$nextTick().then(() => {
+                vm.$router.push('/profile');
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Google 登錄失敗：", error);
+          });
       },
       updateNotifications: function () {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
