@@ -54,6 +54,8 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+
 export default defineComponent({
   name: "LoginBox",
   data () {
@@ -141,6 +143,22 @@ export default defineComponent({
       }
 
       this.$emit('loginWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
+    },
+    resetPassword: function () {
+      if (!this.validateEmail(this.users_email)) {
+        alert('請先輸入有效的電子郵件地址');
+        return;
+      }
+
+      const auth = getAuth();
+      sendPasswordResetEmail(auth, this.users_email)
+        .then(() => {
+          alert('密碼重置郵件已發送，請檢查您的郵箱');
+        })
+        .catch((error) => {
+          console.error("密碼重置郵件發送失敗：", error);
+          alert('密碼重置郵件發送失敗，請稍後再試');
+        });
     }
   }
 });
