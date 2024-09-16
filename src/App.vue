@@ -154,7 +154,7 @@
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
   import { set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
-  import { getAuth, GoogleAuthProvider, 
+  import { getAuth, GoogleAuthProvider, EmailAuthProvider, 
     signInWithPopup,
     linkWithCredential,
     setPersistence,
@@ -726,14 +726,22 @@
           .then((result) => {
             const user = result.user;
 
-            const emailCredential = EmailAuthProvider.credential(user.email, prompt('請輸入您的 Email 密碼以連結帳號：'));
+            if (user.email) {
+              const emailCredential = EmailAuthProvider.credential(
+                user.email, 
+                prompt('請輸入您的 Email 密碼以連結帳號：') || ''
+              );
 
-            linkWithCredential(user, emailCredential)
-              .then((linkResult) => {
-                console.log("成功連結帳號: ", linkResult.user);
-              }).catch((error) => {
-                console.error("帳號連結失敗：", error);
-              });
+              linkWithCredential(user, emailCredential)
+                .then((linkResult) => {
+                  console.log("成功連結帳號: ", linkResult.user);
+                })
+                .catch((error) => {
+                  console.error("帳號連結失敗：", error);
+                });
+            } else {
+              console.error("無法獲取使用者的 email。");
+            }
 
             vm.email = user.providerData[0].email;
             vm.uid = user.uid;
