@@ -294,7 +294,7 @@
 
               if (!pvdata || !pvdata[0]) {
                 pvdata = [
-                  { displayName: this.root.email.split('@')[0]}
+                  { displayName: (this.root.email || '').split('@')[0]}
                 ]
               }
 
@@ -304,25 +304,41 @@
               this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";  
               this.root.login_method = this.users.login_method || 'google'      
             } else {
-            console.log("No data available for user: " + this.uid);
-            this.root = {
-              name: this.user.providerData[0].displayName || '新朋友',
-              uid: this.uid,
-              email: this.email,
-              connect_me: this.email,
-              photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
-              latlngColumn: '23.5330,121.0654',
-              note: '',
-              login_method: this.users.login_method || 'google'
-            };
-            this.isNew = true
+              console.log("No data available for user: " + this.uid);
+            
+              if (!pvdata || !pvdata[0]) {
+                pvdata = [
+                  { displayName: (this.root.email || '').split('@')[0]}
+                ]
+              }
+            
+              this.root = {
+                name: pvdata.displayName || '新朋友',
+                uid: this.uid,
+                email: this.email,
+                connect_me: this.email,
+                photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
+                latlngColumn: '23.5330,121.0654',
+                note: '',
+                login_method: this.users.login_method || 'google'
+              };
+              this.isNew = true
           }
         }).catch((error) => {
           console.error(error);
           console.log("No data available for user: " + this.uid);
           console.log(this.user)
+
+          var pvdata = {...this.user.providerData}
+
+          if (!pvdata || !pvdata[0]) {
+            pvdata = [
+              { displayName: (this.root.email || '').split('@')[0]}
+            ]
+          }
+
           this.root = {
-            name: this.user.providerData[0].displayName || '新朋友',
+            name: pvdata.displayName || '新朋友',
             uid: this.uid,
             email: this.email,
             connect_me: this.email,

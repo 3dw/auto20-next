@@ -388,72 +388,68 @@
             return; // 跳出迴圈
         }
       },*/
-        registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
-          
-          if (!notgooglepassword || typeof notgooglepassword !== 'string') {
+      registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
+        if (!notgooglepassword || typeof notgooglepassword !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
-          }
-          // eslint-disable-next-line @typescript-eslint/no-this-alias  
-          const vm = this;
-          const auth = getAuth();
-          const handleRegistration = () => {
+        }
+        // eslint-disable-next-line @typescript-eslint/no-this-alias  
+        const vm = this;
+        const auth = getAuth();
+        const handleRegistration = () => {
           createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
             .then((userCredential) => {
               const user = userCredential.user;
-              console.log("app.vue createUserWithEmailAndPasswordeuser ");
-
-              console.log(user); // 拿取它的資料結構，debug用
-
+              console.log("使用者註冊成功：", user);
 
               vm.email = user.email;
               vm.uid = user.uid;
-              // vm.uid = '878937jjkhkjhk';
-              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // set a default photoURL
+              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // 設定預設頭像
 
-              const pvdata = [
-                {
-                  displayName: vm.email?.split('@')[0],
-                  email: vm.email,
-                  photoURL: vm.photoURL
-                }
-              ]
+              const pvdata = [{
+                displayName: vm.email?.split('@')[0],
+                email: vm.email,
+                photoURL: vm.photoURL
+              }];
 
-              vm.user = { email: vm.email, 
-                photoURL: vm.photoURL,
-                providerData: pvdata };
+              vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
 
-              // Optionally set default user data in Firebase Database
+              // 設定用戶基本資料到 Firebase Database
               set(ref(db, 'users/' + vm.uid), {
                 email: vm.email,
                 name: vm.email?.split('@')[0],
                 connect_me: vm.email,
                 photoURL: vm.photoURL,
                 login_method: 'email'
-                // Add any other default fields you need
               });
 
-              // Navigate to profile
+              // 發送驗證郵件
+              sendEmailVerification(user).then(() => {
+                alert('驗證郵件已發送，請檢查您的郵箱以完成驗證。');
+              }).catch((error) => {
+                console.error("發送驗證郵件失敗：", error);
+                alert('發送驗證郵件失敗，請稍後再試。');
+              });
+
+              // 導航到個人資料頁面
               if (autoredirect) {
-                  vm.$nextTick().then(() => {
-                    vm.$router.push('/profile');
-                  });
-                }
+                vm.$nextTick().then(() => {
+                  vm.$router.push('/profile');
+                });
+              }
             })
             .catch((error) => {
-              console.error("Registration error:", error);
-              alert("註冊失敗: " + error.message);
+              console.error("註冊失敗：", error);
+              alert("註冊失敗：" + error.message);
             });
         };
 
         if (notgooglekeeploggedin) {
-          setPersistence(auth, browserLocalPersistence)
-            .then(() => {
-              handleRegistration();
-            })
-            .catch((error) => {
-              console.error("Persistence error:", error);
-            });
+          setPersistence(auth, browserLocalPersistence).then(() => {
+            handleRegistration();
+          }).catch((error) => {
+            console.error("持久性設置錯誤：", error);
+          });
         } else {
           handleRegistration();
         }
