@@ -51,8 +51,7 @@
 
   </template>
   
-
-<script>
+  <script>
 import { defineComponent } from 'vue';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
@@ -60,7 +59,7 @@ export default defineComponent({
   name: "LoginBox",
   data () {
     return {
-      users_email: '',
+      users_email: '',  // 使用者輸入的電子郵件
       user_password: '',
       keeploggedin: false
     }
@@ -98,6 +97,7 @@ export default defineComponent({
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(String(email).toLowerCase());
     },
+    // 註冊帳號方法
     registerWithEmail: function () {
       var autoredirect = true;
       console.log("users_email:", this.users_email);
@@ -122,6 +122,7 @@ export default defineComponent({
 
       this.$emit('registerWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
     },
+    // 用 email 密碼登入方法
     loginWithEmail: function () {
       var autoredirect = true;
       console.log('Login clicked'); // 確認方法是否被觸發
@@ -144,20 +145,38 @@ export default defineComponent({
 
       this.$emit('loginWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
     },
+    // 重設密碼方法
     resetPassword: function () {
+      console.log("Reset password function triggered");  // 偵錯: 確認重設密碼方法是否被觸發
+      console.log("Email for reset:", this.users_email);  // 偵錯: 確認輸入的 email 值
+      
+      // 驗證 email 格式
       if (!this.validateEmail(this.users_email)) {
         alert('請先輸入有效的電子郵件地址');
         return;
       }
 
-      const auth = getAuth();
+      const auth = getAuth();  // 取得 Firebase auth 物件
+      console.log("Firebase auth object:", auth);  // 偵錯: 確認 auth 物件是否正確被初始化
+
       sendPasswordResetEmail(auth, this.users_email)
         .then(() => {
           alert('密碼重置郵件已發送，請檢查您的郵箱');
+          console.log("Password reset email sent successfully");  // 偵錯: 確認郵件已發送
         })
         .catch((error) => {
-          console.error("密碼重置郵件發送失敗：", error);
-          alert('密碼重置郵件發送失敗，請稍後再試');
+          console.error("密碼重置郵件發送失敗：", error.code, error.message);  // 偵錯: 詳細的錯誤訊息
+          // 更具體的錯誤處理
+          switch (error.code) {
+            case 'auth/invalid-email':
+              alert('無效的電子郵件地址');
+              break;
+            case 'auth/user-not-found':
+              alert('找不到該電子郵件對應的帳號');
+              break;
+            default:
+              alert('密碼重置郵件發送失敗，請稍後再試');
+          }
         });
     }
   }
