@@ -134,7 +134,7 @@
   router-view(
     :emailVerified = "emailVerified",
     :isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
-    @loginGoogle="loginGoogle", @toggleLogin="toggleLogin",
+    @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @resendVerificationEmail="resendVerificationEmail",
     @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout" ,@registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
   
   br

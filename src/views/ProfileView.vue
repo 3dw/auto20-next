@@ -156,6 +156,7 @@
 
         .warning(v-if="!emailVerified")
           | note: 您的Email尚未驗證
+          button.ui.button(@click="$emit('resendVerificationEmail')") 按此重發驗證信
 
         .warning(v-if="!isValid(root)")
           | note: {{$t('profile.form68')}}
