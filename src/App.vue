@@ -396,7 +396,6 @@
           alert('接收的密碼無效，請確認輸入');
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-this-alias  
         const vm = this;
         const auth = getAuth();
         const handleRegistration = () => {
@@ -407,7 +406,7 @@
 
               vm.email = user.email;
               vm.uid = user.uid;
-              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // 設定預設頭像
+              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png';
 
               const pvdata = [{
                 displayName: vm.email?.split('@')[0],
@@ -417,7 +416,6 @@
 
               vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
 
-              // 設定用戶基本資料到 Firebase Database
               set(ref(db, 'users/' + vm.uid), {
                 email: vm.email,
                 name: vm.email?.split('@')[0],
@@ -434,7 +432,6 @@
                 alert('發送驗證郵件失敗，請稍後再試。');
               });
 
-              // 導航到個人資料頁面
               if (autoredirect) {
                 vm.$nextTick().then(() => {
                   vm.$router.push('/profile');
