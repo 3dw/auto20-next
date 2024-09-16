@@ -391,7 +391,7 @@
         registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
           
           if (!notgooglepassword || typeof notgooglepassword !== 'string') {
-          alert('在app.vue接收的密碼無效，請確認輸入');
+          alert('接收的密碼無效，請確認輸入');
           return;
           }
           // eslint-disable-next-line @typescript-eslint/no-this-alias  
@@ -402,17 +402,34 @@
             .then((userCredential) => {
               const user = userCredential.user;
               console.log("app.vue createUserWithEmailAndPasswordeuser ");
-              console.log(user);
+
+              console.log(user); // 拿取它的資料結構，debug用
+
+
               vm.email = user.email;
               vm.uid = user.uid;
               // vm.uid = '878937jjkhkjhk';
-              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // set a default p
-              vm.user = { email: vm.email, photoURL: vm.photoURL };
+              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png'; // set a default photoURL
+
+              const pvdata = [
+                {
+                  displayName: vm.email?.split('@')[0],
+                  email: vm.email,
+                  photoURL: vm.photoURL
+                }
+              ]
+
+              vm.user = { email: vm.email, 
+                photoURL: vm.photoURL,
+                providerData: pvdata };
 
               // Optionally set default user data in Firebase Database
               set(ref(db, 'users/' + vm.uid), {
                 email: vm.email,
-                name: '',
+                name: vm.email?.split('@')[0],
+                connect_me: vm.email,
+                photoURL: vm.photoURL,
+                login_method: 'email'
                 // Add any other default fields you need
               });
 
@@ -450,6 +467,9 @@
           signInWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
             .then((userCredential) => {
               const user = userCredential.user;
+
+              console.log(user); // 拿取它的資料結構，debug用
+
               vm.email = user.email;
               vm.uid = user.uid;
               vm.photoURL = null; // or get from user.photoURL

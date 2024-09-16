@@ -289,10 +289,20 @@
           if (snapshot.exists()) {
               this.isNew = false;
               this.root = snapshot.val();
+
+              var pvdata = {...this.user.providerData}
+
+              if (!pvdata || !pvdata[0]) {
+                pvdata = [
+                  { displayName: this.root.email.split('@')[0]}
+                ]
+              }
+
               this.root.email = this.root.email || this.email;
               this.root.connect_me = this.root.connect_me || this.email;
-              this.root.name = this.root.name || this.user.name || this.user.providerData[0].displayName || '新朋友';
-              this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";        
+              this.root.name = this.root.name || this.user.name || pvdata[0].displayName || '新朋友';
+              this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";  
+              this.root.login_method = this.users.login_method || 'google'      
             } else {
             console.log("No data available for user: " + this.uid);
             this.root = {
@@ -302,7 +312,8 @@
               connect_me: this.email,
               photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
               latlngColumn: '23.5330,121.0654',
-              note: ''
+              note: '',
+              login_method: this.users.login_method || 'google'
             };
             this.isNew = true
           }
