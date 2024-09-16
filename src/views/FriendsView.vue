@@ -4,7 +4,7 @@
     .sixteen.wide.column 
       .ui.huge.buttons
         button.ui.orange.button(@click="toggleLogin")
-          // i.google.icon
+          i.lock.icon
           | {{ $t('login.login_to_see_data') }}
   loader(v-else-if="!users || toList(users).length == 0")
   select.ui.dropdown(v-else, v-model="logic")
@@ -414,5 +414,7 @@ textarea {
   font-size: 16px; /* 字體大小 */
 }
 
-
+.ui.lock.icon {
+  margin-right: 8px;
+}
 </style>
