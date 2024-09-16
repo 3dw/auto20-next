@@ -155,7 +155,7 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup,
     setPersistence,
     // browserSessionPersistence,
-    browserLocalPersistence,createUserWithEmailAndPassword, signInWithEmailAndPassword
+    browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification
   } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
   
@@ -454,9 +454,8 @@
           handleRegistration();
         }
       },
-
       loginWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        // eslint-disable-next-line @typescript-eslint/no-this-alias  
         const vm = this;
         const auth = getAuth();
         const handleLogin = () => {
@@ -464,64 +463,52 @@
             .then((userCredential) => {
               const user = userCredential.user;
 
-              console.log(user); // 拿取它的資料結構，debug用
-
-              vm.email = user.email;
-              vm.uid = user.uid;
-              vm.photoURL = null; // or get from user.photoURL
-
-              // Fetch user data
-              if (vm.users && vm.users[vm.uid]) {
-                vm.user = vm.users[vm.uid];
-                vm.updateNotifications();
-                if (vm.user.latlngColumn) {
-                  vm.locate(vm.user, false);
-                }
-              } else {
-                onValue(usersRef, (snapshot) => {
-                  const data = snapshot.val();
-                  vm.users = data;
-                  vm.user = vm.users[vm.uid] || {};
-                  vm.updateNotifications();
-                  if (vm.user.latlngColumn) {
-                    vm.locate(vm.user, false);
-                  }
-                }, (error) => {
-                  vm.user = {};
-                  console.error("Error fetching users:", error);
-                });
+              if (!user.emailVerified) {
+                alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
+                return;
               }
 
-              // Navigate to profile
-              if (autoredirect) {
-                  vm.$nextTick().then(() => {
-                    vm.$router.push('/profile');
-                  });
-                }
+              console.log('登入成功：', user);
+              vm.email = user.email;
+              vm.uid = user.uid;
+              vm.photoURL = user.photoURL || null;
+
+              if (autoredirect && user.emailVerified) {
+                vm.$nextTick().then(() => {
+                  vm.$router.push('/profile');
+                });
+              }
             })
             .catch((error) => {
-              console.error("Login error:", error);
-              alert("登入失敗: " + error.message);
+              console.error("登入失敗：", error);
+              alert("登入失敗：" + error.message);
             });
         };
 
         if (notgooglekeeploggedin) {
-          setPersistence(auth, browserLocalPersistence)
-            .then(() => {
-              handleLogin();
-            })
-            .catch((error) => {
-              console.error("Persistence error:", error);
-            });
+          setPersistence(auth, browserLocalPersistence).then(() => {
+            handleLogin();
+          }).catch((error) => {
+            console.error("持久性設置錯誤：", error);
+          });
         } else {
           handleLogin();
+        }
+      },
+      resendVerificationEmail() {
+        const user = getAuth().currentUser;
+        if (user) {
+          sendEmailVerification(user).then(() => {
+            alert('驗證郵件已重新發送。');
+          }).catch((error) => {
+            console.error('重新發送驗證郵件失敗：', error);
+            alert('重新發送驗證郵件失敗，請稍後再試。');
+          });
         }
       },
       toggleLogin () {
         this.showLogin = !this.showLogin;
       },
-
-
       addNotification(text, route) {
         const notification = {
           time: new Date().toISOString(),
