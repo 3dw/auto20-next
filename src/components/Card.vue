@@ -156,6 +156,13 @@
         }
       }
     },
+    emits: [
+      'locate',
+      'addBook',
+      'removeBook',
+      'loginGoogle',
+      'toggleLogin'
+    ],
     data () {
       return {
         thin: window.innerWidth < 720

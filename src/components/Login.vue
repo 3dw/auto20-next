@@ -18,7 +18,7 @@
   
          
           //- Email & Password Login Form
-          .ui.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
+          .ui.form.segment(style="border-radius: 10px; padding: 15px; background-color: #f9f9f9;")
             .field
               .ui.left.icon.input
                 i.user.icon
