@@ -152,7 +152,7 @@
   import { showLogin } from './developer/testOnly'; // 導入測試開關
 
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { set, push, ref, onValue} from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { set, push, ref, onValue, get } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, EmailAuthProvider, 
     signInWithPopup,
@@ -221,7 +221,6 @@
         users: null as any, // 定義用戶資料變量
         book: [] as string[], // 定義個人名簿資料變量 
         // eslint-disable-next-line
-        books: [] as any[], // 定義所有名簿資料變量 
         // eslint-disable-next-line
         user: null as any, // 定義當前用戶變量
         email: null as string | null, // 定義電子郵件變量
@@ -254,15 +253,31 @@
       });
       
       // 檢查使用者的登入狀態
+      
       auth.onAuthStateChanged((user) => {
         if (user) {
           // 使用者已登入，讀取基本資料
           vm.showLogin = false;
           vm.uid = user.uid;
-          vm.email = user.providerData[0].email;
-          vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+          vm.emailVerified = user.emailVerified;
 
-          const pvdata = user.providerData;
+          // 處理 providerData
+          if (user.providerData && user.providerData.length > 0) {
+            vm.email = user.providerData[0].email;
+            vm.photoURL = user.providerData[0].photoURL ? decodeURI(user.providerData[0].photoURL) : "https://we.alearn.org.tw/logo-new.png";
+          } else {
+            // 如果沒有 providerData，使用 user 對象中的資料
+            vm.email = user.email;
+            vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+          }
+
+          const pvdata = user.providerData || [
+            {
+              displayName: vm.email?.split('@')[0],
+              email: vm.email,
+              photoURL: vm.photoURL
+            }
+          ];
           
           // 更新用戶資料和通知
           if (vm.users && vm.users[vm.uid]) {
@@ -393,13 +408,21 @@
 
               vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
 
-
-              set(ref(db, 'users/' + vm.uid), {
-                email: vm.email,
-                name: vm.email?.split('@')[0],
-                connect_me: vm.email,
-                photoURL: vm.photoURL,
-                login_method: 'email'
+              // 先檢查用戶資料是否存在
+              const userRef = ref(db, 'users/' + vm.uid);
+              get(userRef).then((snapshot) => {
+                if (!snapshot.exists()) {
+                  // 如果用戶資料不存在，則設置新的資料
+                  set(userRef, {
+                    email: vm.email,
+                    name: vm.email?.split('@')[0],
+                    connect_me: vm.email,
+                    photoURL: vm.photoURL,
+                    login_method: 'email'
+                  });
+                }
+              }).catch((error) => {
+                console.error("檢查用戶資料時出錯：", error);
               });
 
               // 發送驗證郵件
@@ -652,7 +675,7 @@
         this.allTasksCompleted = (this.user || {}).allTasksCompleted || false;
         
         // check Task1: 是否有升起旗幟
-        if ( this.users && this.users[this.uid] && this.users[this.uid].name && this.users[this.uid].latlngColumn && this.users[this.uid].learner_birth ) {
+        if ( this.users && this.users[this.uid] && this.users[this.uid].name && this.users[this.uid].latlngColumn ) {
           someTaskCompleted[0] = true
         } else {
           someTaskCompleted[0] = false
@@ -691,6 +714,7 @@
         return someTaskCompleted
 
       },
+      
       loginGoogle: function (autoredirect, keeploggedin) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
@@ -780,5 +804,7 @@
 @import "./scss/sidebar.scss";
 @import "./scss/main-layout.scss";
 
+</style>
+  
 </style>
   
