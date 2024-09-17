@@ -16,11 +16,11 @@
     .ui.list
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
         p(v-show="edit !== c") 
-          router-link(:to="'/flag/' + c.uid")
+          router-link.fat-only(:to="'/flag/' + c.uid")
             img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
-          a(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
+          a.fat-only(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
           span.text {{ c.n }} : {{ c.t }}
-          span.gray(v-show="isFull") &nbsp;&nbsp;-
+          span.gray.fat-only(v-show="isFull") &nbsp;&nbsp;-
             | {{ countDateDiff(c.time) }}
       .item(v-if="uid")
         .ui.form()
