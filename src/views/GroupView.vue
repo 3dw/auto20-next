@@ -69,17 +69,18 @@
 
 
                       .item.ui.form(v-show="uid")
-                        .field.no-margin.no-padding
-                          .ui.labeled.input
-                            label.ui.label {{$t('group.enter_resource')}}
-                            input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 20px; padding: 15px;")
-                        .field.no-margin.no-padding
-                          .ui.labeled.input
-                            label.ui.label {{$t('group.enter_link')}}
-                            input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 20px; padding: 15px;")
-                        .field.no-padding
-                          a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                            | {{$t('group.add_resource')}}
+                        .ui.form(v-show="uid")
+                          .field.no-margin.no-padding
+                            .ui.labeled.input
+                              label.ui.label {{$t('group.enter_resource')}}
+                              input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')")
+                          .field.no-margin.no-padding
+                            .ui.labeled.input
+                              label.ui.label {{$t('group.enter_link')}}
+                              input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')")
+                          .field.no-padding
+                            a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
+                              | {{$t('group.add_resource')}}
 
                     .ui.divided.list.center.aligned(v-else)
                       .item.center.aligned {{$t('group.resources')}}
@@ -478,18 +479,53 @@ export default defineComponent({
 }
 
 /* 增加輸入欄位的大小及視覺效果 */
+.ui.labeled.input {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 15px;
+}
+
 .ui.labeled.input .ui.label {
   background-color: #0056b3;
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 0;
 }
 
-.ui.labeled.input input {
+.ui.labeled.input input,
+.ui.labeled.input textarea {
   border: 1px solid #ced4da;
-  border-radius: 8px;
-  padding: 15px;
-  font-size: 20px;
+  border-radius: 0 0 5px 5px;
+  padding: 10px;
+  font-size: 16px;
   width: 100%;
+}
+
+@media (min-width: 768px) {
+  .ui.labeled.input {
+    flex-direction: row;
+  }
+
+  .ui.labeled.input .ui.label {
+    border-radius: 5px 0 0 5px;
+    margin-bottom: 0;
+    width: 30%;
+  }
+
+  .ui.labeled.input input,
+  .ui.labeled.input textarea {
+    border-radius: 0 5px 5px 0;
+    width: 70%;
+  }
+}
+
+/* 添加这个类来控制输入字段的最大宽度 */
+.input-container {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 textarea {
