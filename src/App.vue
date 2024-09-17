@@ -393,6 +393,7 @@
 
               vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
 
+
               set(ref(db, 'users/' + vm.uid), {
                 email: vm.email,
                 name: vm.email?.split('@')[0],
