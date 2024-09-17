@@ -76,7 +76,7 @@
       // pagination
   // 教學組件，根據登錄狀態和顯示狀態來控制顯示
   //Tutorial(v-if="isLoggedIn && showTutorial" @hideTutorial="showTutorial = false")    
-  Tutorial(v-if="uid && showTutorial && !allTasksCompleted",
+  Tutorial(v-if="uid && showTutorial && !allTasksCompleted && users && toList(users).length > 0",
   @hideTutorial="showTutorial = false",
   :someTaskCompleted = "checkAllTasks()")  
   
@@ -357,6 +357,13 @@
       }
     },
     methods: {
+      toList(obj) {
+        if (!obj || typeof obj !== 'object') {
+          return [];
+        } else {
+          return Object.values(obj);
+        }
+      },
       navTo (path) {
         this.$router.push(path)
       },
