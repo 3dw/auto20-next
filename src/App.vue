@@ -403,7 +403,7 @@
 
               // 發送驗證郵件
               sendEmailVerification(user).then(() => {
-                alert('驗證郵件已發送，請檢查您的郵箱以完成驗證。');
+                alert('驗證郵件已發送，請檢查您的郵箱(含垃圾信箱)以完成驗證。');
 
                 vm.logout(); // 登出
 
