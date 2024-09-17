@@ -115,7 +115,7 @@
           span
             input(v-model='root.child_birth' @input="filterInput('child_birth', $event)"   type='text', :placeholder="$t('profile.form51')")
             br
-            span(v-if='root.child_birth') {{$t('profile.form45')}}{{ toAge(root.child_birth) }}{{ $t('login.arround') }}
+            span(v-if='root.child_birth') {{$t('profile.form45')}}{{ toAge(root.child_birth) }}{{ $t('login.old') }}
             .ui.divider
             span(style="margin-left: 15px;") {{ $t('profile.form52') }}
               br
