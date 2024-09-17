@@ -272,19 +272,18 @@
 
           // 處理 providerData
           if (user.providerData && user.providerData.length > 0) {
-            vm.email = user.providerData[0].email;
+            vm.email = user.providerData[0].email || null;
             vm.photoURL = user.providerData[0].photoURL ? decodeURI(user.providerData[0].photoURL) : "https://we.alearn.org.tw/logo-new.png";
-            console.log("1Final photo URL:", vm.photoURL);
           } else {
             // 如果沒有 providerData，使用 user 對象中的資料
-            vm.email = user.email;
+            vm.email = user.email || null;
             vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
-            console.log("2Final photo URL:", vm.photoURL);
           }
+          console.log("Final photo URL:", vm.photoURL);
 
           const pvdata = user.providerData || [
             {
-              displayName: vm.email?.split('@')[0],
+              displayName: vm.email?.split('@')[0] || 'Unknown',
               email: vm.email,
               photoURL: vm.photoURL
             }
@@ -406,32 +405,37 @@
           const userCredential = await createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword);
           const user = userCredential.user;
 
-          this.email = user.email;
-          this.uid = user.uid;
-          this.photoURL = 'https://we.alearn.org.tw/logo-new.png';
+          if (user && user.email) {
+            this.email = user.email;
+            this.uid = user.uid;
+            this.photoURL = 'https://we.alearn.org.tw/logo-new.png';
 
-          const pvdata = [{
-            displayName: this.email?.split('@')[0],
-            email: this.email,
-            photoURL: this.photoURL
-          }];
-          this.user = { email: this.email, photoURL: this.photoURL, providerData: pvdata };
-
-          const userRef = ref(db, 'users/' + this.uid);
-          const snapshot = await get(userRef);
-          if (!snapshot.exists()) {
-            await set(userRef, {
+            const pvdata = [{
+              displayName: this.email?.split('@')[0] || 'Unknown',
               email: this.email,
-              name: this.email?.split('@')[0],
-              connect_me: this.email,
-              photoURL: this.photoURL,
-              login_method: 'email'
-            });
-          }
+              photoURL: this.photoURL
+            }];
+            this.user = { email: this.email, photoURL: this.photoURL, providerData: pvdata };
 
-          await sendEmailVerification(user);
-          alert('驗證郵件已發送，請檢查您的郵箱(含垃圾信箱)以完成驗證。');
-          this.logout();
+            const userRef = ref(db, 'users/' + this.uid);
+            const snapshot = await get(userRef);
+            if (!snapshot.exists()) {
+              await set(userRef, {
+                email: this.email,
+                name: this.email?.split('@')[0] || 'Unknown',
+                connect_me: this.email,
+                photoURL: this.photoURL,
+                login_method: 'email'
+              });
+            }
+
+            await sendEmailVerification(user);
+            alert('驗證郵件已發送，請檢查您的郵箱(含垃圾信箱)以完成驗證。');
+            this.logout();
+          } else {
+            console.error('User or user email is undefined after registration');
+            alert('註冊過程中發生錯誤，請稍後再試。');
+          }
         } catch (error: any) {
           if (error.code === 'auth/email-already-in-use') {
             try {
@@ -468,13 +472,17 @@
       },
       
       updateUserData(user: any) {
-        this.email = user.email;
+        if (!user) {
+          console.error('User is undefined in updateUserData');
+          return;
+        }
+        this.email = user.email || null;
         this.uid = user.uid;
         this.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
         this.emailVerified = user.emailVerified;
 
         const pvdata = user.providerData || [{
-          displayName: this.email?.split('@')[0],
+          displayName: this.email?.split('@')[0] || 'Unknown',
           email: this.email,
           photoURL: this.photoURL
         }];
@@ -483,7 +491,7 @@
       },
 
       updateUserInfo(pvdata: any[]) {
-        if (this.users && this.users[this.uid]) {
+        if (this.users && this.uid && this.users[this.uid]) {
           this.user = { ...this.users[this.uid], providerData: pvdata };
           this.updateNotifications();
           if (this.user.latlngColumn) {
@@ -499,10 +507,14 @@
           onValue(usersRef, (snapshot) => {
             const data = snapshot.val();
             this.users = data;
-            this.user = { ...this.users[this.uid] || this.user, providerData: pvdata };
-            this.updateNotifications();
-            if (this.user.latlngColumn) {
-              this.locate(this.user, false);
+            if (this.uid && this.users && this.users[this.uid]) {
+              this.user = { ...this.users[this.uid], providerData: pvdata };
+              this.updateNotifications();
+              if (this.user.latlngColumn) {
+                this.locate(this.user, false);
+              }
+            } else {
+              this.user = { providerData: pvdata };
             }
           }, (error) => {
             this.user = { providerData: pvdata };
@@ -813,7 +825,15 @@
             this.handleAuthentication(
               () => signInWithPopup(auth, provider),
               async (result) => {
+                console.log('loginGoogle', result);
                 const user = result.user;
+                
+                if (!user || !user.email) {
+                  console.error('User or user email is undefined');
+                  // alert('登入過程中發生錯誤，請稍後再試。');
+                  return;
+                }
+
                 // 檢查是否有相同 email 的帳號
                 const methods = await fetchSignInMethodsForEmail(auth, user.email);
                 if (methods.length > 0 && !methods.includes('google.com')) {
@@ -821,7 +841,7 @@
                   const userRef = ref(db, 'users');
                   const snapshot = await get(userRef);
                   const users = snapshot.val();
-                  const existingUser = Object.values(users).find((u: any) => u.email === user.email && !u.googleUID);
+                  const existingUser = Object.values(users).find((u: any) => u &&u.email === user.email && !u.googleUID);
 
                   if (existingUser) {
                     // 刪除其他同樣 email 但不同 UID 的用戶
@@ -879,9 +899,14 @@
         const vm = this;
         authFunction()
           .then((result) => {
+            if (!result || !result.user) {
+              console.error('Authentication result or user is undefined');
+              alert('認證過程中發生錯誤，請稍後再試。');
+              return;
+            }
             const user = result.user;
             vm.updateUserData(user);
-            successCallback(user);
+            successCallback(result);
           })
           .catch((error) => {
             console.error("Authentication error:", error);
