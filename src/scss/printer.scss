@@ -1,0 +1,59 @@
+@media print {
+  // 隱藏不需要列印的元素
+  .no-print {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .print-only {
+    visibility: visible !important;
+  }
+
+  // 確保背景色和背景圖片能夠列印
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  // 設置基本字體和顏色
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 16pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+
+  // 調整連結樣式
+  a {
+    text-decoration: underline;
+    color: #000;
+  }
+
+  // 確保頁面內容不會被切斷
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  img {
+    page-break-inside: avoid;
+    max-width: 100% !important;
+  }
+
+  table, blockquote {
+    page-break-inside: avoid;
+  }
+
+  ul, ol, dl {
+    page-break-before: avoid;
+  }
+
+  // 添加頁碼
+  @page {
+    margin: 2cm;
+    @bottom-center {
+      content: counter(page);
+    }
+  }
+}

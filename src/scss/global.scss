@@ -98,3 +98,7 @@ a.router-link-exact-active:active {
 a, button {
   cursor: pointer !important;
 }
+
+.print-only {
+  visibility: hidden;
+}

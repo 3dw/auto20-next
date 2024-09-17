@@ -1,5 +1,5 @@
 <template lang="pug">
-  nav.ui.menu#main-menu
+  nav.ui.menu#main-menu.no-print
     button.no-border.ui.item(@click="toggleSidebar")
       i.icon.bars
     router-link.item.fat-only(to="/")
@@ -49,15 +49,15 @@
           button.no-border.ui.item(v-if="uid", @click="logout")
             i.sign-out.icon
             | {{ $t('login.logout')}}
-  carousel(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000", :pauseAutoplayOnHover="true")
+  carousel.no-print(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000", :pauseAutoplayOnHover="true")
     slide(v-for="slide in news", :key="slide")
       span {{ $t('news.' + slide) }}
     template(#addons)
-  Tutorial(v-if="uid && showTutorial && !allTasksCompleted && users && toList(users).length > 0",
+  Tutorial.no-print(v-if="uid && showTutorial && !allTasksCompleted && users && toList(users).length > 0",
   @hideTutorial="showTutorial = false",
   :someTaskCompleted = "checkAllTasks()")  
   
-  .ui.sidebar.vertical.menu#side-menu(:class="{'hidden': !sidebarVisible}")
+  .ui.sidebar.vertical.menu#side-menu.no-print(:class="{'hidden': !sidebarVisible}")
     router-link.item(to="/")
       i.home.icon.no-float
       | {{ $t('login.hp') }}
@@ -91,21 +91,21 @@
     router-link.item(to="/source_github")
       i.github.icon.no-float
       | {{ $t('login.source_github') }}
-  .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
-  br
-  .ui.form.container(v-if="doSearch($route.path)", v-show="uid")
+  .ui.sidebar.bg.no-print(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
+  br.no-print
+  .ui.form.container.no-print(v-if="doSearch($route.path)", v-show="uid")
     .search-input
       input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
       i.search.icon(@click="navTo('/friends')")
-  br
+  br.no-print
   router-view(
     :emailVerified = "emailVerified",
     :isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
     @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @resendVerificationEmail="resendVerificationEmail",
     @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout" ,@registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
-  br
-  br
-  chatbox#ch(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
+  br.no-print
+  br.no-print
+  chatbox#ch.no-print(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
   login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
 
   </template>
@@ -889,5 +889,6 @@
 @import "./scss/navbar.scss";
 @import "./scss/sidebar.scss";
 @import "./scss/main-layout.scss";
+@import "./scss/printer.scss";
 
 </style>
