@@ -42,7 +42,7 @@
               
               .ui.grid.center.aligned
                 .row
-                  p.center.aligned 成員：
+                  p.center.aligned {{$t('group.members')}}
                     span(v-for="m in groups[$route.params.idx].members")
                       router-link(:to="'/flag/' + m", v-if="isUser(m)")
                         img.ui.avatar(:src="users[m].photoURL", :alt="users[m].n")
@@ -53,21 +53,19 @@
                 .two.column.stackable.row
                   .column
                     .ui.divided.list.center.aligned(v-if="!edit")
-                      .item.center.aligned {{$t('group.resources')}}
+                      .item.center.aligned {{$t('group.resources_sorted')}}
                       .item.center.aligned(v-for="(r, index) in sortedResources" :key="index + r.n + r.href", v-show="!r.hidden")
                         .resource-content
                           a(:href="r.href", target="_blank", rel="noopener noreferrer")
                             img(:src="'http://www.google.com/s2/favicons?domain=' + r.href", :alt="r.n")
                             | {{r.n}}
                           .filler
-                        
+
                         .resource-buttons
-                          a.ui.blue.button(v-if="isUser(uid) && !(r.likes || []).includes(uid)", v-show="!edit", @click="likeResource($route.params.idx, index)")
-                            i.thumbs.up.icon
-                            | {{$t('group.like')}}
-                          span.red(v-if="r.likes && r.likes.length > 0")
-                            i.heart.icon
-                            | {{r.likes.length}} {{$t('group.likes')}}
+                          a.ui.blue.button(v-if="isUser(uid)" @click="likeResource($route.params.idx, r.rid)")
+                            i(v-if="(r.likes || []).includes(uid)" class="heart icon")
+                            i(v-else class="heart outline icon")
+                            | {{(r.likes || []).length}} {{$t('group.likes')}}
 
 
                       .item.ui.form(v-show="uid")
@@ -159,7 +157,11 @@ export default defineComponent({
     // 排序資源，推薦數多的放在上面
     sortedResources() {
       const idx = this.$route.params.idx;
-      return (this.groups[idx]?.res || []).filter((r) => {
+      return (this.groups[idx]?.res || []).map((r, rid) => {
+        let ans = {...r};
+        ans.rid = rid;
+        return ans;
+      }).filter((r) => {
         return !this.mySearch || r.n.indexOf(this.mySearch) > -1 || r.href.indexOf(this.mySearch) > -1 || ((r.des && r.des.indexOf(this.mySearch) > -1))
       }).sort((a, b) => {
         const likesA = a.likes ? a.likes.length : 0;
@@ -249,21 +251,25 @@ export default defineComponent({
     },
     likeResource(idx, resIndex) {
       // 檢查該資源是否已經存在推薦人列表
-      this.groups[idx].res[resIndex].likes = this.groups[idx].res[resIndex].likes || [];
+      const likes = this.groups[idx].res[resIndex].likes || [];
+      const userHasLiked = likes.includes(this.uid);
 
-      // 如果使用者尚未推薦，則將他們的 uid 加入到推薦人列表中
-      if (!(this.groups[idx].res[resIndex].likes || []).includes(this.uid)) {
+      if (userHasLiked) {
+        // 如果使用者已經推薦過，取消推薦
+        this.groups[idx].res[resIndex].likes = likes.filter(uid => uid !== this.uid);
+      } else {
+        // 如果使用者尚未推薦，則將他們的 uid 加入到推薦人列表中
         this.groups[idx].res[resIndex].likes.push(this.uid);
-
-        // 將更新後的資源列表儲存到 Firebase
-        set(ref(db, 'groups/' + idx + '/res/' + resIndex), this.groups[idx].res[resIndex])
-          .then(() => {
-            console.log(this.$t('groups.update_sucess'));
-          })
-          .catch(error => {
-            console.error(this.$t('groups.update_failed'), error);
-          });
       }
+
+      // 將更新後的資源列表儲存到 Firebase
+      set(ref(db, 'groups/' + idx + '/res/' + resIndex), this.groups[idx].res[resIndex])
+        .then(() => {
+          console.log(this.$t('groups.update_sucess'));
+        })
+        .catch(error => {
+          console.error(this.$t('groups.update_failed'), error);
+        });
     },
     addChat (idx) {
       var o = {

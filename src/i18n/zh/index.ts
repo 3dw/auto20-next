@@ -163,6 +163,7 @@ export default {
       out_confirm: '確認您要退出社團嗎？',
     },
     group: {
+      members: '成員',
       save: '存檔',
       cancel: '取消',
       like: '推薦',
@@ -173,6 +174,7 @@ export default {
       enter_intro: '輸入社團簡介',
       enter_intro_first: '請先輸入社團簡介',
       update_intro: '更新社團簡介',
+      resources_sorted: '資源(依推薦人數排序)',
       resources: '資源',
       hide_resource: '隱藏該資源',
       show_resource: '顯示該資源',

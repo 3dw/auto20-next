@@ -162,6 +162,7 @@ export default {
       out_confirm: "Are you sure you want to leave the group?",
     },
     group: {
+      members: 'Members',
       save: 'Save',
       cancel: 'Cancel',
       like: "Like",
@@ -172,6 +173,7 @@ export default {
       enter_intro: "Enter Group Introduction",
       enter_intro_first: "Please enter the group introduction first",
       update_intro: "Update Group Introduction",
+      resources_sorted: 'Resources(sorted by likes)',
       resources: "Resources",
       hide_resource: 'Hide Resource',
       show_resource: 'Show Resource',
