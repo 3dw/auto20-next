@@ -1,6 +1,27 @@
 //zh 中文语言包
 export default {
+    buttons: {
+      addToDirectory: '登入名簿',
+      removeFromDirectory: '從名簿移除',
+      viewMap: '地圖檢視',
+      shareCard: '分享名片',
+      showQRCode: '顯示QR碼',
+    },
+    contact: {
+      clickableEmail: '可點擊的email連絡方式：',
+      contactMethod: '連絡方式：',
+      availableTime: '有空時間：',
+      personalWebsite: '個人網址',
+      communityWebsite: '社群網址',
+    },
+    card: {
+      interests: '興趣： ',
+      shareable: '可分享： ',
+      seeking: '尋找： ',
+      payable: '可支付： ',
+    },
     login:{
+      alreadyUpdated: '已更新',
       login_into_your_account: '登入您的帳戶',
       login_with_google: '以 Google 帳號登入',
       keep_me_logged_in: '維持登入狀態',

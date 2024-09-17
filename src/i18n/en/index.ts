@@ -1,6 +1,27 @@
 //en英文语言包 用雙引號取代單引號，因為所包覆的英文句子需要使用單引號，如：it's 或是重點單字都用單引號
 export default {
+    buttons: {
+      addToDirectory: 'Add to Directory',
+      removeFromDirectory: 'Remove from Directory',
+      viewMap: 'View Map',
+      shareCard: 'Share Card',
+      showQRCode: 'Show QR Code',
+    },
+    contact: {
+        clickableEmail: 'Clickable Email Contact:',
+        contactMethod: 'Contact Method:',
+        availableTime: 'Available Time:',
+        personalWebsite: 'Personal Website',
+        communityWebsite: 'Community Website',
+    },
+    card: {
+      interests: 'Interests: ',
+      shareable: 'Shareable: ',
+      seeking: 'Seeking: ',
+      payable: 'Payable: ',
+    },
     login: {
+      alreadyUpdated: 'already updated',
       login_into_your_account: 'Login Into Your Account',
       login_with_google: 'Login With Google',
       keep_me_logged_in: 'Keep Me Logged In',
@@ -166,7 +187,7 @@ export default {
       save: 'Save',
       cancel: 'Cancel',
       like: "Like",
-      lites: "Likes",
+      likes: "Likes",
       edit_group: " Group Editing",
       delete_group: 'Detele This Group',
       explore_groups: "Explore All Groups",
@@ -269,7 +290,7 @@ export default {
     privacy: {
       title: " Privacy Policy ",
       strong: "In order to protect your personal privacy, please do not place any sensitive or too complete personally identifiable information on the mutual aid flag.",
-      content1: "Welcome to our service! We value your privacy and would like to inform you that the ‘Mutual Aid Flag’ content on Autonomous Learning 2.0(Auto20)(hereinafter referred to as the Platform) is completely public. The program also requires your email for login, please choose an email that you are comfortable making public.",
+      content1: "Welcome to our service! We value your privacy and would like to inform you that the 'Mutual Aid Flag' content on Autonomous Learning 2.0(Auto20)(hereinafter referred to as the Platform) is completely public. The program also requires your email for login, please choose an email that you are comfortable making public.",
       content2: "When using this service, please carefully consider what information you are willing to make public online. We encourage you to only share information that you are comfortable having others know.",
       content3: "For the security of your data, the Platform provides an option to download a backup of your data. You can download your 'Mutual Aid Flag' data at any time for self-management and backup. You can also delete your own flag after logging in.",
       cc_is: "Creative Commons Licenses",
