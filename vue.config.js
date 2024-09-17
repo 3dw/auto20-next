@@ -14,16 +14,4 @@ module.exports = defineConfig({
       clientsClaim: true
     }
   },
-  chainWebpack: config => {
-    config.module
-      .rule('riv')
-      .test(/\.riv$/)
-      .use('file-loader')
-      .loader('file-loader')
-      .options({
-        name: '[name].[hash].[ext]',
-        outputPath: 'assets/animations',
-      })
-      .end();
-  },
 })
