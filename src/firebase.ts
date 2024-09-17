@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { ref, getDatabase } from 'firebase/database' 
+import { ref, getDatabase } from 'firebase/database'
+import { getAuth } from "firebase/auth"; 
 
 // Initialize Firebase
 const fb = initializeApp({
@@ -10,7 +11,8 @@ const fb = initializeApp({
   storageBucket: "shackhand-autolearn.appspot.com",
   messagingSenderId: "270389952986",
   appId: "1:270389952986:web:010827f42571edac5c80e3"
-})
+});
+export const auth = getAuth(fb);
 
 export const app = fb
 export const db = getDatabase(fb)
