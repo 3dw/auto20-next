@@ -13,11 +13,11 @@ br
 
 .ui.huge.buttons(v-show="uid")
   router-link.ui.basic.orange.button(to="/groups")
-    i.object.group.outline.icon.no-float
+    //i.object.group.outline.icon.no-float
     | {{ $t('login.gp') }}
   .or
   router-link(to="/book").ui.green.button
-    i.book.icon.no-float
+    //i.book.icon.no-float
     | {{ $t('login.bk')}}
 
 
@@ -141,4 +141,5 @@ li {
 a {
   color: #42b983;
 }
+
 </style>
