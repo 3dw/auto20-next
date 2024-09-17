@@ -282,7 +282,10 @@ export default defineComponent({
       set(ref(db, 'groups/' + idx + '/chats'), chats).then(
         //console.log('groups更新成功')
         console.log(this.$t('groups.update_sucess'))
-      )
+      ).catch(error => {
+        console.error(this.$t('groups.update_failed'), error)
+      })
+      
       const members = this.groups[idx].members || []
       members.forEach((uid) => {
         if (uid !== this.uid) {
@@ -301,7 +304,7 @@ export default defineComponent({
         })
       this.newResName = ''
       this.newHref = ''
-      set(ref(db, 'groups/' + idx), this.groups[idx]).then(
+      set(ref(db, 'groups/' + idx + '/res'), this.groups[idx].res).then(
         //console.log('groups更新成功')
         console.log(this.$t('groups.update_sucess'))
       )
