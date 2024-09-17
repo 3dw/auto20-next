@@ -267,16 +267,29 @@
         }
       },
       initMap() {
-        this.map = L.map('map').setView(this.root.latlngColumn.split(','), 7);
+        // 设置默认坐标为台湾中心点
+        const defaultCoords = [23.5330, 121.0654];
+        
+        // 检查 this.root.latlngColumn 是否存在并且是否为字符串
+        let coords = defaultCoords;
+        if (typeof this.root.latlngColumn === 'string') {
+          const splitCoords = this.root.latlngColumn.split(',');
+          if (splitCoords.length === 2) {
+            coords = splitCoords.map(Number);
+          }
+        }
+
+        this.map = L.map('map').setView(coords, 7);
+        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 18,
           attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.map);
-  
+
         L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-  
+
         this.marker = L.marker(this.map.getCenter(), {draggable: true}).addTo(this.map);
-  
+
         this.marker.on('dragend', () => {
           const {lat, lng} = this.marker.getLatLng();
           this.map.setView({lat, lng});
@@ -352,7 +365,17 @@
       },
       setMapAndMarker() {
         if (this.map && this.marker) {
-          const coords = this.root.latlngColumn.split(',');
+          // 设置默认坐标为台湾中心点
+          const defaultCoords = [23.5330, 121.0654];
+          
+          let coords = defaultCoords;
+          if (this.root && typeof this.root.latlngColumn === 'string') {
+            const splitCoords = this.root.latlngColumn.split(',');
+            if (splitCoords.length === 2) {
+              coords = splitCoords.map(Number);
+            }
+          }
+
           const latLng = L.latLng(coords[0], coords[1]);
           this.map.setView(latLng, 7);
           this.marker.setLatLng(latLng);
