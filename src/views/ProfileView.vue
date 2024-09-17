@@ -11,13 +11,6 @@
     br(v-if="isNew")
   
     .ui.grid.container
-      .ui.row(v-if="!uid")
-        .sixteen.wide.column 
-          .ui.huge.buttons
-            button.ui.orange.button(@click="loginGoogle")
-              i.google.icon
-              | {{ $t('login.login') }}
-
       .ui.stackable.two.column.row(v-if="!editing")
         .ten.wide.column(v-show="!isNew")
           .ui.fluid.card.container(v-show="!isNew && !editing")
@@ -231,6 +224,9 @@
     mounted() {
       if (this.uid) {
         this.fetchUserData();
+      } else {
+        this.alert('請先登入'); // 假設使用了某種消息提示組件
+        this.$router.push('/'); // 如果 uid 不存在，可以考慮重定向到登入頁面或顯示一個提示
       }
     },
     methods: {
