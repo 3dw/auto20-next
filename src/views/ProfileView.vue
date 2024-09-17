@@ -147,7 +147,7 @@
             p {{$t('profile.form67')}}
   
 
-        .warning(v-if="!emailVerified")
+        .warning(v-if="!emailVerified && root.login_method === 'email'")
           | note: 您的Email尚未驗證
           button.ui.button(@click="$emit('resendVerificationEmail')") 按此重發驗證信
 
@@ -162,7 +162,7 @@
         router-link(target="_blank" to="/privacy-policy") {{$t('profile.form71')}}
   
       .ui.vertical.buttons
-        a.ui.large.blue.button(:class="{disabled: !isValid(root) || !emailVerified}", @click="updateFlag")
+        a.ui.large.blue.button(:class="{disabled: !isValid(root) || (!emailVerified && root.login_method === 'email')}", @click="updateFlag")
           span(v-if="isNew")
             i.flag.icon
             | {{$t('login.raise_flag')}}
@@ -303,7 +303,7 @@
               this.root.connect_me = this.root.connect_me || this.email;
               this.root.name = this.root.name || this.user.name || pvdata[0].displayName || '新朋友';
               this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";  
-              this.root.login_method = this.users.login_method || 'google'      
+              this.root.login_method = this.root.login_method || 'google'      
             } else {
               console.log("No data available for user: " + this.uid);
             
@@ -377,7 +377,7 @@
         this.root.photoURL = this.photoURL || ''
         this.root.lastUpdate = (new Date()).getTime()
         
-        if (!this.emailVerified) {
+        if (!this.emailVerified && this.root.login_method === 'email') {
           alert('Email尚未驗證'); // <-- 以後要改成雙語
         }
         
