@@ -18,19 +18,8 @@
     router-link.item.fat-only(to="/groups")
       i.object.group.outline.icon
       | {{ $t('login.gp') }}
-    // router-link.item.fat-only(to="/polis")
-      i.comments.icon
-      | 論譠
-  
+    
     div.right.menu
-      // .ui.simple.dropdown.item
-        i.share.square.icon
-        .menu
-        button.no-border.item(@click="copyLink()") 複製當前網址
-      //button(@click="changeZh") 中文Chinese
-      //button(@click="changeEn") 英文English
-      
-      
       .ui.simple.dropdown.item
         i.globe.icon
         span.fat-only
@@ -38,16 +27,12 @@
         .menu
           button.no-border.ui.item(@click="changeZh")
             | 中文 Chinese
-  
           button.no-border.ui.item(@click="changeEn")
             | 英文 English
-            // Notification Icon with Badge
       button.ui.item.no-border(v-show="uid", @click="goToNotifications")
         i.bell.icon
           .ui.red.small.label(v-if="unreadCount > 0") {{ unreadCount }}
-   
       .ui.simple.dropdown.item
-        
         img.ui.avatar.image(v-if="photoURL" :src="photoURL" alt="User Avatar" @error="useDefaultAvatar" @load="onImageLoad")
         i.user.icon(v-else)
         .menu
@@ -55,17 +40,12 @@
             i.flag.icon
             | {{ $t('login.fg') }}
           button.no-border.item(v-else, @click="toggleLogin")
-            // i.google.icon
             | {{ $t('login.login' )}}
-  
           .ui.divider(v-show = "myGroupIdx().length > 0")
-  
           router-link.item(v-for="i in myGroupIdx()", :key="i", :to="'/group/' + i") {{ groups[i].n }}
-  
           router-link.item(to="/book", v-if="uid")
             i.book.icon.no-float
             | {{ $t('login.bk')}}
-            
           button.no-border.ui.item(v-if="uid", @click="logout")
             i.sign-out.icon
             | {{ $t('login.logout')}}
@@ -73,10 +53,6 @@
     slide(v-for="slide in news", :key="slide")
       span {{ $t('news.' + slide) }}
     template(#addons)
-      // navigation
-      // pagination
-  // 教學組件，根據登錄狀態和顯示狀態來控制顯示
-  //Tutorial(v-if="isLoggedIn && showTutorial" @hideTutorial="showTutorial = false")    
   Tutorial(v-if="uid && showTutorial && !allTasksCompleted && users && toList(users).length > 0",
   @hideTutorial="showTutorial = false",
   :someTaskCompleted = "checkAllTasks()")  
@@ -103,15 +79,9 @@
     router-link.item(to="/groups")
       i.object.group.outline.icon.no-float
       | {{ $t('login.gp') }}
-    // router-link.item(to="/polis")
-      i.comments.icon.no-float
-      | 論譠
     router-link.item(to="/profile")
       i.user.icon.no-float
       | {{ $t('login.fg') }}
-    // router-link.item(to="/my_place", v-if="uid")
-      i.marker.icon.no-float
-      | 自學場地登錄
     router-link.item(to="/book", v-if="uid")
       i.book.icon.no-float
       | {{ $t('login.bk')}}
@@ -121,28 +91,21 @@
     router-link.item(to="/source_github")
       i.github.icon.no-float
       | {{ $t('login.source_github') }}
-  
   .ui.sidebar.bg(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
   br
-  
   .ui.form.container(v-if="doSearch($route.path)", v-show="uid")
     .search-input
       input(v-autofocus="", v-model="mySearch", placeholder="關鍵字搜尋", autofocus)
       i.search.icon(@click="navTo('/friends')")
-  
   br
-  
   router-view(
     :emailVerified = "emailVerified",
     :isInApp="isInApp", :zoom="zoom", :uid="uid", :users="users", :book="book", :center="center", :places="places", :user="user", :mySearch="mySearch", :email="email", :photoURL="photoURL", 
     @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @resendVerificationEmail="resendVerificationEmail",
     @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout" ,@registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
-  
   br
   br
-  
   chatbox#ch(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
-  
   login(v-if="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
 
   </template>
@@ -557,6 +520,11 @@
                           .then(() => {
                             console.log('帳號已成功整合。');
                             vm.updateUserData(result.user);
+                            if (autoredirect && user.emailVerified) {
+                              vm.$nextTick().then(() => {
+                                vm.$router.push('/profile');
+                              });
+                            }
                           })
                           .catch((error) => {
                             console.error("帳號整合失敗", error);
@@ -567,6 +535,12 @@
                         alert("Google 登入失敗：" + error.message);
                         vm.logout();
                       });
+                  } else {
+                    if (autoredirect && user.emailVerified) {
+                      vm.$nextTick().then(() => {
+                        vm.$router.push('/profile');
+                      });
+                    }
                   }
                 })
                 .catch((error) => {
@@ -575,11 +549,6 @@
                   vm.logout();
                 });
 
-              if (autoredirect && user.emailVerified) {
-                vm.$nextTick().then(() => {
-                  vm.$router.push('/profile');
-                });
-              }
             })
             .catch((error) => {
               console.error("登入失敗：", error);
@@ -631,17 +600,17 @@
         });
       },
       goToNotifications() {
-        let notifications = this.users[this.uid].notifications || new Object;
+        let notifications = this.users[this.uid].notifications || {};
         console.log(notifications);
-        let ks = Object.keys(notifications)
+        let ks = Object.keys(notifications);
         for (let j = 0; j < ks.length; j++) {
-          let k = ks[j]
-          notifications[k].isRead = true
-          this.unreadCount = 0
+          let k = ks[j];
+          notifications[k].isRead = true;
+          this.unreadCount = 0;
         }
         const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
         set(userNotificationsRef, notifications).then(() => {
-          console.log('all notification are read')
+          console.log('all notification are read');
         }).catch((error) => {
           console.error('Error read notification:', error);
         });
@@ -674,7 +643,7 @@
         this.$i18n.locale = 'zh';
         localStorage.setItem('lang', 'zh');
       },
-  
+
       changeEn() {
         this.$i18n.locale = 'en';
         localStorage.setItem('lang', 'en');
@@ -844,12 +813,6 @@
                   const existingUser = Object.values(users).find((u: any) => u &&u.email === user.email && !u.googleUID);
 
                   if (existingUser) {
-                    // 刪除其他同樣 email 但不同 UID 的用戶
-                    const otherUsers = Object.entries(users).filter(([uid, u]: [string, any]) => u.email === user.email && uid !== user.uid);
-                    for (const [uid] of otherUsers) {
-                      await remove(ref(db, `users/${uid}`));
-                    }
-
                     // 自動整合帳號
                     const credential = GoogleAuthProvider.credential(result.credential.accessToken);
                     try {
@@ -916,8 +879,8 @@
     }
   });
   
-</script>
-  
+  </script>
+    
 <style lang="scss">
 
 @import "./scss/global.scss";
@@ -928,4 +891,3 @@
 @import "./scss/main-layout.scss";
 
 </style>
-  
