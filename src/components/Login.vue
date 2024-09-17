@@ -43,7 +43,7 @@
   
   <script>
 import { defineComponent } from 'vue';
-import { getAuth, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 export default defineComponent({
   name: "LoginBox",
@@ -88,7 +88,7 @@ export default defineComponent({
       return re.test(String(email).toLowerCase());
     },
     // 註冊帳號方法
-    /* registerWithEmail: function () {
+    registerWithEmail: function () {
       console.log("users_email:", this.users_email);
       console.log("user_password:", this.user_password); // 確認密碼值
       console.log('Register clicked'); // 確認方法是否被觸發
@@ -111,39 +111,6 @@ export default defineComponent({
       }
 
       this.$emit('registerWithEmail', this.users_email, this.user_password, this.keeploggedin);
-    }, */
-    async registerWithEmail() {
-      if (this.password !== this.confirmPassword) {
-        alert(this.$t('login.password_mismatch'));
-        return;
-      }
-
-      const auth = getAuth();
-      
-      try {
-        // 检查是否存在相同邮箱的账号
-        const signInMethods = await fetchSignInMethodsForEmail(auth, this.email);
-        
-        if (signInMethods.includes('google.com')) {
-          // 存在Google账号,尝试整合
-          const provider = new GoogleAuthProvider();
-          provider.setCustomParameters({ login_hint: this.email });
-          
-          try {
-            await signInWithPopup(auth, provider);
-            alert(this.$t('login.account_linked'));
-          } catch (error) {
-            console.error("Google账号整合失败:", error);
-            alert(this.$t('login.link_failed'));
-          }
-        } else {
-          // 不存在Google账号,正常注册
-          this.$emit('registerWithEmail', this.email, this.password);
-        }
-      } catch (error) {
-        console.error("检查账号失败:", error);
-        alert(this.$t('login.check_account_failed'));
-      }
     },
     // 用 email 密碼登入方法
     loginWithEmail: function () {
