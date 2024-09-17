@@ -26,7 +26,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import mix from '../mixins/mix.ts';
+import mix from '../mixins/mix';
 import Loader from '../components/Loader.vue';
 import Card from '../components/Card';
 
@@ -142,13 +142,6 @@ export default defineComponent({
     },
     toggleLogin() {
       this.$emit('toggleLogin');
-    },
-    toList(obj) {
-      if (!obj || typeof obj !== 'object') {
-        return [];
-      } else {
-        return Object.values(obj);
-      }
     },
     // 在 processData 函數中添加新的排序邏輯
     processData(obj) {

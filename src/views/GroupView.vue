@@ -123,6 +123,7 @@
     
 
 <script>
+import mix from '../mixins/mix';
 import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
 import { onValue, set, push, ref } from 'firebase/database'
@@ -135,6 +136,7 @@ export default defineComponent({
     // if no subcomponents specify a metaInfo.title, this title will be used
     title: "$t('login.auto_gp')",
   },
+  mixins: [mix],
   data () {
     return {
       edit: false,
@@ -202,13 +204,6 @@ export default defineComponent({
         this.newIntro = this.groups[idx].intro; // 加載當前簡介到編輯框
       } else {
         this.newIntro = ''; // 離開編輯模式時可選擇清空編輯框
-      }
-    },
-    toList: (obj) => {
-      if (!obj || typeof(obj) !== 'object') { 
-        return []
-      } else {
-        return Object.values(obj)
       }
     },
     loginGoogle(autoredirect, keeploggedin) {

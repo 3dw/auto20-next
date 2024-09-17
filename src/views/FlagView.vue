@@ -63,13 +63,6 @@ export default defineComponent({
     },
   },
   methods: {
-    toList(obj) {
-      if (!obj || typeof obj !== 'object') {
-        return [];
-      } else {
-        return Object.values(obj);
-      }
-    },
     locate(h, bool) {
       this.$emit('locate', h, bool);
     },

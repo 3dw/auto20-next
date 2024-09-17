@@ -147,6 +147,8 @@
   </template>
   
   <script lang="ts">
+
+  import mix from './mixins/mix';
   import { defineComponent } from 'vue';
   import Tutorial from './components/TutorialComponent.vue'; // 引入 Tutorial.vue 組件
   import { showLogin } from './developer/testOnly'; // 導入測試開關
@@ -201,6 +203,7 @@
       Login,
       Tutorial,  // 加入 Tutorial 組件
     },
+    mixins: [mix],
     data () {
       return {
         showLogin: showLogin, // Login測試開關
@@ -373,13 +376,6 @@
       }
     },
     methods: {
-      toList(obj) {
-        if (!obj || typeof obj !== 'object') {
-          return [];
-        } else {
-          return Object.values(obj);
-        }
-      },
       navTo (path) {
         this.$router.push(path)
       },

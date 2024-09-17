@@ -1,5 +1,12 @@
 export default {
   methods: {
+    toList(obj) {
+      if (!obj || typeof obj !== 'object') {
+        return [];
+      } else {
+        return Object.values(obj);
+      }
+    },
     part(str: string): string {
       return String(str).substring(0, 100);
     },

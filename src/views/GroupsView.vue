@@ -43,12 +43,14 @@
 </template>
 
 <script>
+import mix from '../mixins/mix';
 import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
 import { get, set, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
 
 export default defineComponent({
+  mixins: [mix],
   name: 'GroupsView',
   props: {
     uid: {
@@ -116,13 +118,6 @@ export default defineComponent({
         this[field] = '';
       } else {
         this[field] = event.target.value;
-      }
-    },
-    toList: (obj) => {
-      if (!obj || typeof(obj) !== 'object') { 
-        return []
-      } else {
-        return Object.values(obj)
       }
     },
     loginGoogle(autoredirect, keeploggedin) {

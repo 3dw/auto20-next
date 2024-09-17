@@ -38,7 +38,9 @@ loader(v-if = "uid && toList(users).length == 0")
 </template>
 
 <script lang="ts">
+
 import { defineComponent } from 'vue';
+import mix from '../mixins/mix';
 import Card from './Card.vue';
 import Loader from './Loader.vue';
 import { hints } from '../data/hints';
@@ -51,6 +53,7 @@ interface UserOrPlace {
 export default defineComponent({
   name: 'HelloWorld',
   components: { Card, Loader },
+  mixins: [mix],
   props: {
     uid: {
       type: String,
@@ -100,13 +103,6 @@ export default defineComponent({
     this.myHint = this.hints[Math.floor(Math.random()*this.hints.length)];
   },
   methods: {
-    toList(obj: any): UserOrPlace[] {
-      if (!obj || typeof obj !== 'object') {
-        return [];
-      } else {
-        return Object.values(obj);
-      }
-    },
     addBook(uid: string) {
       console.log(uid);
       this.$emit('addBook', uid);

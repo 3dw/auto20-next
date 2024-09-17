@@ -111,13 +111,6 @@ export default defineComponent({
       const t = new Date();
       return t.getFullYear() + '/' + (t.getMonth() + 1) + '/' + t.getDate();
     },
-    toList(obj) {
-      if (!obj || typeof obj !== 'object') {
-        return [];
-      } else {
-        return Object.values(obj);
-      }
-    },
     toArray() {
       if (!this.users) {
         return [];
