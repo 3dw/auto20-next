@@ -651,7 +651,7 @@
         this.allTasksCompleted = (this.user || {}).allTasksCompleted || false;
         
         // check Task1: 是否有升起旗幟
-        if ( this.users && this.users[this.uid] && this.users[this.uid].name ) {
+        if ( this.users && this.users[this.uid] && this.users[this.uid].name && this.users[this.uid].latlngColumn ) {
           someTaskCompleted[0] = true
         } else {
           someTaskCompleted[0] = false
