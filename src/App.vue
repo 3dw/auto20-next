@@ -365,6 +365,7 @@
           alert('接收的密碼無效，請確認輸入');
           return;
         }
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
         const auth = getAuth();
         const handleRegistration = () => {
