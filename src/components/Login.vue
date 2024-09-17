@@ -94,6 +94,11 @@ export default defineComponent({
       console.log('Register clicked'); // 確認方法是否被觸發
       console.log(this.$route.path);
 
+      if (!this.users_email || !this.user_password) {
+        window.alert('請先填寫email和密碼');
+        return;
+      }
+
       // 驗證email格式
       if (!this.validateEmail(this.users_email)) {
         alert('email格式錯誤，請重試');
@@ -101,7 +106,7 @@ export default defineComponent({
       }
 
       if (!this.user_password || typeof this.user_password !== 'string') {
-        alert('密碼無效，請重新輸入');
+        alert('密碼請至少包含一個英文字，請重新輸入');
         return;
       }
 
