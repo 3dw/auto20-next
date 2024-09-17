@@ -652,7 +652,7 @@
         this.allTasksCompleted = (this.user || {}).allTasksCompleted || false;
         
         // check Task1: 是否有升起旗幟
-        if ( this.users && this.users[this.uid] && this.users[this.uid].name && this.users[this.uid].latlngColumn ) {
+        if ( this.users && this.users[this.uid] && this.users[this.uid].name && this.users[this.uid].latlngColumn && this.users[this.uid].learner_birth ) {
           someTaskCompleted[0] = true
         } else {
           someTaskCompleted[0] = false
