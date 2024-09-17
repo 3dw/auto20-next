@@ -70,6 +70,19 @@
                             | {{r.likes.length}} {{$t('group.likes')}}
 
 
+                      .item.ui.form(v-show="uid")
+                        .field.no-margin.no-padding
+                          .ui.labeled.input
+                            label.ui.label {{$t('group.enter_resource')}}
+                            input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 20px; padding: 15px;")
+                        .field.no-margin.no-padding
+                          .ui.labeled.input
+                            label.ui.label {{$t('group.enter_link')}}
+                            input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 20px; padding: 15px;")
+                        .field.no-padding
+                          a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
+                            | {{$t('group.add_resource')}}
+
                     .ui.divided.list.center.aligned(v-else)
                       .item.center.aligned {{$t('group.resources')}}
 
@@ -93,18 +106,6 @@
                             a.ui.red.button(@click="edit = false") {{ $t('group.cancel') }}
 
 
-                      .item.ui.form(v-show="uid && !edit")
-                        .field.no-margin.no-padding
-                          .ui.labeled.input
-                            label.ui.label {{$t('group.enter_resource')}}
-                            input(type="text", v-model="newResName" @input="filterInput('newResName', $event)" :placeholder="$t('group.enter_resource_first')" style="width: 100%; font-size: 20px; padding: 15px;")
-                        .field.no-margin.no-padding
-                          .ui.labeled.input
-                            label.ui.label {{$t('group.enter_link')}}
-                            input(type="text", v-model="newHref" @input="filterInput('newHref', $event)" :placeholder="$t('group.enter_link_first')" style="width: 100%; font-size: 20px; padding: 15px;")
-                        .field.no-padding
-                          a.ui.green.button(:class="{disabled: !newHref || !newResName}", @click="addRes($route.params.idx)")
-                            | {{$t('group.add_resource')}}
 
                   
                   .column.center.aligned(v-show="!edit") {{ $t('login.leave_messages') }}
@@ -285,7 +286,7 @@ export default defineComponent({
       ).catch(error => {
         console.error(this.$t('groups.update_failed'), error)
       })
-      
+
       const members = this.groups[idx].members || []
       members.forEach((uid) => {
         if (uid !== this.uid) {
