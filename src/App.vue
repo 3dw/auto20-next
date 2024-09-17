@@ -221,6 +221,7 @@
         users: null as any, // 定義用戶資料變量
         book: [] as string[], // 定義個人名簿資料變量 
         // eslint-disable-next-line
+        books: {} as any, // 定義名簿資料變量 
         // eslint-disable-next-line
         user: null as any, // 定義當前用戶變量
         email: null as string | null, // 定義電子郵件變量
@@ -804,7 +805,5 @@
 @import "./scss/sidebar.scss";
 @import "./scss/main-layout.scss";
 
-</style>
-  
 </style>
   
