@@ -155,7 +155,7 @@
   import { showLogin } from './developer/testOnly'; // 導入測試開關
 
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { set, push, ref, onValue, get } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { set, push, ref, onValue, get, remove } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, EmailAuthProvider, 
     signInWithPopup,
@@ -803,17 +803,44 @@
       },
       
       loginGoogle: function (autoredirect, keeploggedin) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        // eslint-disable-next-line @typescript-eslint/no-this-alias        
         const vm = this;
         vm.showLogin = false;
         if (this.isInApp) {
           window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
         } else {
-          // 如果 keeploggedin 為 true，設置持久性為 localStorage，否則不設置
           const handleLogin = () => {
             this.handleAuthentication(
               () => signInWithPopup(auth, provider),
-              (user) => {
+              async (result) => {
+                const user = result.user;
+                // 檢查是否有相同 email 的帳號
+                const methods = await fetchSignInMethodsForEmail(auth, user.email);
+                if (methods.length > 0 && !methods.includes('google.com')) {
+                  // 檢查是否沒有創建 Google 登錄的 UID 的用戶
+                  const userRef = ref(db, 'users');
+                  const snapshot = await get(userRef);
+                  const users = snapshot.val();
+                  const existingUser = Object.values(users).find((u: any) => u.email === user.email && !u.googleUID);
+
+                  if (existingUser) {
+                    // 刪除其他同樣 email 但不同 UID 的用戶
+                    const otherUsers = Object.entries(users).filter(([uid, u]: [string, any]) => u.email === user.email && uid !== user.uid);
+                    for (const [uid] of otherUsers) {
+                      await remove(ref(db, `users/${uid}`));
+                    }
+
+                    // 自動整合帳號
+                    const credential = GoogleAuthProvider.credential(result.credential.accessToken);
+                    try {
+                      await linkWithCredential(user, credential);
+                      console.log('帳號已成功整合。');
+                      vm.updateUserData(user);
+                    } catch (error) {
+                      console.error("帳號整合失敗", error);
+                    }
+                  }
+                }
                 if (autoredirect) {
                   this.$nextTick().then(() => {
                     this.$router.push('/profile');
