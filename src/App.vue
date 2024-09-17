@@ -47,7 +47,8 @@
           .ui.red.small.label(v-if="unreadCount > 0") {{ unreadCount }}
    
       .ui.simple.dropdown.item
-        img.ui.avatar.image(v-if="photoURL" :src="photoURL")
+        
+        img.ui.avatar.image(v-if="photoURL" :src="photoURL" alt="User Avatar" @error="useDefaultAvatar" @load="onImageLoad")
         i.user.icon(v-else)
         .menu
           router-link.item(v-if="uid", to="/profile")
@@ -259,20 +260,26 @@
       // 檢查使用者的登入狀態
       
       auth.onAuthStateChanged((user) => {
+        
         if (user) {
           // 使用者已登入，讀取基本資料
           vm.showLogin = false;
           vm.uid = user.uid;
           vm.emailVerified = user.emailVerified;
+          console.log("User photo URL:", user.photoURL);
+          console.log("Provider photo URL:", user.providerData[0]?.photoURL);
+          console.log("Final photo URL:", vm.photoURL);
 
           // 處理 providerData
           if (user.providerData && user.providerData.length > 0) {
             vm.email = user.providerData[0].email;
             vm.photoURL = user.providerData[0].photoURL ? decodeURI(user.providerData[0].photoURL) : "https://we.alearn.org.tw/logo-new.png";
+            console.log("1Final photo URL:", vm.photoURL);
           } else {
             // 如果沒有 providerData，使用 user 對象中的資料
             vm.email = user.email;
             vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+            console.log("2Final photo URL:", vm.photoURL);
           }
 
           const pvdata = user.providerData || [
@@ -354,6 +361,9 @@
       });
     },
     watch: {
+      photoURL(newVal, oldVal) {
+        console.log("photoURL changed from", oldVal, "to", newVal);
+      },
       $route (to, from) {
         console.log(from.path); // 輸出路由變更前的路徑
         console.log(to.path); // 輸出路由變更後的路徑
@@ -376,6 +386,12 @@
       }
     },
     methods: {
+      onImageLoad() {
+  console.log("Image loaded successfully:", this.photoURL);
+},
+      useDefaultAvatar(event) {
+        event.target.src = 'https://we.alearn.org.tw/logo-new.png'
+      },
       navTo (path) {
         this.$router.push(path)
       },
