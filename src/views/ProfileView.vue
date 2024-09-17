@@ -225,7 +225,7 @@
       if (this.uid) {
         this.fetchUserData();
       } else {
-        this.alert('請先登入'); // 假設使用了某種消息提示組件
+        //window.alert('請先登入'); // 假設使用了某種消息提示組件
         this.$router.push('/'); // 如果 uid 不存在，可以考慮重定向到登入頁面或顯示一個提示
       }
     },
