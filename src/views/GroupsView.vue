@@ -4,8 +4,9 @@
     .sixteen.wide.column 
       .ui.huge.buttons
         button.ui.orange.button(@click="toggleLogin")
-          // i.google.icon
+          i.lock.icon
           | {{ $t('login.login_to_see_data') }}
+
   .ui.container(v-if="users && toList(users).length > 0")
     .ui.grid
       .ui.two.stackable.column.row
@@ -343,5 +344,9 @@ a:hover {
 .field.button-field {
   display: flex;
   align-items: center;
+}
+
+.ui.lock.icon {
+  margin-right: 8px;
 }
 </style>

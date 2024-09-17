@@ -4,7 +4,7 @@
         .sixteen.wide.column 
           .ui.huge.buttons
             button.ui.orange.button(@click="toggleLogin")
-              // i.google.icon
+              i.lock.icon
               | {{ $t('login.login_to_see_data' )}}
   loader(v-else-if="!users || toList(users).length == 0")
   .ui.container#map(style="width: 100%; height: 600px;")
@@ -223,6 +223,9 @@ export default defineComponent({
   position: relative; /* Ensure it has a position context */
 }
 
+.ui.lock.icon {
+  margin-right: 8px;
+}
 
 
 </style>
