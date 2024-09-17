@@ -360,45 +360,11 @@
       navTo (path) {
         this.$router.push(path)
       },
-      
-      /* setupGroupListeners() {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const vm = this;
-        console.log('setupGroupListeners');
-        console.log('groups', vm.groups);
-        if (!vm.groups) return;
-        let notificationSent = false; // 初始化標誌
-        vm.groups.forEach((group_for_no, idx_for_no) => {
-          if (!group_for_no.members || !group_for_no.members.includes(vm.uid)) return;
-          const groupChatsRef = ref(db, 'groups/' + idx_for_no + '/chats');
-              //const chatsRef = ref(db, 'groups/0' + '/chats');
-          console.log('chatsRef路徑', 'groups/' + idx_for_no + '/chats');
-
-          
-
-          onChildAdded(ref(groupChatsRef), (snapshot) => {
-            if (notificationSent) return; // 如果已經發送通知，直接返回
-            console.log('有新訊息', 'groups/' + idx_for_no + '/chats');
-            const newChat = snapshot.val();
-            console.log(newChat)
-            vm.addNotification('New messagedef in group ' + group_for_no.n, '/groups/' + idx_for_no);
-            notificationSent = true; // 設置標誌為 true
-          });
-          if (notificationSent) {
-            return; // 跳出迴圈
-          } 
-           
-        });
-        if (notificationSent) {
-            return; // 跳出迴圈
-        }
-      },*/
       registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
         if (!notgooglepassword || typeof notgooglepassword !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-this-alias  
         const vm = this;
         const auth = getAuth();
         const handleRegistration = () => {
@@ -719,66 +685,70 @@
       loginGoogle: function (autoredirect, keeploggedin) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
-        const auth = getAuth();
-        const provider = new GoogleAuthProvider();
-        
-        signInWithPopup(auth, provider)
-          .then((result) => {
-            const user = result.user;
+        vm.showLogin = false;
+        if (this.isInApp) {
+          window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
+        } else {
+          // 如果 keeploggedin 為 true，設置持久性為 localStorage，否則不設置
+          const handleLogin = () => {
+            signInWithPopup(auth, provider)
+              .then((result) => {
+                const user = result.user;
+                console.log(user);
+                vm.email = user.providerData[0].email;
+                vm.uid = user.uid;
+                vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+                vm.emailVerified = true;
 
-            if (user.email) {
-              const emailCredential = EmailAuthProvider.credential(
-                user.email, 
-                prompt('請輸入您的 Email 密碼以連結帳號：') || ''
-              );
+                const pvdata = user.providerData;
 
-              linkWithCredential(user, emailCredential)
-                .then((linkResult) => {
-                  console.log("成功連結帳號: ", linkResult.user);
-                })
-                .catch((error) => {
-                  console.error("帳號連結失敗：", error);
-                });
-            } else {
-              console.error("無法獲取使用者的 email。");
-            }
-
-            vm.email = user.providerData[0].email;
-            vm.uid = user.uid;
-            vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
-
-            const pvdata = user.providerData;
-
-            if (vm.users && vm.users[vm.uid]) {
-              vm.user = { ...vm.users[vm.uid], providerData: pvdata };
-              vm.updateNotifications();
-              if (vm.user.latlngColumn) {
-                vm.locate(vm.user, false);
-              }
-            } else {
-              onValue(usersRef, (snapshot) => {
-                const data = snapshot.val();
-                vm.users = data;
-                vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
-                vm.updateNotifications();
-                if (vm.user.latlngColumn) {
-                  vm.locate(vm.user, false);
+                if (vm.users && vm.users[vm.uid]) {
+                  vm.user = { ...vm.users[vm.uid], providerData: pvdata };
+                  vm.updateNotifications();
+                  if (vm.user.latlngColumn) {
+                    vm.locate(vm.user, false);
+                  }
+                } else {
+                  onValue(usersRef, (snapshot) => {
+                    const data = snapshot.val();
+                    vm.users = data;
+                    vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
+                    vm.updateNotifications();
+                    if (vm.user.latlngColumn) {
+                      vm.locate(vm.user, false);
+                    }
+                  }, (error) => {
+                    vm.user = { providerData: pvdata };
+                    console.error("Error fetching users:", error);
+                  });
                 }
-              }, (error) => {
-                vm.user = { providerData: pvdata };
-                console.error("Error fetching users:", error);
-              });
-            }
 
-            if (autoredirect) {
-              vm.$nextTick().then(() => {
-                vm.$router.push('/profile');
+                if (autoredirect) {
+                  vm.$nextTick().then(() => {
+                    vm.$router.push('/profile');
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error("Login error:", error);
+                if (error.message.includes('sessionStorage')) {
+                  window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
+                }
               });
-            }
-          })
-          .catch((error) => {
-            console.error("Google 登錄失敗：", error);
-          });
+          };
+
+          if (keeploggedin) {
+            setPersistence(auth, browserLocalPersistence)
+              .then(() => {
+                handleLogin();
+              })
+              .catch((error) => {
+                console.error("Persistence error:", error);
+              });
+          } else {
+            handleLogin();
+          }
+        }
       },
       updateNotifications: function () {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
