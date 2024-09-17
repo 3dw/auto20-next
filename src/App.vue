@@ -395,204 +395,126 @@
       navTo (path) {
         this.$router.push(path)
       },
-      /* registerWithEmail(notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
+      async registerWithEmail(notgoogleemail: string, notgooglepassword: string, notgooglekeeploggedin: boolean) {
         if (!notgooglepassword || typeof notgooglepassword !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const vm = this;
-        const auth = getAuth();
-        const handleRegistration = () => {
-          createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
-            .then((userCredential) => {
-              const user = userCredential.user;
-              console.log("使用者註冊成功：", user);
 
-              vm.email = user.email;
-              vm.uid = user.uid;
-              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png';
+        try {
+          const auth = getAuth();
+          const userCredential = await createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword);
+          const user = userCredential.user;
 
-              const pvdata = [{
-                displayName: vm.email?.split('@')[0],
-                email: vm.email,
-                photoURL: vm.photoURL
-              }];
+          this.email = user.email;
+          this.uid = user.uid;
+          this.photoURL = 'https://we.alearn.org.tw/logo-new.png';
 
-              vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
+          const pvdata = [{
+            displayName: this.email?.split('@')[0],
+            email: this.email,
+            photoURL: this.photoURL
+          }];
+          this.user = { email: this.email, photoURL: this.photoURL, providerData: pvdata };
 
-              // 先檢查用戶資料是否存在
-              const userRef = ref(db, 'users/' + vm.uid);
-              get(userRef).then((snapshot) => {
-                if (!snapshot.exists()) {
-                  // 如果用戶資料不存在，則設置新的資料
-                  set(userRef, {
-                    email: vm.email,
-                    name: vm.email?.split('@')[0],
-                    connect_me: vm.email,
-                    photoURL: vm.photoURL,
-                    login_method: 'email'
-                  });
-                }
-              }).catch((error) => {
-                console.error("檢查用戶資料時出錯：", error);
-              });
-
-              // 發送驗證郵件
-              sendEmailVerification(user).then(() => {
-                alert('驗證郵件已發送，請檢查您的郵箱(含垃圾信箱)以完成驗證。');
-
-                vm.logout(); // 登出
-
-              }).catch((error) => {
-                console.error("發送驗證郵件失敗：", error);
-                alert('發送驗證郵件失敗，請稍後再試。');
-              });
-            })
-            .catch((error) => {
-              console.error("註冊失敗：", error);
-              alert("註冊失敗：" + error.message);
+          const userRef = ref(db, 'users/' + this.uid);
+          const snapshot = await get(userRef);
+          if (!snapshot.exists()) {
+            await set(userRef, {
+              email: this.email,
+              name: this.email?.split('@')[0],
+              connect_me: this.email,
+              photoURL: this.photoURL,
+              login_method: 'email'
             });
-        };
+          }
 
-        if (notgooglekeeploggedin) {
-          setPersistence(auth, browserLocalPersistence).then(() => {
-            handleRegistration();
-          }).catch((error) => {
-            console.error("持久性設置錯誤：", error);
-          });
-        } else {
-          handleRegistration();
-        }
-      }, */
-      registerWithEmail(notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
-        if (!notgooglepassword || typeof notgooglepassword !== 'string') {
-          alert('接收的密碼無效，請確認輸入');
-          return;
-        }
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const vm = this;
-        const auth = getAuth();
-        const handleRegistration = () => {
-          createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
-            .then((userCredential) => {
-              const user = userCredential.user;
-              console.log("使用者註冊成功：", user);
-
-              vm.email = user.email;
-              vm.uid = user.uid;
-              vm.photoURL = 'https://we.alearn.org.tw/logo-new.png';
-
-              const pvdata = [{
-                displayName: vm.email?.split('@')[0],
-                email: vm.email,
-                photoURL: vm.photoURL
-              }];
-
-              vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
-
-              // 檢查用戶資料是否存在
-              const userRef = ref(db, 'users/' + vm.uid);
-              get(userRef).then((snapshot) => {
-                if (!snapshot.exists()) {
-                  // 如果用戶資料不存在，則設置新的資料
-                  set(userRef, {
-                    email: vm.email,
-                    name: vm.email?.split('@')[0],
-                    connect_me: vm.email,
-                    photoURL: vm.photoURL,
-                    login_method: 'email'
-                  });
+          await sendEmailVerification(user);
+          alert('驗證郵件已發送，請檢查您的郵箱(含垃圾信箱)以完成驗證。');
+          this.logout();
+        } catch (error: any) {
+          if (error.code === 'auth/email-already-in-use') {
+            try {
+              const auth = getAuth();
+              const methods = await fetchSignInMethodsForEmail(auth, notgoogleemail);
+              console.log(methods);
+              if (methods.includes('google.com')) {
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                const credential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
+                await linkWithCredential(result.user, credential);
+                alert('帳號已成功整合。');
+                this.updateUserData(result.user);
+                if (notgooglekeeploggedin) {
+                  await setPersistence(auth, browserLocalPersistence);
                 }
-              }).catch((error) => {
-                console.error("檢查用戶資料時出錯：", error);
-              });
-
-              // 發送驗證郵件
-              sendEmailVerification(user).then(() => {
-                alert('驗證郵件已發送，請檢查您的郵箱(含垃圾信箱)以完成驗證。');
-
-                vm.logout(); // 登出
-
-              }).catch((error) => {
-                console.error("發送驗證郵件失敗：", error);
-                alert('發送驗證郵件失敗，請稍後再試。');
-              });
-            })
-            .catch((error) => {
-              if (error.code === 'auth/email-already-in-use') {
-                // 電子郵件已被使用，嘗試整合帳號
-                fetchSignInMethodsForEmail(auth, notgoogleemail)
-                  .then((methods) => {
-                    if (methods.includes('google.com')) {
-                      // 電子郵件已與 Google 帳號關聯
-                      const emailCredential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
-                      signInWithPopup(auth, provider)
-                        .then((result) => {
-                          const user = result.user;
-                          linkWithCredential(user, emailCredential)
-                            .then((usercred) => {
-                              const user = usercred.user;
-                              console.log("帳號整合成功", user);
-
-                              vm.email = user.email;
-                              vm.uid = user.uid;
-                              vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : 'https://we.alearn.org.tw/logo-new.png';
-
-                              const pvdata = user.providerData || [
-                                {
-                                  displayName: vm.email?.split('@')[0],
-                                  email: vm.email,
-                                  photoURL: vm.photoURL
-                                }
-                              ];
-
-                              vm.user = { email: vm.email, photoURL: vm.photoURL, providerData: pvdata };
-
-                              alert('帳號已成功整合。');
-
-                            })
-                            .catch((error) => {
-                              console.error("帳號整合失敗", error);
-                              alert("帳號整合失敗：" + error.message);
-                            });
-                        })
-                        .catch((error) => {
-                          console.error("Google 登入失敗", error);
-                          alert("Google 登入失敗：" + error.message);
-                        });
-                    } else if (methods.includes('password')) {
-                      // 電子郵件已與密碼帳號關聯
-                      alert('此電子郵件已被使用，請使用其他電子郵件或嘗試登入。');
-                    } else {
-                      // 其他情況
-                      alert('此電子郵件已被使用，請使用其他電子郵件或嘗試登入。');
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("獲取登入方法時出錯：", error);
-                    alert('檢查電子郵件時發生錯誤，請稍後再試。');
-                  });
+                if (this.autoredirect) {
+                  this.$router.push('/profile');
+                }
+              } else if (methods.includes('password')) {
+                alert('此電子郵件已被使用，請使用其他電子郵件或嘗試登入。');
               } else {
-                console.error("註冊失敗：", error);
-                alert("註冊失敗：" + error.message);
+                alert('此電子郵件已被使用，請使用其他電子郵件或嘗試登入。');
               }
-            });
-        };
+            } catch (linkError: any) {
+              console.error("帳號整合失敗", linkError);
+              alert("帳號整合失敗：" + linkError.message);
+            }
+          } else {
+            console.error("註冊失敗：", error);
+            alert("註冊失敗：" + error.message);
+          }
+        }
+      },
+      
+      updateUserData(user: any) {
+        this.email = user.email;
+        this.uid = user.uid;
+        this.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+        this.emailVerified = user.emailVerified;
 
-        if (notgooglekeeploggedin) {
-          setPersistence(auth, browserLocalPersistence).then(() => {
-            handleRegistration();
-          }).catch((error) => {
-            console.error("持久性設置錯誤：", error);
-          });
+        const pvdata = user.providerData || [{
+          displayName: this.email?.split('@')[0],
+          email: this.email,
+          photoURL: this.photoURL
+        }];
+
+        this.updateUserInfo(pvdata);
+      },
+
+      updateUserInfo(pvdata: any[]) {
+        if (this.users && this.users[this.uid]) {
+          this.user = { ...this.users[this.uid], providerData: pvdata };
+          this.updateNotifications();
+          if (this.user.latlngColumn) {
+            this.locate(this.user, false);
+          }
         } else {
-          handleRegistration();
+          this.fetchUserData(pvdata);
         }
       },
 
+      async fetchUserData(pvdata: any[]) {
+        try {
+          onValue(usersRef, (snapshot) => {
+            const data = snapshot.val();
+            this.users = data;
+            this.user = { ...this.users[this.uid] || this.user, providerData: pvdata };
+            this.updateNotifications();
+            if (this.user.latlngColumn) {
+              this.locate(this.user, false);
+            }
+          }, (error) => {
+            this.user = { providerData: pvdata };
+            console.error("Error fetching users:", error);
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      },
+      
       loginWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias  
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const vm = this;
         const auth = getAuth();
         const handleLogin = () => {
@@ -602,24 +524,50 @@
 
               if (!user.emailVerified) {
                 alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
-
-                vm.logout(); // 登出
-
+                vm.logout();
                 return;
-              } else {
-                vm.emailVerified = true
-                console.log('登入成功：', user);
-                vm.email = user.email;
-                vm.uid = user.uid;
-                vm.photoURL = user.photoURL || null;
-
-                if (autoredirect && user.emailVerified) {
-                  vm.$nextTick().then(() => {
-                    vm.$router.push('/profile');
-                  });
-                }
               }
 
+              vm.emailVerified = true;
+              console.log('登入成功：', user);
+              vm.updateUserData(user);
+
+              // 檢查是否有 Google 帳號與此 email 關聯
+              fetchSignInMethodsForEmail(auth, notgoogleemail)
+                .then((methods) => {
+                  if (methods.includes('google.com')) {
+                    // 自動整合帳號
+                    const googleProvider = new GoogleAuthProvider();
+                    signInWithPopup(auth, googleProvider)
+                      .then((result) => {
+                        const credential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
+                        linkWithCredential(result.user, credential)
+                          .then(() => {
+                            console.log('帳號已成功整合。');
+                            vm.updateUserData(result.user);
+                          })
+                          .catch((error) => {
+                            console.error("帳號整合失敗", error);
+                          });
+                      })
+                      .catch((error) => {
+                        console.error("Google 登入失敗", error);
+                        alert("Google 登入失敗：" + error.message);
+                        vm.logout();
+                      });
+                  }
+                })
+                .catch((error) => {
+                  console.error("檢查登入方法失敗", error);
+                  alert("檢查登入方法失敗：" + error.message);
+                  vm.logout();
+                });
+
+              if (autoredirect && user.emailVerified) {
+                vm.$nextTick().then(() => {
+                  vm.$router.push('/profile');
+                });
+              }
             })
             .catch((error) => {
               console.error("登入失敗：", error);
@@ -898,45 +846,6 @@
         const vm = this;
         vm.notifications = (vm.user || {}).notifications || {};
         vm.unreadCount = Object.values(vm.notifications).filter(n => !n.isRead).length;
-      },
-      updateUserData(user) {
-        this.email = user.email;
-        this.uid = user.uid;
-        this.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
-        this.emailVerified = user.emailVerified;
-
-        const pvdata = user.providerData || [{
-          displayName: this.email?.split('@')[0],
-          email: this.email,
-          photoURL: this.photoURL
-        }];
-
-        this.updateUserInfo(pvdata);
-      },
-      updateUserInfo(pvdata) {
-        if (this.users && this.users[this.uid]) {
-          this.user = { ...this.users[this.uid], providerData: pvdata };
-          this.updateNotifications();
-          if (this.user.latlngColumn) {
-            this.locate(this.user, false);
-          }
-        } else {
-          this.fetchUserData(pvdata);
-        }
-      },
-      fetchUserData(pvdata) {
-        onValue(usersRef, (snapshot) => {
-          const data = snapshot.val();
-          this.users = data;
-          this.user = { ...this.users[this.uid] || this.user, providerData: pvdata };
-          this.updateNotifications();
-          if (this.user.latlngColumn) {
-            this.locate(this.user, false);
-          }
-        }, (error) => {
-          this.user = { providerData: pvdata };
-          console.error("Error fetching users:", error);
-        });
       },
       handleAuthentication(authFunction, successCallback, errorCallback) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
