@@ -89,7 +89,6 @@ export default defineComponent({
     },
     // 註冊帳號方法
     registerWithEmail: function () {
-      var autoredirect = true;
       console.log("users_email:", this.users_email);
       console.log("user_password:", this.user_password); // 確認密碼值
       console.log('Register clicked'); // 確認方法是否被觸發
@@ -101,16 +100,12 @@ export default defineComponent({
         return;
       }
 
-      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
-        autoredirect = false;
-      }
-
       if (!this.user_password || typeof this.user_password !== 'string') {
         alert('密碼無效，請重新輸入');
         return;
       }
 
-      this.$emit('registerWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
+      this.$emit('registerWithEmail', this.users_email, this.user_password, this.keeploggedin);
     },
     // 用 email 密碼登入方法
     loginWithEmail: function () {

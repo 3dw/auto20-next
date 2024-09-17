@@ -255,9 +255,9 @@
       
       // 檢查使用者的登入狀態
       auth.onAuthStateChanged((user) => {
-        vm.showLogin = false;
         if (user) {
           // 使用者已登入，讀取基本資料
+          vm.showLogin = false;
           vm.uid = user.uid;
           vm.email = user.providerData[0].email;
           vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
@@ -367,7 +367,7 @@
       navTo (path) {
         this.$router.push(path)
       },
-      registerWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
+      registerWithEmail(notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
         if (!notgooglepassword || typeof notgooglepassword !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
@@ -404,16 +404,13 @@
               // 發送驗證郵件
               sendEmailVerification(user).then(() => {
                 alert('驗證郵件已發送，請檢查您的郵箱以完成驗證。');
+
+                vm.logout(); // 登出
+
               }).catch((error) => {
                 console.error("發送驗證郵件失敗：", error);
                 alert('發送驗證郵件失敗，請稍後再試。');
               });
-
-              if (autoredirect) {
-                vm.$nextTick().then(() => {
-                  vm.$router.push('/profile');
-                });
-              }
             })
             .catch((error) => {
               console.error("註冊失敗：", error);
@@ -442,21 +439,24 @@
 
               if (!user.emailVerified) {
                 alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
+
+                vm.logout(); // 登出
+
                 return;
               } else {
                 vm.emailVerified = true
+                console.log('登入成功：', user);
+                vm.email = user.email;
+                vm.uid = user.uid;
+                vm.photoURL = user.photoURL || null;
+
+                if (autoredirect && user.emailVerified) {
+                  vm.$nextTick().then(() => {
+                    vm.$router.push('/profile');
+                  });
+                }
               }
 
-              console.log('登入成功：', user);
-              vm.email = user.email;
-              vm.uid = user.uid;
-              vm.photoURL = user.photoURL || null;
-
-              if (autoredirect && user.emailVerified) {
-                vm.$nextTick().then(() => {
-                  vm.$router.push('/profile');
-                });
-              }
             })
             .catch((error) => {
               console.error("登入失敗：", error);
