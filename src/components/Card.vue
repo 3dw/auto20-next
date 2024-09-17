@@ -76,10 +76,12 @@
         p(v-if="h.site")
           a(@click.stop="goto(h.site)") 個人網址：
             img(:src="'https://www.google.com/s2/favicons?domain=' + h.site" title='個人網址' alt='個人網址')
+            span.fat-only {{h.site}}
             i.right.arrow.icon
         p(v-if="h.site2")
           a(@click.stop="goto(h.site2)") 社群網址：
             img(:src="'https://www.google.com/s2/favicons?domain=' + h.site2" title='社群網址' alt='個人網址')
+            span.fat-only {{h.site2}}
             i.right.arrow.icon
       .content
         .ui.divider
