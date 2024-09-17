@@ -725,50 +725,21 @@
         } else {
           // 如果 keeploggedin 為 true，設置持久性為 localStorage，否則不設置
           const handleLogin = () => {
-            signInWithPopup(auth, provider)
-              .then((result) => {
-                const user = result.user;
-                console.log(user);
-                vm.email = user.providerData[0].email;
-                vm.uid = user.uid;
-                vm.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
-                vm.emailVerified = true;
-
-                const pvdata = user.providerData;
-
-                if (vm.users && vm.users[vm.uid]) {
-                  vm.user = { ...vm.users[vm.uid], providerData: pvdata };
-                  vm.updateNotifications();
-                  if (vm.user.latlngColumn) {
-                    vm.locate(vm.user, false);
-                  }
-                } else {
-                  onValue(usersRef, (snapshot) => {
-                    const data = snapshot.val();
-                    vm.users = data;
-                    vm.user = { ...vm.users[vm.uid] || vm.user, providerData: pvdata };
-                    vm.updateNotifications();
-                    if (vm.user.latlngColumn) {
-                      vm.locate(vm.user, false);
-                    }
-                  }, (error) => {
-                    vm.user = { providerData: pvdata };
-                    console.error("Error fetching users:", error);
-                  });
-                }
-
+            this.handleAuthentication(
+              () => signInWithPopup(auth, provider),
+              (user) => {
                 if (autoredirect) {
-                  vm.$nextTick().then(() => {
-                    vm.$router.push('/profile');
+                  this.$nextTick().then(() => {
+                    this.$router.push('/profile');
                   });
                 }
-              })
-              .catch((error) => {
-                console.error("Login error:", error);
+              },
+              (error) => {
                 if (error.message.includes('sessionStorage')) {
                   window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
                 }
-              });
+              }
+            );
           };
 
           if (keeploggedin) {
@@ -789,8 +760,60 @@
         const vm = this;
         vm.notifications = (vm.user || {}).notifications || {};
         vm.unreadCount = Object.values(vm.notifications).filter(n => !n.isRead).length;
-      }
+      },
+      updateUserData(user) {
+        this.email = user.email;
+        this.uid = user.uid;
+        this.photoURL = user.photoURL ? decodeURI(user.photoURL) : "https://we.alearn.org.tw/logo-new.png";
+        this.emailVerified = user.emailVerified;
 
+        const pvdata = user.providerData || [{
+          displayName: this.email?.split('@')[0],
+          email: this.email,
+          photoURL: this.photoURL
+        }];
+
+        this.updateUserInfo(pvdata);
+      },
+      updateUserInfo(pvdata) {
+        if (this.users && this.users[this.uid]) {
+          this.user = { ...this.users[this.uid], providerData: pvdata };
+          this.updateNotifications();
+          if (this.user.latlngColumn) {
+            this.locate(this.user, false);
+          }
+        } else {
+          this.fetchUserData(pvdata);
+        }
+      },
+      fetchUserData(pvdata) {
+        onValue(usersRef, (snapshot) => {
+          const data = snapshot.val();
+          this.users = data;
+          this.user = { ...this.users[this.uid] || this.user, providerData: pvdata };
+          this.updateNotifications();
+          if (this.user.latlngColumn) {
+            this.locate(this.user, false);
+          }
+        }, (error) => {
+          this.user = { providerData: pvdata };
+          console.error("Error fetching users:", error);
+        });
+      },
+      handleAuthentication(authFunction, successCallback, errorCallback) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const vm = this;
+        authFunction()
+          .then((result) => {
+            const user = result.user;
+            vm.updateUserData(user);
+            successCallback(user);
+          })
+          .catch((error) => {
+            console.error("Authentication error:", error);
+            errorCallback(error);
+          });
+      }
     }
   });
   
