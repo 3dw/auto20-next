@@ -41,7 +41,7 @@
 </template>
 
   
-  <script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
@@ -68,8 +68,8 @@ export default defineComponent({
     }
   },
   methods: {
-    loginGoogle: function () {
-      var autoredirect = true;
+    loginGoogle(): void {
+      let autoredirect = true;
 
       console.log(this.$route.path)
 
@@ -79,16 +79,16 @@ export default defineComponent({
 
       this.$emit('loginGoogle', autoredirect, this.keeploggedin);
     },
-    toggleLogin: function () {
+    toggleLogin(): void {
       this.$emit('toggleLogin');
     },
     // 驗證email格式的function
-    validateEmail(email) {
+    validateEmail(email: string): boolean {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(String(email).toLowerCase());
     },
     // 註冊帳號方法
-    registerWithEmail: function () {
+    registerWithEmail(): void {
       console.log("users_email:", this.users_email);
       console.log("user_password:", this.user_password); // 確認密碼值
       console.log('Register clicked'); // 確認方法是否被觸發
@@ -113,8 +113,8 @@ export default defineComponent({
       this.$emit('registerWithEmail', this.users_email, this.user_password, this.keeploggedin);
     },
     // 用 email 密碼登入方法
-    loginWithEmail: function () {
-      var autoredirect = true;
+    loginWithEmail(): void {
+      let autoredirect = true;
       console.log('Login clicked'); // 確認方法是否被觸發
       console.log(this.$route.path);
 
@@ -136,7 +136,7 @@ export default defineComponent({
       this.$emit('loginWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
     },
     // 重設密碼方法
-    resetPassword: function () {
+    resetPassword(): void {
       console.log("Reset password function triggered");  // 偵錯: 確認重設密碼方法是否被觸發
       console.log("Email for reset:", this.users_email);  // 偵錯: 確認輸入的 email 值
       
@@ -154,7 +154,7 @@ export default defineComponent({
           alert('密碼重置郵件已發送，請檢查您的郵箱');
           console.log("Password reset email sent successfully");  // 偵錯: 確認郵件已發送
         })
-        .catch((error) => {
+        .catch((error: { code: string; message: string }) => {
           console.error("密碼重置郵件發送失敗：", error.code, error.message);  // 偵錯: 詳細的錯誤訊息
           // 更具體的錯誤處理
           switch (error.code) {

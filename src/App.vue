@@ -125,7 +125,7 @@
     linkWithCredential,
     setPersistence,
     // browserSessionPersistence,
-    browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, fetchSignInMethodsForEmail
+    browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, fetchSignInMethodsForEmail, inMemoryPersistence
   } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
   
@@ -328,7 +328,7 @@
       },
       $route (to, from) {
         console.log(from.path); // 輸出路由變更前的路徑
-        console.log(to.path); // 輸出路由變更後的路徑
+        console.log(to.path); // 輸出���由變更後的路徑
         window.scrollTo(0, 0); // 每次路由變更時回到頂部
         this.sidebarVisible = false; //收回側欄
       },
@@ -488,82 +488,51 @@
         }
       },
       
-      loginWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const vm = this;
-        const auth = getAuth();
-        const handleLogin = () => {
-          signInWithEmailAndPassword(auth, notgoogleemail, notgooglepassword)
-            .then((userCredential) => {
-              const user = userCredential.user;
+      async loginWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
+        try {
+          if (notgooglekeeploggedin) {
+            await setPersistence(auth, browserLocalPersistence);
+          } else {
+            await setPersistence(auth, inMemoryPersistence);
+          }
+          const userCredential = await signInWithEmailAndPassword(auth, notgoogleemail, notgooglepassword);
+          const user = userCredential.user;
 
-              if (!user.emailVerified) {
-                alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
-                vm.logout();
-                return;
-              }
+          if (!user.emailVerified) {
+            alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
+            this.logout();
+            return;
+          }
 
-              vm.emailVerified = true;
-              console.log('登入成功：', user);
-              vm.updateUserData(user);
+          this.emailVerified = true;
+          console.log('登入成功：', user);
+          this.updateUserData(user);
 
-              // 檢查是否有 Google 帳號與此 email 關聯
-              fetchSignInMethodsForEmail(auth, notgoogleemail)
-                .then((methods) => {
-                  if (methods.includes('google.com')) {
-                    // 自動整合帳號
-                    const googleProvider = new GoogleAuthProvider();
-                    signInWithPopup(auth, googleProvider)
-                      .then((result) => {
-                        const credential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
-                        linkWithCredential(result.user, credential)
-                          .then(() => {
-                            console.log('帳號已成功整合。');
-                            vm.updateUserData(result.user);
-                            if (autoredirect && user.emailVerified) {
-                              vm.$nextTick().then(() => {
-                                vm.$router.push('/profile');
-                              });
-                            }
-                          })
-                          .catch((error) => {
-                            console.error("帳號整合失敗", error);
-                          });
-                      })
-                      .catch((error) => {
-                        console.error("Google 登入失敗", error);
-                        alert("Google 登入失敗：" + error.message);
-                        vm.logout();
-                      });
-                  } else {
-                    if (autoredirect && user.emailVerified) {
-                      vm.$nextTick().then(() => {
-                        vm.$router.push('/profile');
-                      });
-                    }
-                  }
-                })
-                .catch((error) => {
-                  console.error("檢查登入方法失敗", error);
-                  alert("檢查登入方法失敗：" + error.message);
-                  vm.logout();
-                });
+          // 檢查是否有 Google 帳號與此 email 關聯
+          const methods = await fetchSignInMethodsForEmail(auth, notgoogleemail);
+          if (methods.includes('google.com')) {
+            try {
+              // 自動整合帳號
+              const googleProvider = new GoogleAuthProvider();
+              const result = await signInWithPopup(auth, googleProvider);
+              const credential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
+              await linkWithCredential(result.user, credential);
+              console.log('帳號已成功整合。');
+              this.updateUserData(result.user);
+            } catch (integrationError: any) {
+              console.error("帳號整合失敗：", integrationError);
+              // 不顯示警告，因為用戶已經成功登入
+            }
+          }
 
-            })
-            .catch((error) => {
-              console.error("登入失敗：", error);
-              alert("登入失敗：" + error.message);
+          if (autoredirect && user.emailVerified) {
+            this.$nextTick().then(() => {
+              this.$router.push('/profile');
             });
-        };
-
-        if (notgooglekeeploggedin) {
-          setPersistence(auth, browserLocalPersistence).then(() => {
-            handleLogin();
-          }).catch((error) => {
-            console.error("持久性設置錯誤：", error);
-          });
-        } else {
-          handleLogin();
+          }
+        } catch (error: any) {
+          console.error("登入失敗：", error);
+          alert("登入失敗：" + error.message);
         }
       },
       resendVerificationEmail() {
@@ -783,72 +752,56 @@
 
       },
       
-      loginGoogle: function (autoredirect, keeploggedin) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias        
-        const vm = this;
-        vm.showLogin = false;
-        if (this.isInApp) {
-          window.alert('本系統不支援Facebook, Line等App內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝');
-        } else {
-          const handleLogin = () => {
-            this.handleAuthentication(
-              () => signInWithPopup(auth, provider),
-              async (result) => {
-                console.log('loginGoogle', result);
-                const user = result.user;
-                
-                if (!user || !user.email) {
-                  console.error('User or user email is undefined');
-                  // alert('登入過程中發生錯誤，請稍後再試。');
-                  return;
-                }
+      async loginGoogle(autoredirect: boolean, keeploggedin: boolean) {
+        try {
+          if (keeploggedin) {
+            await setPersistence(auth, browserLocalPersistence);
+          } else {
+            await setPersistence(auth, inMemoryPersistence);
+          }
+          const result = await signInWithPopup(auth, provider);
+          const credential = GoogleAuthProvider.credentialFromResult(result);
 
-                // 檢查是否有相同 email 的帳號
-                const methods = await fetchSignInMethodsForEmail(auth, user.email);
-                if (methods.length > 0 && !methods.includes('google.com')) {
-                  // 檢查是否沒有創建 Google 登錄的 UID 的用戶
-                  const userRef = ref(db, 'users');
-                  const snapshot = await get(userRef);
-                  const users = snapshot.val();
-                  const existingUser = Object.values(users).find((u: any) => u &&u.email === user.email && !u.googleUID);
+          if (credential) {
+            // 如果 credential 存在，您可以安全地訪問 accessToken
+            const accessToken = credential.accessToken;
+            console.log('Access Token:', accessToken);
+          } else {
+            // 處理 credential 不存在的情況
+            console.warn('No credential returned from signInWithPopup.');
+          }
 
-                  if (existingUser) {
-                    // 自動整合帳號
-                    const credential = GoogleAuthProvider.credential(result.credential.accessToken);
-                    try {
-                      await linkWithCredential(user, credential);
-                      console.log('帳號已成功整合。');
-                      vm.updateUserData(user);
-                    } catch (error) {
-                      console.error("帳號整合失敗", error);
-                    }
-                  }
-                }
-                if (autoredirect) {
-                  this.$nextTick().then(() => {
-                    this.$router.push('/profile');
-                  });
-                }
-              },
-              (error) => {
-                if (error.message.includes('sessionStorage')) {
-                  window.alert('瀏覽器不支持sessionStorage，請檢查瀏覽器設置或更換瀏覽器再試一次。');
+          const user = result.user;
+
+          // 檢查是否有相同 email 的帳號
+          if (user && user.email) {
+            const methods = await fetchSignInMethodsForEmail(auth, user.email);
+            if (methods.length > 0 && !methods.includes('google.com')) {
+              const userRef = ref(db, 'users');
+              const snapshot = await get(userRef);
+              const users = snapshot.val();
+              const existingUser = Object.values(users).find((u: any) => u && u.email === user.email && !u.googleUID);
+
+              if (existingUser) {
+                try {
+                  await linkWithCredential(user, credential!);
+                  console.log('帳號已成功整合。');
+                  this.updateUserData(user);
+                } catch (error) {
+                  console.error("帳號整合失敗", error);
                 }
               }
-            );
-          };
-
-          if (keeploggedin) {
-            setPersistence(auth, browserLocalPersistence)
-              .then(() => {
-                handleLogin();
-              })
-              .catch((error) => {
-                console.error("Persistence error:", error);
-              });
-          } else {
-            handleLogin();
+            }
           }
+
+          // 登入成功後的處理邏輯
+          this.updateUserData(user);
+          if (autoredirect) {
+            this.$router.push('/profile');
+          }
+        } catch (error: any) {
+          console.error("Google 登入失敗：", error);
+          alert("Google 登入失敗：" + error.message);
         }
       },
       updateNotifications: function () {

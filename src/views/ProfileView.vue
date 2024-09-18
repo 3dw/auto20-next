@@ -182,7 +182,7 @@
       br
   </template>
   
-  <script>
+  <script lang="ts">
   import { keywords } from '../data/keywords.js';
   import mix from '../mixins/mix.ts'
   // import Loader from './Loader'
@@ -269,13 +269,16 @@
       initMap() {
         // 设置默认坐标为台湾中心点
         const defaultCoords = [23.5330, 121.0654];
-        
-        // 检查 this.root.latlngColumn 是否存在并且是否为字符串
-        let coords = defaultCoords;
+        let coords: [number, number] = defaultCoords;
+
         if (typeof this.root.latlngColumn === 'string') {
           const splitCoords = this.root.latlngColumn.split(',');
           if (splitCoords.length === 2) {
-            coords = splitCoords.map(Number);
+            const lat = parseFloat(splitCoords[0]);
+            const lng = parseFloat(splitCoords[1]);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              coords = [lat, lng];
+            }
           }
         }
 
@@ -301,78 +304,90 @@
         const userRef = ref(db, 'users/' + this.uid);
         get(userRef).then((snapshot) => {
           if (snapshot.exists()) {
-              this.isNew = false;
-              this.root = snapshot.val();
+            this.isNew = false;
+            this.root = snapshot.val();
 
-              var pvdata = {...this.user.providerData}
+            let pvdata = [...((this.user && this.user.providerData) || [])];
 
-              if (!pvdata || !pvdata[0]) {
-                pvdata = [
-                  { displayName: (this.root.email || '').split('@')[0]}
-                ]
-              }
+            if (pvdata.length === 0) {
+              pvdata = [{
+                displayName: (this.root.email || '').split('@')[0] || 'Unknown',
+                email: this.root.email,
+                photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png"
+              }];
+            }
 
-              this.root.email = this.root.email || this.email;
-              this.root.connect_me = this.root.connect_me || this.email;
-              this.root.name = this.root.name || this.user.name || pvdata[0].displayName || '新朋友';
-              this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";  
-              this.root.login_method = this.root.login_method || 'google'      
-            } else {
-              console.log("No data available for user: " + this.uid);
-            
-              if (!pvdata || !pvdata[0]) {
-                pvdata = [
-                  { displayName: (this.root.email || '').split('@')[0]}
-                ]
-              }
-            
-              this.root = {
-                name: pvdata.displayName || '新朋友',
-                uid: this.uid,
-                email: this.email,
-                connect_me: this.email,
-                photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
-                latlngColumn: '23.5330,121.0654',
-                note: '',
-                login_method: this.users.login_method || 'google'
-              };
-              this.isNew = true
+            this.root.email = this.root.email || this.email;
+            this.root.connect_me = this.root.connect_me || this.email;
+            this.root.name = this.root.name || this.user.name || pvdata[0].displayName || '新朋友';
+            this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";
+            this.root.login_method = this.root.login_method || 'google';
+          } else {
+            console.log("No data available for user: " + this.uid);
+
+            let pvdata = [...(this.user.providerData || [])];
+            if (pvdata.length === 0) {
+              pvdata = [{
+                displayName: (this.root.email || '').split('@')[0] || '新朋友',
+                email: this.root.email || '',
+                photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png",
+                login_method: 'google'
+              }];
+            }
+
+            this.root = {
+              name: pvdata[0].displayName,
+              uid: this.uid,
+              email: this.email,
+              connect_me: this.email,
+              photoURL: this.root.photoURL,
+              latlngColumn: '23.5330,121.0654',
+              note: '',
+              login_method: this.root.login_method || 'google'
+            };
+            this.isNew = true;
           }
         }).catch((error) => {
           console.error(error);
           console.log("No data available for user: " + this.uid);
-          console.log(this.user)
+          console.log(this.user);
 
-          var pvdata = {...this.user.providerData}
-
-          if (!pvdata || !pvdata[0]) {
-            pvdata = [
-              { displayName: (this.root.email || '').split('@')[0]}
-            ]
+          let pvdata = [...((this.user && this.user.providerData) || [])];
+          if (pvdata.length === 0) {
+            pvdata = [{
+              displayName: (this.root.email || '').split('@')[0] || '新朋友',
+              email: this.root.email || '',
+              photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png",
+            }];
           }
 
           this.root = {
-            name: pvdata.displayName || '新朋友',
+            name: pvdata[0].displayName,
             uid: this.uid,
             email: this.email,
             connect_me: this.email,
-            photoURL: this.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png",
+            photoURL: this.root.photoURL,
             latlngColumn: '23.5330,121.0654',
-            note: ''
+            note: '',
+            login_method: this.root.login_method || 'google'
           };
-          this.isNew = true
+          this.isNew = true;
         });
       },
       setMapAndMarker() {
         if (this.map && this.marker) {
           // 设置默认坐标为台湾中心点
           const defaultCoords = [23.5330, 121.0654];
-          
-          let coords = defaultCoords;
+          let coords: [number, number] = defaultCoords;
+
           if (this.root && typeof this.root.latlngColumn === 'string') {
             const splitCoords = this.root.latlngColumn.split(',');
             if (splitCoords.length === 2) {
-              coords = splitCoords.map(Number);
+              const lat = parseFloat(splitCoords[0]);
+              const lng = parseFloat(splitCoords[1]);
+              if (!isNaN(lat) && !isNaN(lng)) {
+                coords = [lat, lng];
+              }
             }
           }
 
@@ -382,8 +397,9 @@
         }
       },
       longTimeNoSee () {
-        const today =  new Date().getTime()
-        return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25
+        if (!this.root.lastUpdate) return Infinity;
+        const today = new Date().getTime();
+        return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25;
       },
       tooDetail: function (addr) {
         if (!addr) {
