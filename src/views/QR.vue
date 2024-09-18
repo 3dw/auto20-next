@@ -4,7 +4,7 @@
       h2.ui.header.no-print 展示此QR碼，給您的朋友掃描
       
       .business-card(v-for="i in [1,2,3,4,5,6]", :key="i", :class="i == 1 ? 'visible' : 'print-only'")
-        h2.name {{ formatName(users && users[uid] && users[$route.params.uid] ? users[$route.params.uid].name : '') }}
+        h2(:class="['name', nameClass]") {{ formatName(users && users[uid] && users[$route.params.uid] ? users[$route.params.uid].name : '') }}
           
         .business-card-content
           .business-card-content-text
@@ -44,12 +44,19 @@
     components: {
       VueQrcode,
     },
+    data() {
+      return {
+        nameClass: '',
+      };
+    },
     methods: {
       printPage() {
         window.print();
       },
       formatName(name: string): string {
-        return name.replace(/\(.*?\)/g, '').trim();
+        const formattedName = name.replace(/\(.*?\)/g, '').trim();
+        this.nameClass = formattedName.length > 10 ? 'long' : '';
+        return formattedName;
       },
     },
   });
@@ -108,6 +115,10 @@
     font-weight: bold;
     line-height: 1;
   }
+
+  .name.long {
+    font-size: 10pt; // 當名字太長時，字體變小
+  }
   
   .qr-code-wrapper {
     max-width: 30mm;
@@ -155,7 +166,7 @@
       box-shadow: none;
       padding: 0;
       display: flex;
-      flex-wrap: wrap; // 新增這行
+      flex-wrap: wrap; // 排版
     }
 
     .business-card.print-only {
