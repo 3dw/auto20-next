@@ -182,182 +182,156 @@
       br
   </template>
   
-  <script lang="ts">
-  import { keywords } from '../data/keywords.js';
-  import mix from '../mixins/mix.ts'
-  // import Loader from './Loader'
-  import Card from '../components/Card'
-  import { db, groupsRef } from '../firebase'
-  import { set, get, ref, remove } from 'firebase/database'
-  import 'leaflet/dist/leaflet.css';
-  import * as L from 'leaflet';
-  
-  export default {
-    name: 'MyFlag',
-    mixins: [mix],
-    props: ['uid', 'user', 'emailVerified', 'email', 'mySearch', 'provider', 'photoURL', 'isInApp'],
-    components: { Card },
-    metaInfo: {
-      title: "$t('login.fg')",
-    },
-    data () {
-      return {    
-        agree: false,
-        root: {
-          latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
-        },
-        local: {},
-        map: null,
-        marker: null,
-        isNew: true,
-        editing: false
-      }
-    },
-    emits: ['loginGoogle', 'locate'],
-    watch: {
-      uid (newU) {
-        if (newU) {
-          this.fetchUserData();
-        }
-      }
-    },
-    mounted() {
-      if (this.uid) {
+<script>
+import { keywords } from '../data/keywords.js';
+import mix from '../mixins/mix'
+// import Loader from './Loader'
+import Card from '../components/Card'
+import { db, groupsRef } from '../firebase'
+import { set, get, ref, remove } from 'firebase/database'
+import 'leaflet/dist/leaflet.css';
+import * as L from 'leaflet';
+
+export default {
+  name: 'MyFlag',
+  mixins: [mix],
+  props: ['uid', 'user', 'emailVerified', 'email', 'mySearch', 'provider', 'photoURL', 'isInApp'],
+  components: { Card },
+  metaInfo: {
+    title: "$t('login.fg')",
+  },
+  data () {
+    return {    
+      agree: false,
+      root: {
+        latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
+      },
+      local: {},
+      map: null,
+      marker: null,
+      isNew: true,
+      editing: false
+    }
+  },
+  emits: ['loginGoogle', 'locate'],
+  watch: {
+    uid (newU) {
+      if (newU) {
         this.fetchUserData();
+      }
+    }
+  },
+  mounted() {
+    if (this.uid) {
+      this.fetchUserData();
+    } else {
+      //window.alert('請先登入'); // 假設使用了某種消息提示組件
+      this.$router.push('/'); // 如果 uid 不存在，可以考慮重定向到登入頁面或顯示一個提示
+    }
+  },
+  methods: {
+    containsKeyword(message) {
+      return keywords.some(keyword => message.includes(keyword));
+    },
+    filterInput(field, event) {
+      if (this.containsKeyword(event.target.value)) {
+        alert('Input contains forbidden keywords.');
+        this.root[field] = '';
       } else {
-        //window.alert('請先登入'); // 假設使用了某種消息提示組件
-        this.$router.push('/'); // 如果 uid 不存在，可以考慮重定向到登入頁面或顯示一個提示
+        this.root[field] = event.target.value;
       }
     },
-    methods: {
-      containsKeyword(message) {
-        return keywords.some(keyword => message.includes(keyword));
-      },
-      filterInput(field, event) {
-        if (this.containsKeyword(event.target.value)) {
-          alert('Input contains forbidden keywords.');
-          this.root[field] = '';
-        } else {
-          this.root[field] = event.target.value;
-        }
-      },
-  
-      isValid() {
-        if (!this.root.note || this.root.note.length < 20) {
-          return false
-        }
-        const requiredFields = [
-          this.root.name,
-          this.root.address,
-          this.root.connect_me,
-          this.root.learner_birth,
-          this.root.learner_habit,
-          this.root.share,
-          this.root.note
-        ];
-        return requiredFields.every(field => field && field.trim() !== '');
-      },
-      startEdit () {
-        this.editing = true;
-        L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
-        setTimeout(this.initMap, 500);
-        setTimeout(this.setMapAndMarker, 1000);
-        if (!this.root.email) {
-          this.fetchUserData()
-        }
-      },
-      initMap() {
-        // 设置默认坐标为台湾中心点
-        const defaultCoords = [23.5330, 121.0654];
-        let coords: [number, number] = defaultCoords;
 
-        if (typeof this.root.latlngColumn === 'string') {
-          const splitCoords = this.root.latlngColumn.split(',');
-          if (splitCoords.length === 2) {
-            const lat = parseFloat(splitCoords[0]);
-            const lng = parseFloat(splitCoords[1]);
-            if (!isNaN(lat) && !isNaN(lng)) {
-              coords = [lat, lng];
-            }
+    isValid() {
+      if (!this.root.note || this.root.note.length < 20) {
+        return false
+      }
+      const requiredFields = [
+        this.root.name,
+        this.root.address,
+        this.root.connect_me,
+        this.root.learner_birth,
+        this.root.learner_habit,
+        this.root.share,
+        this.root.note
+      ];
+      return requiredFields.every(field => field && field.trim() !== '');
+    },
+    startEdit () {
+      this.editing = true;
+      L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+      setTimeout(this.initMap, 500);
+      setTimeout(this.setMapAndMarker, 1000);
+      if (!this.root.email) {
+        this.fetchUserData()
+      }
+    },
+    initMap() {
+      // 设置默认坐标为台湾中心点
+      const defaultCoords = [23.5330, 121.0654];
+      let coords = defaultCoords;
+
+      if (typeof this.root.latlngColumn === 'string') {
+        const splitCoords = this.root.latlngColumn.split(',');
+        if (splitCoords.length === 2) {
+          const lat = parseFloat(splitCoords[0]);
+          const lng = parseFloat(splitCoords[1]);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            coords = [lat, lng];
           }
         }
+      }
 
-        this.map = L.map('map').setView(coords, 7);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 18,
-          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(this.map);
+      this.map = L.map('map').setView(coords, 7);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
 
-        L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+      L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
 
-        this.marker = L.marker(this.map.getCenter(), {draggable: true}).addTo(this.map);
+      this.marker = L.marker(this.map.getCenter(), {draggable: true}).addTo(this.map);
 
-        this.marker.on('dragend', () => {
-          const {lat, lng} = this.marker.getLatLng();
-          this.map.setView({lat, lng});
-          this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-          this.$forceUpdate();
-        });
-      },
-      fetchUserData() {
-        const userRef = ref(db, 'users/' + this.uid);
-        get(userRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            this.isNew = false;
-            this.root = snapshot.val();
-
-            let pvdata = [...((this.user && this.user.providerData) || [])];
-
-            if (pvdata.length === 0) {
-              pvdata = [{
-                displayName: (this.root.email || '').split('@')[0] || 'Unknown',
-                email: this.root.email,
-                photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png"
-              }];
-            }
-
-            this.root.email = this.root.email || this.email;
-            this.root.connect_me = this.root.connect_me || this.email;
-            this.root.name = this.root.name || this.user.name || pvdata[0].displayName || '新朋友';
-            this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";
-            this.root.login_method = this.root.login_method || 'google';
-          } else {
-            console.log("No data available for user: " + this.uid);
-
-            let pvdata = [...(this.user.providerData || [])];
-            if (pvdata.length === 0) {
-              pvdata = [{
-                displayName: (this.root.email || '').split('@')[0] || '新朋友',
-                email: this.root.email || '',
-                photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png",
-                login_method: 'google'
-              }];
-            }
-
-            this.root = {
-              name: pvdata[0].displayName,
-              uid: this.uid,
-              email: this.email,
-              connect_me: this.email,
-              photoURL: this.root.photoURL,
-              latlngColumn: '23.5330,121.0654',
-              note: '',
-              login_method: this.root.login_method || 'google'
-            };
-            this.isNew = true;
-          }
-        }).catch((error) => {
-          console.error(error);
-          console.log("No data available for user: " + this.uid);
-          console.log(this.user);
+      this.marker.on('dragend', () => {
+        const {lat, lng} = this.marker.getLatLng();
+        this.map.setView({lat, lng});
+        this.root.latlngColumn = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        this.$forceUpdate();
+      });
+    },
+    fetchUserData() {
+      const userRef = ref(db, 'users/' + this.uid);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          this.isNew = false;
+          this.root = snapshot.val();
 
           let pvdata = [...((this.user && this.user.providerData) || [])];
+
+          if (pvdata.length === 0) {
+            pvdata = [{
+              displayName: (this.root.email || '').split('@')[0] || 'Unknown',
+              email: this.root.email,
+              photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png"
+            }];
+          }
+
+          this.root.email = this.root.email || this.email;
+          this.root.connect_me = this.root.connect_me || this.email;
+          this.root.name = this.root.name || this.user.name || pvdata[0].displayName || '新朋友';
+          this.root.photoURL = this.root.photoURL || decodeURI(this.user.photoURL) || "https://we.alearn.org.tw/logo-new.png";
+          this.root.login_method = this.root.login_method || 'google';
+        } else {
+          console.log("No data available for user: " + this.uid);
+
+          let pvdata = [...(this.user.providerData || [])];
           if (pvdata.length === 0) {
             pvdata = [{
               displayName: (this.root.email || '').split('@')[0] || '新朋友',
               email: this.root.email || '',
               photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png",
+              login_method: 'google'
             }];
           }
 
@@ -372,125 +346,152 @@
             login_method: this.root.login_method || 'google'
           };
           this.isNew = true;
-        });
-      },
-      setMapAndMarker() {
-        if (this.map && this.marker) {
-          // 设置默认坐标为台湾中心点
-          const defaultCoords = [23.5330, 121.0654];
-          let coords: [number, number] = defaultCoords;
+        }
+      }).catch((error) => {
+        console.error(error);
+        console.log("No data available for user: " + this.uid);
+        console.log(this.user);
 
-          if (this.root && typeof this.root.latlngColumn === 'string') {
-            const splitCoords = this.root.latlngColumn.split(',');
-            if (splitCoords.length === 2) {
-              const lat = parseFloat(splitCoords[0]);
-              const lng = parseFloat(splitCoords[1]);
-              if (!isNaN(lat) && !isNaN(lng)) {
-                coords = [lat, lng];
-              }
+        let pvdata = [...((this.user && this.user.providerData) || [])];
+        if (pvdata.length === 0) {
+          pvdata = [{
+            displayName: (this.root.email || '').split('@')[0] || '新朋友',
+            email: this.root.email || '',
+            photoURL: this.root.photoURL || "https://we.alearn.org.tw/logo-new.png",
+          }];
+        }
+
+        this.root = {
+          name: pvdata[0].displayName,
+          uid: this.uid,
+          email: this.email,
+          connect_me: this.email,
+          photoURL: this.root.photoURL,
+          latlngColumn: '23.5330,121.0654',
+          note: '',
+          login_method: this.root.login_method || 'google'
+        };
+        this.isNew = true;
+      });
+    },
+    setMapAndMarker() {
+      if (this.map && this.marker) {
+        // 设置默认坐标为台湾中心点
+        const defaultCoords = [23.5330, 121.0654];
+        let coords = defaultCoords;
+
+        if (this.root && typeof this.root.latlngColumn === 'string') {
+          const splitCoords = this.root.latlngColumn.split(',');
+          if (splitCoords.length === 2) {
+            const lat = parseFloat(splitCoords[0]);
+            const lng = parseFloat(splitCoords[1]);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              coords = [lat, lng];
             }
           }
+        }
 
-          const latLng = L.latLng(coords[0], coords[1]);
-          this.map.setView(latLng, 7);
-          this.marker.setLatLng(latLng);
-        }
-      },
-      longTimeNoSee () {
-        if (!this.root.lastUpdate) return Infinity;
-        const today = new Date().getTime();
-        return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25;
-      },
-      tooDetail: function (addr) {
-        if (!addr) {
-          return false
-        }
-        if (addr.match(/(號|樓|F|f)/)) {
-          return true
-        }
-        return false
-      },
-      updateFlag: function () {
-        this.root.email = this.email || ''
-        this.root.uid = this.uid || ''
-        this.root.photoURL = this.photoURL || ''
-        this.root.lastUpdate = (new Date()).getTime()
-        
-        if (!this.emailVerified && this.root.login_method === 'email') {
-          alert('Email尚未驗證'); // <-- 以後要改成雙語
-        }
-        
-        if (!this.isNew) {
-          this.isNew = false
-          this.editing = false
-          set(ref(db, 'users/' + this.uid), this.root).then(
-            alert(this.$t('login.update_sucess'))
-          )
-        } else if (!this.agree) {
-          window.alert(this.$t('login.agree_pr'))
-          return
-        } else {
-          console.log('new2')
-          this.isNew = false
-          this.editing = false
-          set(ref(db, 'users/' + this.uid), this.root).then(
-            alert(this.$t('login.raise_sucess'))
-          )
-        }
-        this.$emit('locate', this.root, false)
-      },
-      confirmDelete() {
-        if (window.confirm(this.$t('login.delete_confirm2'))) {
-          this.deleteFlag();
-        }
-      },
-      deleteFlag() {
-        const uid = this.uid;
-        // 刪除使用者數據
-        remove(ref(db, 'users/' + uid))
-          .then(() => {
-            // 取得所有群組的數據
-            return get(groupsRef);
-          })
-          .then((snapshot) => {
-            const data = snapshot.val();
-            let groups = [...data]; // 複製群組數據
-            // 更新群組中的成員資料
-            const updatePromises = groups.map((g, idx) => {
-              g.members = (g.members || []).filter((m) => m !== uid);
-              // 回存更新後的群組成員資料到 Firebase
-              return set(ref(db, 'groups/' + idx + '/members'), g.members);
-            });
-            // 使用 Promise.all 確保所有更新操作完成後再進行下一步
-            return Promise.all(updatePromises);
-          })
-          .then(() => {
-            // 成功更新後顯示提示訊息
-            alert(this.$t('login.delete_confirm3'));
-            this.root = {}; // 清空 root 資料
-            this.$emit('logout'); // 觸發登出事件
-          })
-          .catch((error) => {
-            // 錯誤處理
-            alert(this.$t('login.delete_failed') + error.message);
-          });
-      },
-      loginFB: function () {
-        this.$emit('loginFB')
-      },
-      locate: function (h, bool) {
-        this.$emit('locate', h, bool)
-      },
-      addBook: function (uid) {
-        console.log(uid)
-        this.$emit('addBook', uid)
-      },
-      loginGoogle: function () {
-        this.$emit('loginGoogle')
+        const latLng = L.latLng(coords[0], coords[1]);
+        this.map.setView(latLng, 7);
+        this.marker.setLatLng(latLng);
       }
+    },
+    longTimeNoSee () {
+      if (!this.root.lastUpdate) return Infinity;
+      const today = new Date().getTime();
+      return (today - this.root.lastUpdate) / 1000 / 3600 / 24 / 365.25;
+    },
+    tooDetail: function (addr) {
+      if (!addr) {
+        return false
+      }
+      if (addr.match(/(號|樓|F|f)/)) {
+        return true
+      }
+      return false
+    },
+    updateFlag: function () {
+      this.root.email = this.email || ''
+      this.root.uid = this.uid || ''
+      this.root.photoURL = this.photoURL || ''
+      this.root.lastUpdate = (new Date()).getTime()
+      
+      if (!this.emailVerified && this.root.login_method === 'email') {
+        alert('Email尚未驗證'); // <-- 以後要改成雙語
+      }
+      
+      if (!this.isNew) {
+        this.isNew = false
+        this.editing = false
+        set(ref(db, 'users/' + this.uid), this.root).then(
+          alert(this.$t('login.update_sucess'))
+        )
+      } else if (!this.agree) {
+        window.alert(this.$t('login.agree_pr'))
+        return
+      } else {
+        console.log('new2')
+        this.isNew = false
+        this.editing = false
+        set(ref(db, 'users/' + this.uid), this.root).then(
+          alert(this.$t('login.raise_sucess'))
+        )
+      }
+      this.$emit('locate', this.root, false)
+    },
+    confirmDelete() {
+      if (window.confirm(this.$t('login.delete_confirm2'))) {
+        this.deleteFlag();
+      }
+    },
+    deleteFlag() {
+      const uid = this.uid;
+      // 刪除使用者數據
+      remove(ref(db, 'users/' + uid))
+        .then(() => {
+          // 取得所有群組的數據
+          return get(groupsRef);
+        })
+        .then((snapshot) => {
+          const data = snapshot.val();
+          let groups = [...data]; // 複製群組數據
+          // 更新群組中的成員資料
+          const updatePromises = groups.map((g, idx) => {
+            g.members = (g.members || []).filter((m) => m !== uid);
+            // 回存更新後的群組成員資料到 Firebase
+            return set(ref(db, 'groups/' + idx + '/members'), g.members);
+          });
+          // 使用 Promise.all 確保所有更新操作完成後再進行下一步
+          return Promise.all(updatePromises);
+        })
+        .then(() => {
+          // 成功更新後顯示提示訊息
+          alert(this.$t('login.delete_confirm3'));
+          this.root = {}; // 清空 root 資料
+          this.$emit('logout'); // 觸發登出事件
+        })
+        .catch((error) => {
+          // 錯誤處理
+          alert(this.$t('login.delete_failed') + error.message);
+        });
+    },
+    loginFB: function () {
+      this.$emit('loginFB')
+    },
+    locate: function (h, bool) {
+      this.$emit('locate', h, bool)
+    },
+    addBook: function (uid) {
+      console.log(uid)
+      this.$emit('addBook', uid)
+    },
+    loginGoogle: function () {
+      this.$emit('loginGoogle')
     }
   }
-  </script>
+}
+</script>
+
   
   <style scoped>
   .hello {
