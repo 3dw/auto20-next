@@ -95,7 +95,7 @@ export default defineComponent({
       console.log(this.$route.path);
 
       if (!this.users_email || !this.user_password) {
-        window.alert('請先填寫email和密碼');
+        window.alert('請先填寫email和密碼，或使用Google登入');
         return;
       }
 
