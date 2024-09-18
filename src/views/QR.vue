@@ -3,18 +3,25 @@
     .qr-container
       h2.ui.header.no-print 展示此QR碼，給您的朋友掃描
       
-      .qr-code-wrapper.no-print
+      .business-card(v-for="i in [1,2,3,4,5,6]", :key="i", :class="i == 1 ? 'visible' : 'print-only'")
         h2.name {{ formatName(users && users[uid] && users[$route.params.uid] ? users[$route.params.uid].name : '') }}
-        vue-qrcode(:value="'https://we.alearn.org.tw/flag/' + $route.params.uid", :color ="{ dark: '#f39c04', light: '#fff' }")
-      
-      .print-only.business-card
-        h2.name {{ formatName(users && users[uid] && users[$route.params.uid] ? users[$route.params.uid].name : '') }}
+          
+        .business-card-content
+          .business-card-content-text
+            p.text-left 連絡方式：{{ users && users[uid] && users[$route.params.uid] ? users[$route.params.uid].connect_me : '' }}
+            p.text-left {{ $t('contact.availableTime') }}
+              br
+              | {{ users && users[uid] && users[$route.params.uid] ? users[$route.params.uid].freetime : '' }}
+
         .qr-code-wrapper
-          vue-qrcode(:value="'https://we.alearn.org.tw/flag/' + $route.params.uid", :color ="{ dark: '#f39c04', light: '#fff' }")
-      
+          vue-qrcode(:value="'https://we.alearn.org.tw/flag/' + $route.params.uid", :color="{ dark: '#000000FF', light: '#fff' }")
+
+        .business-card-footer
+          .business-card-footer-text 掃描此QR碼，前往自學2.0
+
       button.ui.green.button.no-print(@click="printPage")
         i.print.icon
-        | 列印
+        | 列印名片
   </template>
   
   <script lang="ts">
@@ -27,7 +34,7 @@
       users: {
         type: Object,
         required: false,
-        default: () => ({}),
+        default: () => ({})
       },
       uid: {
         type: String,
@@ -51,25 +58,16 @@
   <style lang="scss" scoped>
   .home {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     min-height: 100vh;
-    background-color: #f8f9fa; /* 淺灰色背景 */
+    background-color: #f8f9fa;
     padding: 20px;
+    text-align: center; // 新增這行
   }
   
   .qr-container {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    padding: 40px;
     text-align: center;
-  }
-  
-  .qr-code-wrapper {
-    margin-top: 20px;
   }
   
   h2.ui.header {
@@ -80,64 +78,93 @@
   
   img {
     border-radius: 15px;
-  }
-  
-  .print-only {
-    display: none;
+    width: 100%;
+    height: 100%;
   }
   
   .ui.green.button {
     margin-top: 20px;
+    display: inline-block; // 改為 inline-block 以顯示按鈕
+  }
+
+  .business-card {
+    position: relative;
+    width: 54mm;
+    height: 90mm; // 調整高度為 54mm
+    padding: 2mm;
+    border: 1px solid #000;
+    border-radius: 10mm; // 添加圓角
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; // 分散對齊
+    align-items: center;
+    background-color: #fff; // 添加背景色
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); // 添加更多陰影以增加立體感
+    margin: auto; // 新增這行
+  }
+
+  .name {
+    font-size: 14pt;
+    font-weight: bold;
+    line-height: 1;
   }
   
+  .qr-code-wrapper {
+    max-width: 30mm;
+    max-height: 30mm;
+  }
+  
+  .business-card-footer {
+    width: 100%;
+    text-align: center;
+    font-size: 8pt; // 調整字體大小
+    color: #555; // 調整字體顏色
+  }
+
+  .business-card-footer-text {
+    font-style: italic; // 添加斜體
+  }
+  
+  .business-card-content {
+    width: 100%;
+    text-align: left;
+    font-size: 10pt; // 調整字體大小
+    color: #555; // 調整字體顏色
+  }
+  
+  .business-card-content-text p {
+    font-size: 10pt; // 調整 p 裡的字體大小
+    margin: 5px 0; // 添加間距
+  }
+
+  .business-card.print-only {
+    padding: 0 !important;
+  }
+
   @media print {
     .home {
       background-color: #ffffff;
       padding: 0;
       min-height: auto;
+      display: flex;
+      flex-wrap: wrap; // 新增這行
     }
     
     .qr-container {
       border: none;
       box-shadow: none;
       padding: 0;
-    }
-    
-    .no-print {
-      display: none;
-    }
-    
-    .print-only {
-      display: block;
-    }
-    
-    .business-card {
-      width: 90mm;
-      height: 120mm;
-      padding: 10mm;
-      border: 1px solid #000;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between; // 分散對齊
-      align-items: center;
-      position: relative; // 添加相對定位
+      flex-wrap: wrap; // 新增這行
     }
-    
-    .name {
-      font-size: 24pt;
-      font-weight: bold;
-      margin-right: 10mm; // 在名字和 QR 碼之間添加一些間距
-    }
-    
-    .qr-code-wrapper {
-      position: static; // 移除絕對定位
-      transform: none; // 移除變換
-      max-width: 30mm; // 限制 QR 碼的最大寬度
-      max-height: 30mm; // 限制 QR 碼的最大高度
+
+    .business-card.print-only {
+      padding: 2mm !important;
     }
     
     .ui.green.button {
-      display: none;
+      display: none; // 在打印時仍然隱藏按鈕
     }
+
   }
   </style>

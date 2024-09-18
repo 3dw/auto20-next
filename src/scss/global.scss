@@ -69,7 +69,9 @@ a.router-link-exact-active:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 點擊時縮小陰影 */
 }
 
-
+.text-left {
+  text-align: left !important;
+}
 
 .invisible {
   color: transparent !important;
@@ -101,4 +103,5 @@ a, button {
 
 .print-only {
   visibility: hidden;
+  max-height: 0;
 }
