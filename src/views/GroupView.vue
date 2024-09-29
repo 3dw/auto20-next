@@ -214,7 +214,7 @@ export default defineComponent({
       this.$emit('toggleLogin');
     },
     isUser(uid) {
-      return uid && this.users[uid]
+      return uid && this.users[uid] && this.users[uid].note
     },
     isMember (idx) {
       return (this.groups[idx].members || []).indexOf(this.uid) > -1
