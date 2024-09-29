@@ -22,10 +22,10 @@
         p.description(v-if="h.price" v-html="$t('card.payable') + highlight(h.price, mySearch)")
       .content(v-if="h.connect_me && full")
         .ui.divider
-        p.description(v-if="isEmail(h.connect_me)") {{ $t('contact.clickableEmail') }}：
+        p.description(v-if="isEmail(h.connect_me)") {{ $t('contact.clickableEmail') }}
           a(@click.stop="gotoMail(h.connect_me)") {{h.connect_me}}
-        p.description(v-else) {{ $t('contact.contactMethod') }}： {{h.connect_me}}
-        p.description(v-if="h.freetime") {{ $t('contact.availableTime') }}： {{h.freetime}}
+        p.description(v-else) {{ $t('contact.contactMethod') }} {{h.connect_me}}
+        p.description(v-if="h.freetime") {{ $t('contact.availableTime') }} {{h.freetime}}
       .content
         .ui.divider
         p(v-if="h.site")
