@@ -77,6 +77,11 @@
           return keywords.some(keyword => message.includes(keyword));
         },
         submitChat() {
+          // 檢查消息是否全為空白
+          if (!this.msg.trim()) {
+            alert('消息不能全為空白。');
+            return;
+          }
           if (!this.containsKeyword(this.msg)) {
             this.addChat(); // Call addChat only if the message doesn't contain any keywords
           } else {
@@ -295,4 +300,3 @@
         border-radius: 3px;
       }
 </style>
-    
