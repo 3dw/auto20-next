@@ -268,9 +268,12 @@ export default defineComponent({
         });
     },
     addChat (idx) {
+      if (!this.msg.trim()) { // 檢查消息是否為空白
+        alert(this.$t('group.empty_message')); // 提示用戶消息不能為空
+        return; // 如果是空白，則返回
+      }
       var o = {
         uid: this.uid,
-        //n: this.users[this.uid].name ? this.users[this.uid].name : '匿名',
         n: this.users[this.uid].name ? this.users[this.uid].name : this.$t('login.anoymous'),
         t: this.msg,
         photoURL: this.photoURL || '',
