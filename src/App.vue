@@ -5,19 +5,19 @@
     router-link.item.fat-only(to="/")
       i.home.icon
       span {{ $t('login.hp') }}
-    router-link.item(to="/about")
+    router-link.item(to="/about", :class="{'fat-only': uid}")
       i.info.icon
       span.fat-only
         | {{ $t('login.ab') }}
-    router-link.item(to="/maps")
+    router-link.item(to="/maps", :class="{'fat-only': uid}")
       i.map.icon
       | {{ $t('login.mp') }}
-    router-link.item.fat-only(to="/friends")
+    router-link.item(to="/friends", :class="{'fat-only': !uid}")
       i.users.icon
       | {{ $t('login.fr') }}
-    router-link.item.fat-only(to="/groups")
+    router-link.item(to="/groups", :class="{'fat-only': !uid}")
       i.object.group.outline.icon
-      | {{ $t('login.gp') }}
+      span.fat-only {{ $t('login.gp') }}
     
     div.right.menu
       .ui.simple.dropdown.item
@@ -64,7 +64,7 @@
     router-link.item(to="/about")
       i.info.icon.no-float
       | {{ $t('login.ab') }}
-    router-link.item(to="/privacy-policy")
+    router-link.item(to="/privacy-policy", v-if="!uid")
       i.save.icon.no-float
       | {{ $t('login.pr') }}
     router-link.item(to="/friends")
@@ -73,9 +73,6 @@
     router-link.item(to="/maps")
       i.map.icon.no-float
       | {{ $t('login.mp') }}
-    router-link.item(to="/polis")
-      i.comments.icon.no-float
-      | {{ $t('login.polis') }}
     router-link.item(to="/groups")
       i.object.group.outline.icon.no-float
       | {{ $t('login.gp') }}
@@ -85,12 +82,18 @@
     router-link.item(to="/book", v-if="uid")
       i.book.icon.no-float
       | {{ $t('login.bk')}}
+    router-link.item(to="/polis")
+      i.comments.icon.no-float
+      | {{ $t('login.polis') }}
     router-link.item(to="/link")
       i.globe.icon.no-float
       | {{ $t('login.link') }}
     router-link.item(to="/source_github")
       i.github.icon.no-float
       | {{ $t('login.source_github') }}
+    router-link.item(to="/privacy-policy", v-if="uid")
+      i.save.icon.no-float
+      | {{ $t('login.pr') }}
   .ui.sidebar.bg.no-print(:class="{'hidden': !sidebarVisible}", @click="toggleSidebar")
   br.no-print
   .ui.form.container.no-print(v-if="doSearch($route.path)", v-show="uid")

@@ -34,18 +34,18 @@ export default {
     },
     getIcon(h: { photoURL?: string; name?: string }): string {
       
-      console.log('a')
-      console.log(h)
-      console.log("getIcon called with:", h);
+      // console.log('a')
+      // console.log(h)
+      // console.log("getIcon called with:", h);
       if (h && h.photoURL) {
-        console.log("Returning photoURL:", h.photoURL);
+        // console.log("Returning photoURL:", h.photoURL);
         return h.photoURL;
       } else if (h && h.name) {
-        console.log('b')
-        console.log("Returning name-based URL for:", h.name);
+        // console.log('b')
+        // console.log("Returning name-based URL for:", h.name);
         return `https://www.moedict.tw/${h.name}.png`;
       } else {
-        console.log("Returning unknown user icon");
+        // console.log("Returning unknown user icon");
         return 'https://www.moedict.tw/unknown.png';
       }
     },

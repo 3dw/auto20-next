@@ -108,7 +108,7 @@ export default defineComponent({
     logic(newL) {
       console.log(newL);
       const nearMatch = newL.match(/^near_(\d+\.\d+),(\d+\.\d+)$/);
-      if (newL === 'nearest' && !this.userLocation) {
+      if (!nearMatch && !this.userLocation) {
         console.log(this.users[this.uid].latlngColumn);
         // 從this.users[this.uid].latlngColumn剖析出位置, 存入this.userLocation
         if (this.users[this.uid].latlngColumn) {
@@ -154,7 +154,8 @@ export default defineComponent({
         return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn));
       } else if (this.logic === 'age_nearest' && this.users[this.uid] && this.users[this.uid].child_birth) {
           const userChildBirth = new Date(this.users[this.uid].child_birth).getTime();
-          return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn)).sort((a, b) => {
+          return data.sort((a, b) => this.distanceToCenter(a.latlngColumn) - this.distanceToCenter(b.latlngColumn))
+            .sort((a, b) => {
             const aChildBirth = a.child_birth ? new Date(a.child_birth).getTime() : Infinity;
             const bChildBirth = b.child_birth ? new Date(b.child_birth).getTime() : Infinity;
             return Math.abs(aChildBirth - userChildBirth) - Math.abs(bChildBirth - userChildBirth);
