@@ -16,7 +16,7 @@
       i.users.icon
       | {{ $t('login.fr') }}
     router-link.item(to="/groups", :class="{'fat-only': !uid}")
-      img.abs-upper-right(src="./assets/new-icon-transparent.png")      
+      // img.abs-upper-right(src="./assets/new-yellow.png")      
       i.object.group.outline.icon
       span.fat-only {{ $t('login.gp') }}
     
