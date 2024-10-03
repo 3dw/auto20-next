@@ -16,6 +16,7 @@
       i.users.icon
       | {{ $t('login.fr') }}
     router-link.item(to="/groups", :class="{'fat-only': !uid}")
+      img.abs-upper-right(src="./assets/new-icon-transparent.png")      
       i.object.group.outline.icon
       span.fat-only {{ $t('login.gp') }}
     
@@ -49,9 +50,11 @@
           button.no-border.ui.item(v-if="uid", @click="logout")
             i.sign-out.icon
             | {{ $t('login.logout')}}
-  carousel.no-print(:wrapAround="true", :items-to-show="1", :autoplay="4000", :transition="4000", :pauseAutoplayOnHover="true")
-    slide(v-for="slide in news", :key="slide")
-      span {{ $t('news.' + slide) }}
+  carousel.no-print(:wrapAround="true", :items-to-show="1", :autoplay="3500", :transition="4000", :pauseAutoplayOnHover="true")
+    slide(v-for="slide in news", :key="slide.t")
+      a(v-if="slide.h") {{ $t('news.' + slide.t) }}
+      router-link(v-else-if="slide.r", :to="slide.r") {{ $t('news.' + slide.t) }}
+      span(v-else) {{ $t('news.' + slide.t) }}
     template(#addons)
   Tutorial.no-print(v-if="uid && showTutorial && !allTasksCompleted && users && toList(users).length > 0",
   @hideTutorial="showTutorial = false",
@@ -179,9 +182,19 @@
         //someTaskCompleted: [false, false, false, false],
         mySearch: '',
         news: [
-          'upgrading',
-          'flag',
-          'remove',
+          {
+            t: 'donate_us',
+            h: 'https://www.alearn.org.tw'
+          },
+          {
+            t: 'upgrading',
+            r: '/about'
+          },
+          {
+            t: 'flag',
+            r: '/profile'
+          },
+          { t: 'remove'},
           // 'report'
         ],
         zoom: 7,

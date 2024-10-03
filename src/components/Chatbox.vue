@@ -1,7 +1,8 @@
 <template lang="pug">
 .chats(v-bind:class = "{ full : isFull, mini: isMini }")
   #menu.ui.inverted.big.menu
-    router-link.item(to="/feedback")
+    router-link.item.relative.overflow-visible(to="/feedback")
+      img.abs-upper-right(src="../assets/new-icon-transparent.png")
       i.comment.icon.no-float
       | {{ $t('chat.feedback') }}
     .item.ui.form(v-show="isFull")

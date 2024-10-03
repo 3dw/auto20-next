@@ -105,3 +105,18 @@ a, button {
   visibility: hidden;
   max-height: 0;
 }
+
+.overflow-visible {
+  overflow: visible !important;
+}
+
+.relative {
+  position: relative;
+}
+
+.abs-upper-right {
+  position: absolute;
+  top: -.6em;
+  right: -.6em;
+  z-index: 999909;
+}

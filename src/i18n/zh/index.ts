@@ -167,6 +167,7 @@ export default {
       submit: '留言'
     },
     news: {
+      donate_us: '支持自學，發票愛心碼捐9806',
       upgrading: '自學2.0更新中',
       flag: '請定期更新您的互助旗',
       remove: '以Facebook登入之旗幟將被移除',

@@ -166,6 +166,7 @@ export default {
       submit: 'Submit'
     },
     news: {
+      donate_us: 'Donate 9806 using the charity code on your receipt to support us.',
       upgrading: "We are upgrading",
       flag: "Please update your flag regularly",
       remove: "Flags that logged in with Facebook will be removed",
