@@ -250,7 +250,7 @@ export default {
       intro_3: "We welcome all friends who are interested in 'Self-directed Learning' to participate, regardless of age and whether they are in school or not.",
       auto20_by: "Who is designing and maintaining Autonomous Learning 2.0(Auto20)？",
       auto20_by_content1: "This platform is designed and maintained by",
-      auto20_by_content2: " the non-profit organization Autonomous Learning Promotion Association of R.O.C. (Taiwan)",
+      auto20_by_content2: " the non-profit organization Autonomous Learning Promotion Association of R.O.C. (Taiwan) (charity code: 9806)",
       auto20_by_content3: ", dedicated to providing a safe and friendly environment for everyone to freely find learning partners.",
       card_flag: "What is Cloud Card and Mutual Aid Flag?",
       card_name: "Cloud Card",
