@@ -1,6 +1,9 @@
 <template lang="pug">
 .chats(v-bind:class = "{ full : isFull, mini: isMini }")
   #menu.ui.inverted.big.menu
+    router-link.item(to="/feedback")
+      i.comment.icon.no-float
+      | {{ $t('chat.feedback') }}
     .item.ui.form(v-show="isFull")
       .ui.input
         input(v-model="key", placeholder="搜尋")
@@ -8,7 +11,7 @@
       a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
         | {{$t('chat.gc')}}
-        span.red(v-show="fil(chats).length > read") ({{ fil(chats).length - read }})
+        span.red(v-show="fil(chats).length > read") ({{ fil(chats).length - read }})    
       a.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | {{$t('chat.cp')}}
@@ -298,5 +301,10 @@
         min-width: 3em;
         padding: .2em;
         border-radius: 3px;
+      }
+
+      a.item {
+        margin: 0 !important;
+        padding: 0 1em !important;
       }
 </style>

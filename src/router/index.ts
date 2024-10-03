@@ -69,12 +69,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/polis',
     name: 'polis',
-    component: () => import(/* webpackChunkName: "plois" */ '../views/PolisView.vue')
+    component: () => import(/* webpackChunkName: "polis" */ '../views/PolisView.vue') // 修正了 webpackChunkName 的拼寫
   },
   {
     path: '/source_github',
     name: 'source_github',
-    component: () => import(/* webpackChunkName: "plois" */ '../views/Source_github.vue')
+    component: () => import(/* webpackChunkName: "source_github" */ '../views/Source_github.vue')
+  },
+  {
+    path: '/feedback',
+    name: 'feedback',
+    component: () => import(/* webpackChunkName: "feedback" */ '../views/FeedbackView.vue')
   }  
 ]
 

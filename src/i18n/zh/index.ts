@@ -161,6 +161,7 @@ export default {
     },
 
     chat: {
+      feedback: '意見回饋',
       gc: '群聊',
       cp: '縮小',
       submit: '留言'

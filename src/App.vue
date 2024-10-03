@@ -591,7 +591,7 @@
       },
 
       doSearch: function (p) {
-        return !(p.match(/(^\/$|source_github|myPlace|polis|qr|outer|flag|myFlag|place|profile|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
+        return !(p.match(/(^\/$|feedback|source_github|myPlace|polis|qr|outer|flag|myFlag|place|profile|about|privacy-policy|faq|flag\/\d+|ans\/\d+)/))
       },
       myGroupIdx () {
         return (this.groups || []).filter((g) => {

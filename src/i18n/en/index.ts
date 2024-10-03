@@ -160,6 +160,7 @@ export default {
       form71: ' the privacy policy of Autonomous Learning 2.0(Auto20)',
     },
     chat: {
+      feedback: 'Feedback',
       gc: 'Goup Chat',
       cp: 'Collapse',
       submit: 'Submit'
