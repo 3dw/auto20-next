@@ -32,9 +32,8 @@
           form.ui.large.form
             .ui.segment(style="border: none; padding-top: 10px;")
               .field                
-                .cf-turnstile(
-                  data-sitekey="0x4AAAAAAAwqeJZqvEuGZj6H",
-                  data-callback="javascriptCallback")              
+                .cf-turnstile(data-sitekey="0x4AAAAAAAwqeJZqvEuGZj6H")
+                  //- ,data-callback="javascriptCallback")              
               .field
                 .ui.checkbox(@click.stop)
                   input(type="checkbox" v-model="keeploggedin")
@@ -46,121 +45,130 @@
 
   
 <script lang="ts">
-import { defineComponent } from 'vue';
+declare global {
+  interface Window {
+    turnstile: any;
+  }
+}
+import { defineComponent, ref, watch, onMounted } from 'vue';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 export default defineComponent({
   name: "LoginBox",
-  data () {
-    return {
-      users_email: '',  // 使用者輸入的電子郵件
-      user_password: '',
-      keeploggedin: false
-    }
-  },
-  watch: {
-    keeploggedin(newVal) {
-      // 當 keeploggedin 變化時，將其保存到 localStorage
+  setup(props, { emit }) {
+    const users_email = ref('');
+    const user_password = ref('');
+    const keeploggedin = ref(false);
+    const turnstileToken = ref(null);
+
+    watch(keeploggedin, (newVal) => {
       localStorage.setItem('keeploggedin', JSON.stringify(newVal));
-    }
-  },
-  mounted() {
-    // 從 localStorage 讀取 keeploggedin 的值
-    const storedValue = localStorage.getItem('keeploggedin');
-    if (storedValue !== null) {
-      this.keeploggedin = JSON.parse(storedValue);
-    }
-  },
-  methods: {
-    loginGoogle(): void {
+    });
+
+    onMounted(() => {
+      const storedValue = localStorage.getItem('keeploggedin');
+      if (storedValue !== null) {
+        keeploggedin.value = JSON.parse(storedValue);
+      }
+
+      // 初始化 Turnstile
+      (window as any).turnstile.render('.cf-turnstile', {
+        sitekey: '0x4AAAAAAAwqeJZqvEuGZj6H',
+        callback: (token) => {
+          turnstileToken.value = token;
+        },
+      });
+    });
+
+    const loginGoogle = () => {
       let autoredirect = true;
+      const path = window.location.pathname;
 
-      console.log(this.$route.path)
-
-      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
+      if (path === '/friends' || path === '/maps' || path === '/privacy-policy' || path.startsWith('/flag') || path.startsWith('/group')) {
         autoredirect = false;
       }
 
-      this.$emit('loginGoogle', autoredirect, this.keeploggedin);
-    },
-    toggleLogin(): void {
-      this.$emit('toggleLogin');
-    },
-    // 驗證email格式的function
-    validateEmail(email: string): boolean {
+      emit('loginGoogle', autoredirect, keeploggedin.value);
+    };
+
+    const toggleLogin = () => {
+      emit('toggleLogin');
+    };
+
+    const validateEmail = (email: string): boolean => {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(String(email).toLowerCase());
-    },
-    // 註冊帳號方法
-    registerWithEmail(): void {
-      console.log("users_email:", this.users_email);
-      console.log("user_password:", this.user_password); // 確認密碼值
-      console.log('Register clicked'); // 確認方法是否被觸發
-      console.log(this.$route.path);
+    };
 
-      if (!this.users_email || !this.user_password) {
+    const registerWithEmail = () => {
+      if (!turnstileToken.value) {
+        alert('請完成驗證');
+        return;
+      }
+
+      console.log("users_email:", users_email.value);
+      console.log("user_password:", user_password.value);
+      console.log('Register clicked');
+
+      if (!users_email.value || !user_password.value) {
         window.alert('請先填寫email和密碼，或使用Google登入');
         return;
       }
 
-      // 驗證email格式
-      if (!this.validateEmail(this.users_email)) {
+      if (!validateEmail(users_email.value)) {
         alert('email格式錯誤，請重試');
         return;
       }
 
-      if (!this.user_password || typeof this.user_password !== 'string') {
+      if (!user_password.value || typeof user_password.value !== 'string') {
         alert('密碼請至少包含一個英文字，請重新輸入');
         return;
       }
 
-      this.$emit('registerWithEmail', this.users_email, this.user_password, this.keeploggedin);
-    },
-    // 用 email 密碼登入方法
-    loginWithEmail(): void {
-      let autoredirect = true;
-      console.log('Login clicked'); // 確認方法是否被觸發
-      console.log(this.$route.path);
+      emit('registerWithEmail', users_email.value, user_password.value, keeploggedin.value, turnstileToken.value);
+    };
 
-      // 驗證email格式
-      if (!this.validateEmail(this.users_email)) {
+    const loginWithEmail = () => {
+      let autoredirect = true;
+      console.log('Login clicked');
+      const path = window.location.pathname;
+
+      if (!validateEmail(users_email.value)) {
         alert('email格式錯誤，請重試');
         return;
       }
 
-      if (this.$route.path === '/friends' || this.$route.path === '/maps' || this.$route.path === '/privacy-policy' || this.$route.path.startsWith('/flag') || this.$route.path.startsWith('/group')) {
+      if (path === '/friends' || path === '/maps' || path === '/privacy-policy' || path.startsWith('/flag') || path.startsWith('/group')) {
         autoredirect = false;
       }
 
-      if (!this.user_password || typeof this.user_password !== 'string') {
+      if (!user_password.value || typeof user_password.value !== 'string') {
         alert('密碼無效，請重新輸入');
         return;
       }
 
-      this.$emit('loginWithEmail', autoredirect, this.users_email, this.user_password, this.keeploggedin);
-    },
-    // 重設密碼方法
-    resetPassword(): void {
-      console.log("Reset password function triggered");  // 偵錯: 確認重設密碼方法是否被觸發
-      console.log("Email for reset:", this.users_email);  // 偵錯: 確認輸入的 email 值
+      emit('loginWithEmail', autoredirect, users_email.value, user_password.value, keeploggedin.value);
+    };
+
+    const resetPassword = () => {
+      console.log("Reset password function triggered");
+      console.log("Email for reset:", users_email.value);
       
-      // 驗證 email 格式
-      if (!this.validateEmail(this.users_email)) {
+      if (!validateEmail(users_email.value)) {
         alert('請先輸入有效的電子郵件地址');
         return;
       }
 
-      const auth = getAuth();  // 取得 Firebase auth 物件
-      console.log("Firebase auth object:", auth);  // 偵錯: 確認 auth 物件是否正確被初始化
+      const auth = getAuth();
+      console.log("Firebase auth object:", auth);
 
-      sendPasswordResetEmail(auth, this.users_email)
+      sendPasswordResetEmail(auth, users_email.value)
         .then(() => {
           alert('密碼重置郵件已發送，請檢查您的郵箱');
-          console.log("Password reset email sent successfully");  // 偵錯: 確認郵件已發送
+          console.log("Password reset email sent successfully");
         })
         .catch((error: { code: string; message: string }) => {
-          console.error("密碼重置郵件發送失敗：", error.code, error.message);  // 偵錯: 詳細的錯誤訊息
-          // 更具體的錯誤處理
+          console.error("密碼重置郵件發送失敗：", error.code, error.message);
           switch (error.code) {
             case 'auth/invalid-email':
               alert('無效的電子郵件地址');
@@ -172,7 +180,18 @@ export default defineComponent({
               alert('密碼重置郵件發送失敗，請稍後再試');
           }
         });
-    }
+    };
+
+    return {
+      users_email,
+      user_password,
+      keeploggedin,
+      loginGoogle,
+      toggleLogin,
+      registerWithEmail,
+      loginWithEmail,
+      resetPassword,
+    };
   }
 });
 </script>

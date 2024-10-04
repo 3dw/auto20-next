@@ -13,6 +13,7 @@
     "@types/leaflet.markercluster": "^1.5.4",
     "@types/vue-i18n": "^7.0.0",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
+    "axios": "^1.7.7",
     "core-js": "^3.8.3",
     "detect-inapp": "^1.4.0",
     "firebase": "^10.11.1",

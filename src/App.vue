@@ -134,7 +134,7 @@
     browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, fetchSignInMethodsForEmail, inMemoryPersistence
   } from "firebase/auth"; // 從firebase/auth導入身份驗證功能
   
-  
+  import axios from 'axios';
   import Login from './components/Login.vue'; // 導入Login
   import Chatbox from './components/Chatbox.vue';
   
@@ -373,11 +373,19 @@
       navTo (path) {
         this.$router.push(path)
       },
-      async registerWithEmail(notgoogleemail: string, notgooglepassword: string, notgooglekeeploggedin: boolean) {
+      async registerWithEmail(notgoogleemail: string, notgooglepassword: string, notgooglekeeploggedin: boolean, turnstileToken: string) {
         if (!notgooglepassword || typeof notgooglepassword !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
         }
+
+        // 驗證 Turnstile token
+        const isValidTurnstile = await this.verifyTurnstileToken(turnstileToken)
+        if (!isValidTurnstile) {
+        alert('驗證失敗，請重試')
+        return
+        }
+        
 
         try {
           const auth = getAuth();
@@ -450,6 +458,17 @@
         }
       },
       
+
+      async verifyTurnstileToken(token: string): Promise<boolean> {
+        try {
+        const response = await axios.post('/api/verify-turnstile', { token })
+          return response.data.success
+        } catch (error) {
+          console.error("Turnstile 驗證錯誤", error)
+          return false
+        }
+      },
+
       updateUserData(user: any) {
         if (!user) {
           console.error('User is undefined in updateUserData');
