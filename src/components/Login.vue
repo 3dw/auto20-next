@@ -71,13 +71,21 @@ export default defineComponent({
         keeploggedin.value = JSON.parse(storedValue);
       }
 
+      const initializeTurnstile = () => {
+        if ((window as any).turnstile) {
+          (window as any).turnstile.render('.cf-turnstile', {
+            sitekey: '0x4AAAAAAAwqeJZqvEuGZj6H',
+            callback: (token) => {
+              turnstileToken.value = token;
+            },
+          });
+        } else {
+          setTimeout(initializeTurnstile, 1000);
+        }
+      };
+
       // 初始化 Turnstile
-      (window as any).turnstile.render('.cf-turnstile', {
-        sitekey: '0x4AAAAAAAwqeJZqvEuGZj6H',
-        callback: (token) => {
-          turnstileToken.value = token;
-        },
-      });
+      initializeTurnstile();
     });
 
     const loginGoogle = () => {
