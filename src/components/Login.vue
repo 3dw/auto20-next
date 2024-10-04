@@ -1,7 +1,7 @@
 <template lang="pug">
   #login-bg.ui.dimmer.modals.visible.active.clickable(style="background: rgba(0, 0, 0, 0.6);", @click="toggleLogin()")
     #login-main.ui.middle.aligned.center.aligned.grid(style="height: 100vh;")
-      .column(style="max-width: 350px;")
+      .column(style="max-width: 420px;")
         .ui.raised.segment
           h2.ui.black.header(style="font-size: 1.5rem; font-weight: 600;")
             | {{$t('login.login_into_your_account')}}
