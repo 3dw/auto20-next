@@ -55,6 +55,12 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 export default defineComponent({
   name: "LoginBox",
+  props: {
+    showLogin: {
+      type: Boolean,
+      required: true
+    }
+  },
   setup(props, { emit }) {
     const users_email = ref('');
     const user_password = ref('');
@@ -72,8 +78,9 @@ export default defineComponent({
       }
 
       const initializeTurnstile = () => {
-        if ((window as any).turnstile) {
-          (window as any).turnstile.render('.cf-turnstile', {
+        const turnstileElement = document.querySelector('.cf-turnstile');
+        if (props.showLogin && turnstileElement && (window as any).turnstile) {
+          (window as any).turnstile.render(turnstileElement, {
             sitekey: '0x4AAAAAAAwqeJZqvEuGZj6H',
             callback: (token) => {
               turnstileToken.value = token;
