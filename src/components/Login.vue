@@ -31,6 +31,10 @@
 
           form.ui.large.form
             .ui.segment(style="border: none; padding-top: 10px;")
+              .field                
+                .cf-turnstile(
+                  data-sitekey="0x4AAAAAAAwqeJZqvEuGZj6H",
+                  data-callback="javascriptCallback")              
               .field
                 .ui.checkbox(@click.stop)
                   input(type="checkbox" v-model="keeploggedin")
