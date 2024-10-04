@@ -344,7 +344,7 @@
       },
       $route (to, from) {
         console.log(from.path); // 輸出路由變更前的路徑
-        console.log(to.path); // 輸出���由變更後的路徑
+        console.log(to.path); // 輸出路由變更後的路徑
         window.scrollTo(0, 0); // 每次路由變更時回到頂部
         this.sidebarVisible = false; //收回側欄
       },
