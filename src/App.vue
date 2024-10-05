@@ -381,9 +381,13 @@
 
         // 驗證 Turnstile token
         const isValidTurnstile = await this.verifyTurnstileToken(turnstileToken)
+        
+        console.log('isValidTurnstile', isValidTurnstile)
+        
         if (!isValidTurnstile) {
-        alert('驗證失敗，請重試')
-        return
+          console.log('驗證失敗')
+          alert('驗證失敗，請重試')
+          return
         }
         
 
@@ -461,7 +465,8 @@
 
       async verifyTurnstileToken(token: string): Promise<boolean> {
         try {
-        const response = await axios.post('/api/verify-turnstile', { token })
+          const response = await axios.post('https://auto20.alearn13994229.workers.dev/', { token })
+          console.log('response', response)
           return response.data.success
         } catch (error) {
           console.error("Turnstile 驗證錯誤", error)
@@ -796,7 +801,7 @@
           } else {
             await setPersistence(auth, inMemoryPersistence);
           }
-          
+
           const credential = GoogleAuthProvider.credentialFromResult(result);
 
           if (credential) {
