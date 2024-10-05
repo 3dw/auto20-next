@@ -465,14 +465,25 @@
 
       async verifyTurnstileToken(token: string): Promise<boolean> {
         try {
-          const response = await axios.post('https://auto20.alearn13994229.workers.dev/', { token })
-          console.log('response', response)
-          return response.data.success
+          const response = await axios.post(
+            'https://auto20.alearn13994229.workers.dev/', 
+            { token }, 
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              // 若需要帶上預檢 OPTIONS 請求
+              // withCredentials: true 
+            }
+          );
+          console.log('response', response);
+          return response.data.success;
         } catch (error) {
-          console.error("Turnstile 驗證錯誤", error)
-          return false
+          console.error("Turnstile 驗證錯誤", error);
+          return false;
         }
       },
+
 
       updateUserData(user: any) {
         if (!user) {
