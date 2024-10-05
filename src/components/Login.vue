@@ -103,6 +103,11 @@ export default defineComponent({
         autoredirect = false;
       }
 
+      if (!turnstileToken.value) {
+        alert('請完成驗證');
+        return;
+      }
+
       emit('loginGoogle', true, keeploggedin.value);
     };
 
@@ -147,6 +152,11 @@ export default defineComponent({
       let autoredirect = true;
       console.log('Login clicked');
       const path = window.location.pathname;
+
+      if (!turnstileToken.value) {
+        alert('請完成驗證');
+        return;
+      }
 
       if (!validateEmail(users_email.value)) {
         alert('email格式錯誤，請重試');
