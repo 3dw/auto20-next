@@ -103,7 +103,7 @@ export default defineComponent({
         autoredirect = false;
       }
 
-      emit('loginGoogle', autoredirect, keeploggedin.value);
+      emit('loginGoogle', true, keeploggedin.value);
     };
 
     const toggleLogin = () => {

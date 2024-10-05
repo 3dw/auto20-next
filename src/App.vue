@@ -787,14 +787,16 @@
 
       },
       
-      async loginGoogle(autoredirect: boolean, keeploggedin: boolean) {
+      async loginGoogle (autoredirect: boolean, keeploggedin: boolean) {
         try {
+          const result = await signInWithPopup(auth, provider);
+
           if (keeploggedin) {
             await setPersistence(auth, browserLocalPersistence);
           } else {
             await setPersistence(auth, inMemoryPersistence);
           }
-          const result = await signInWithPopup(auth, provider);
+          
           const credential = GoogleAuthProvider.credentialFromResult(result);
 
           if (credential) {
