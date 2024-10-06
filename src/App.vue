@@ -182,10 +182,10 @@
         //someTaskCompleted: [false, false, false, false],
         mySearch: '',
         news: [
-          {
+          /*{
             t: 'donate_us',
             h: 'https://www.alearn.org.tw'
-          },
+          }, */
           {
             t: 'upgrading',
             r: '/about'
