@@ -2,18 +2,18 @@
 .chats(v-bind:class = "{ full : isFull, mini: isMini }")
   #menu.ui.inverted.big.menu
     router-link.item.relative.overflow-visible(to="/feedback")
-      img.abs-upper-right(src="../assets/new-yellow.png")
+      img.abs-upper-right(src="../assets/new-yellow.png", alt="New")
       i.comment.icon.no-float
       | {{ $t('chat.feedback') }}
     .item.ui.form(v-show="isFull")
       .ui.input
         input(v-model="key", placeholder="搜尋")
     .right.menu
-      a.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
+      button.no-border.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
         i.comments.icon
         | {{$t('chat.gc')}}
         span.red(v-show="fil(chats).length > read") ({{ fil(chats).length - read }})    
-      a.item(v-if="!isMini" @click="isFull = false; isMini = true")
+      button.no-border.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | {{$t('chat.cp')}}
   #box
@@ -304,7 +304,7 @@
         border-radius: 3px;
       }
 
-      a.item {
+      a.item, button.no-border.item {
         margin: 0 !important;
         padding: 0 1em !important;
       }
