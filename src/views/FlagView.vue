@@ -86,28 +86,29 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 .hello {
   font-family: Arial, sans-serif;
   color: #333;
-  margin: 20px auto;
+  margin: 5px auto;
   max-width: 1200px;
-  padding: 20px;
+  padding: 5px;
 }
 
 .ui.segment.container#flag {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-top: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 減少陰影 */
+  padding: 10px; /* 減少內邊距 */
+  margin-top: 10px; /* 減少頂部外邊距 */
 }
 
 .ui.fluid.card {
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 減少陰影 */
+  margin-bottom: 10px; /* 減少底部外邊距 */
 }
 
 a {

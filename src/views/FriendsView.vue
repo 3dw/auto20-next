@@ -287,11 +287,31 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* 確保滾動容器有足夠的高度來觸發滾動 */
+/* 確保滾動容器有足夠的高度來觸發滾動
 .container {
   max-height: 80vh;
   overflow-y: auto;
+} */
+/* 縮小新手任務和最近更新的區域 */
+.ui.row {
+  font-size: 0.8em; /* 減小字體大小 */
+  padding: 1px 0; /* 減少上下內邊距 */
 }
+
+.ui.dropdown {
+  font-size: 0.9em; /* 減小字體大小 */
+  margin-bottom: 1px; /* 減少底部外邊距 */
+}
+
+.ui.cards.container {
+  margin-top: 1px; /* 增加頂部外邊距以突出個人資料 */
+}
+
+.ui.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 輕微陰影以突出卡片 */
+  border-radius: 6px; /* 輕微圓角 */
+}
+
 
 .hello {
   font-family: 'Arial', sans-serif;

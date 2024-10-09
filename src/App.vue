@@ -373,8 +373,8 @@
       navTo (path) {
         this.$router.push(path)
       },
-      async registerWithEmail(notgoogleemail: string, notgooglepassword: string, notgooglekeeploggedin: boolean, turnstileToken: string) {
-        if (!notgooglepassword || typeof notgooglepassword !== 'string') {
+      async registerWithEmail(normalRegister_email: string, normalRegister_password: string, normalRegister_keeploggedin: boolean, turnstileToken: string) {
+        if (!normalRegister_password || typeof normalRegister_password !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
         }
@@ -393,7 +393,7 @@
 
         try {
           const auth = getAuth();
-          const userCredential = await createUserWithEmailAndPassword(auth, notgoogleemail, notgooglepassword);
+          const userCredential = await createUserWithEmailAndPassword(auth, normalRegister_email, normalRegister_password);
           const user = userCredential.user;
 
           if (user && user.email) {
@@ -431,16 +431,16 @@
           if (error.code === 'auth/email-already-in-use') {
             try {
               const auth = getAuth();
-              const methods = await fetchSignInMethodsForEmail(auth, notgoogleemail);
+              const methods = await fetchSignInMethodsForEmail(auth, normalRegister_email);
               console.log(methods);
               if (methods.includes('google.com')) {
                 const provider = new GoogleAuthProvider();
                 const result = await signInWithPopup(auth, provider);
-                const credential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
+                const credential = EmailAuthProvider.credential(normalRegister_email, normalRegister_password);
                 await linkWithCredential(result.user, credential);
                 alert('帳號已成功整合。');
                 this.updateUserData(result.user);
-                if (notgooglekeeploggedin) {
+                if (normalRegister_keeploggedin) {
                   await setPersistence(auth, browserLocalPersistence);
                 }
                 if (this.autoredirect) {
@@ -539,14 +539,14 @@
         }
       },
       
-      async loginWithEmail(autoredirect, notgoogleemail, notgooglepassword, notgooglekeeploggedin) {
+      async loginWithEmail(autoredirect, normalRegister_email, normalRegister_password, normalRegister_keeploggedin) {
         try {
-          if (notgooglekeeploggedin) {
+          if (normalRegister_keeploggedin) {
             await setPersistence(auth, browserLocalPersistence);
           } else {
             await setPersistence(auth, inMemoryPersistence);
           }
-          const userCredential = await signInWithEmailAndPassword(auth, notgoogleemail, notgooglepassword);
+          const userCredential = await signInWithEmailAndPassword(auth, normalRegister_email, normalRegister_password);
           const user = userCredential.user;
 
           if (!user.emailVerified) {
@@ -560,13 +560,13 @@
           this.updateUserData(user);
 
           // 檢查是否有 Google 帳號與此 email 關聯
-          const methods = await fetchSignInMethodsForEmail(auth, notgoogleemail);
+          const methods = await fetchSignInMethodsForEmail(auth, normalRegister_email);
           if (methods.includes('google.com')) {
             try {
               // 自動整合帳號
               const googleProvider = new GoogleAuthProvider();
               const result = await signInWithPopup(auth, googleProvider);
-              const credential = EmailAuthProvider.credential(notgoogleemail, notgooglepassword);
+              const credential = EmailAuthProvider.credential(normalRegister_email, normalRegister_password);
               await linkWithCredential(result.user, credential);
               console.log('帳號已成功整合。');
               this.updateUserData(result.user);

@@ -99,62 +99,59 @@
               i.chevron.right.icon
   </template>
   
-  <style scoped>
-  h1.ui.header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1em;
-    background-color: #f5f5f5;
-    padding: 1em;
-    border-radius: 8px;
-  }
+<style scoped>
+.hello {
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+
+h2.ui.header {
+  color: #333;
+  font-size: 1.5em;
+  margin-top: 1em;/* 調整頂部外邊距 */
+}
   
-  h2.ui.header {
-    color: #333;
-    font-size: 1.5em;
-    margin-top: 1.5em;
-  }
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #555;
+  text-align: left;
+}
   
-  p {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #555;
-    text-align: left;
-  }
+a {
+  color: #0056b3;
+  text-decoration: none;
+}
   
-  a {
-    color: #0056b3;
-    text-decoration: none;
-  }
+a:hover {
+  color: #003d80;
+  text-decoration: underline;
+}
   
-  a:hover {
-    color: #003d80;
-    text-decoration: underline;
-  }
+.ui.grid.container {
+  background-color: #ffffff;
+  padding: 1em;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
   
-  .ui.grid.container {
-    background-color: #ffffff;
-    padding: 2em;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+.ui.padded.segment.column {
+  background-color: #f9f9f9;
+  padding: 1em;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1em;
+}
   
-  .ui.padded.segment.column {
-    background-color: #f9f9f9;
-    padding: 2em;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 1.5em;
-  }
-  
-  .ui.grid.container .ui.padded.segment.column img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 1em;
-  }
-  .ui.grid.container .ui.padded.segment.column img {
+.ui.grid.container .ui.padded.segment.column img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1em;
+}
+
+.ui.grid.container .ui.padded.segment.column img {
   max-width: 100%;
   width: auto; /* 統一寬度 */
   height: 300px; /* 根據寬度自動調整高度 */
@@ -164,19 +161,20 @@
 }
 
   
-  .ui.divider {
-    margin: 2em 0;
-  }
+.ui.divider {
+  margin: 2em 0;
+}
   
   
 
-  @media (max-width: 768px) {
-    .ui.grid.container {
-      padding: 1em;
-    }
-    .ui.padded.segment.column {
-      padding: 1em;
-    }
+@media (max-width: 768px) {
+  .ui.grid.container {
+    padding: 1em;
   }
-  </style>
+  .ui.padded.segment.column {
+    padding: 1em;
+  }
+}
+
+</style>
   
