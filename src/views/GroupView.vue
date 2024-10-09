@@ -116,8 +116,12 @@
                         .field
                           .ui.labeled.input
                             img.ui.avatar(:src="photoURL")
-                            input.input(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')" style="font-size: 18px; padding: 10px;")
+                            //- input.input(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')" style="font-size: 18px; padding: 10px;")
+                            //- a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}
+
+                            textarea(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')" rows="3" style="font-size: 18px; padding: 10px;")
                             a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}
+
 </template>
 
   
