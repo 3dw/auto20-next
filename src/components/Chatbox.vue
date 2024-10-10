@@ -21,7 +21,7 @@
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
         p(v-show="edit !== c") 
           router-link.fat-only(:to="'/flag/' + c.uid")
-            img.ui.avatar(:src="c.photoURL || 'http://graph.facebook.com/' + c.uid + '/picture'", alt="^_^")
+            img.ui.avatar(:src="c.photoURL || 'https://we.alearn.org.tw/logo-new.png'", alt="^_^")
           a.fat-only(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
           span.text {{ c.n }} : {{ c.t }}
           span.gray.fat-only(v-show="isFull") &nbsp;&nbsp;-
