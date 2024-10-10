@@ -29,7 +29,7 @@
         .filler(v-if="isNew")
 
     .ui.container(v-if="editing")
-      .ui.warning.message(v-if="longTimeNoSee() > 0.25")
+      .ui.warning.message(v-if="longTimeNoSee() > 0.25 && !isNew")
         .header {{ $t('profile.update1')}}
         span(v-if="longTimeNoSee() > 0.25") {{ $t('profile.update2') }}
         // span(v-else-if="longTimeNoSee() == 1") 您的資料已一年未更新，目前已被系統隱藏，請立即更新即可恢復顯示。
