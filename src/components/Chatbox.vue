@@ -20,14 +20,16 @@
     .ui.list
       .item(v-for="(c, idx) in fil(chats).slice(fil(chats).length - 5, fil(chats).length)" v-bind:key="c.t")
         p(v-show="edit !== c") 
-          router-link.fat-only(:to="'/flag/' + c.uid")
+          router-link.fat-only(:to="'/flag/' + c.uid" v-if="isUser(c.uid)")
+            img.ui.avatar(:src="c.photoURL || 'https://we.alearn.org.tw/logo-new.png'", alt="^_^")
+          span.fat-only(v-else)
             img.ui.avatar(:src="c.photoURL || 'https://we.alearn.org.tw/logo-new.png'", alt="^_^")
           a.fat-only(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
           span.text {{ c.n }} : {{ c.t }}
           span.gray.fat-only(v-show="isFull") &nbsp;&nbsp;-
             | {{ countDateDiff(c.time) }}
       .item(v-if="uid")
-        .ui.form()
+        .ui.form(v-if="isUser(uid)")
           .field
             img.ui.avatar(:src="photoURL")
             input.input(v-model="msg" placeholder="在想什麼嗎?" autofocus)
@@ -39,6 +41,10 @@
                   a(@click="label=l" v-bind:class="l") {{ l }}
             .ui.button.group
               a.ui.green.small.button(@click="submitChat") {{ $t('chat.submit') }}
+        .ui.big.buttons(v-else)
+          router-link.ui.orange.button(to="/profile")
+            // i.google.icon
+            | 升起互助旗以留言
       .item(v-else)
         .ui.big.buttons
           button.ui.orange.button(@click="toggleLogin")
@@ -142,6 +148,9 @@
         },
         toggleLogin() {
           this.$emit('toggleLogin');
+        },
+        isUser(uid) {
+          return uid && this.users[uid] && this.users[uid].note
         },
         fil(list) {
           var k = this.key;
