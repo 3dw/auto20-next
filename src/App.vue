@@ -583,7 +583,11 @@
           }
         } catch (error: any) {
           console.error("登入失敗：", error);
-          alert("登入失敗：" + error.message);
+          if (error.message.includes('auth/user-not-found')) {
+            alert("登入失敗：帳號不存在");
+          } else {
+            alert("登入失敗：" + error.message);
+          }
         }
       },
       resendVerificationEmail() {
@@ -853,8 +857,12 @@
             this.$router.push('/profile');
           }
         } catch (error: any) {
+          if (error.message.includes('auth/user-not-found')) {
+            alert("Google 登入失敗：帳號不存在");
+          } else {
+            alert("Google 登入失敗：" + error.message);
+          }
           console.error("Google 登入失敗：", error);
-          alert("Google 登入失敗：" + error.message);
         }
       },
       updateNotifications: function () {
