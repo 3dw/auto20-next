@@ -216,7 +216,7 @@
         // 使用修正後的 actualInApp
         isInApp: actualInApp, // 檢測是否在應用內部
         // eslint-disable-next-line
-        groups: null as [any] | null, // 定義社團資料變量
+        groups: null as [any] | null, // 定義社團��料變量
         places: null as [string] | null, // 定義地點資料變量
         groups_for_notifications: null as [any] | null, 
         group_for_no: null as [any] | null, 
@@ -630,19 +630,53 @@
         let notifications = this.users[this.uid].notifications || {};
         console.log(notifications);
         let ks = Object.keys(notifications);
+        
+        // 只將"閒聊"類別的通知標記為已讀
         for (let j = 0; j < ks.length; j++) {
           let k = ks[j];
-          notifications[k].isRead = true;
-          this.unreadCount = 0;
+          if (notifications[k].category === '閒聊') {
+            notifications[k].isRead = true;
+          }
         }
+        
+        // 更新未讀數量
+        this.updateUnreadCount();
+
         const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
         set(userNotificationsRef, notifications).then(() => {
-          console.log('all notification are read');
+          console.log('閒聊 notifications are marked as read');
         }).catch((error) => {
-          console.error('Error read notification:', error);
+          console.error('Error updating notifications:', error);
         });
 
         this.$router.push('/notifications');
+      },
+
+      // 新增方法：更新未讀通知數量
+      updateUnreadCount() {
+        this.unreadCount = Object.values(this.notifications).filter(n => !n.isRead).length;
+      },
+
+      // 新增方法：標記特定類別的通知為已讀
+      markCategoryAsRead(category) {
+        let notifications = this.users[this.uid].notifications || {};
+        let ks = Object.keys(notifications);
+        
+        for (let j = 0; j < ks.length; j++) {
+          let k = ks[j];
+          if (notifications[k].category === category) {
+            notifications[k].isRead = true;
+          }
+        }
+        
+        this.updateUnreadCount();
+
+        const userNotificationsRef = ref(db, 'users/' + this.uid + '/notifications');
+        set(userNotificationsRef, notifications).then(() => {
+          console.log(`${category} notifications are marked as read`);
+        }).catch((error) => {
+          console.error('Error updating notifications:', error);
+        });
       },
 
       doSearch: function (p) {

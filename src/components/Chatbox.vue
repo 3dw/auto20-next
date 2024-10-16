@@ -9,10 +9,10 @@
       .ui.input
         input(v-model="key", placeholder="搜尋")
     .right.menu
-      button.no-border.item(v-if="!isFull" @click="isFull = true; isMini = false; reCount()")
+      button.no-border.item(v-if="!isFull" @click="toggleFullScreen")
         i.comments.icon
         | {{$t('chat.gc')}}
-        span.red(v-show="fil(chats).length > read") ({{ fil(chats).length - read }})    
+        span.red(v-show="fil(chats).length > readSum") ({{ fil(chats).length - readSum }})    
       button.no-border.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | {{$t('chat.cp')}}
@@ -70,16 +70,22 @@
           key: '閒聊',
           edit: '',
           chats: [],
-          read: 0,
+          read: {}, // This should now be an object to store read counts for each label
           isFull: false,
           isMini: true,
           label: '閒聊',
           labels: ['諮詢', '故障', '找伴', '閒聊']
         };
       },
+      computed: {
+        readSum() {
+          return Object.values(this.read).reduce((sum, count) => sum + count, 0);
+        }
+      },
       watch: {
-        label (newL) {
-          this.key = newL
+        label(newLabel) {
+          this.key = newLabel;
+          this.$root.markCategoryAsRead(newLabel);
         }
       },
       methods: {
@@ -93,7 +99,10 @@
             return;
           }
           if (!this.containsKeyword(this.msg)) {
-            this.addChat(); // Call addChat only if the message doesn't contain any keywords
+            this.addChat();
+            // 增加當前類別的已讀計數
+            this.read[this.label]++;
+            localStorage.setItem(`read_${this.label}`, this.read[this.label].toString());
           } else {
             alert('Input contains forbidden keywords.');
           }
@@ -122,7 +131,7 @@
           var o = {
             uid: this.uid,
             //n: this.user.providerData[0].displayName,
-            //n: this.user && this.user.providerData && this.user.providerData[0] ? this.user.providerData[0].displayName : 'Anonymous',
+            //n: this.user.providerData[0].displayName,
             //很多人的displayname是undefined，所以改成這樣
             n: this.user && this.user.providerData && this.user.providerData[0] ? this.user.providerData[0].displayName : this.user.name,
             t: this.msg,
@@ -174,8 +183,28 @@
           return l;
         },
         reCount() {
-          this.read = this.fil(this.chats).length;
-          localStorage.setItem('read', this.read);
+          const currentLabel = this.label;
+          const count = this.fil(this.chats)
+            .filter(chat => chat.l === currentLabel).length;
+          this.read[currentLabel] = count;
+          localStorage.setItem(`read_${currentLabel}`, count.toString());
+        },
+        updateReadCounts() {
+          this.labels.forEach(label => {
+            const storedCount = localStorage.getItem(`read_${label}`);
+            if (storedCount && storedCount !== 'undefined') {
+              this.read[label] = parseInt(storedCount, 10);
+            } else {
+              this.read[label] = 0;
+            }
+          });
+        },
+        toggleFullScreen() {
+          this.isFull = true;
+          this.isMini = false;
+          this.$nextTick(() => {
+            this.reCount();
+          });
         }
       },
       mounted() {
@@ -187,11 +216,10 @@
             this.chats = [];
           }
           console.log('Chats updated:', this.chats);
+          
+          // 更新每個類別的已讀消息數量
+          this.updateReadCounts();
         });
-        this.read = localStorage.getItem('read') || 0;
-        if (this.read === 'undefined') {
-          this.read = 0;
-        }
       }
     });
     </script>
@@ -253,7 +281,7 @@
     
       @media screen and (max-width: 600px) {
         .chats {
-          height: 25vh; /* 稍微增加最小狀態的高度，讓更多內容顯示 */
+          height: 25vh; /* 稍微增加最小狀態的高度，讓更多內顯示 */
         }
 
         .chats.full {
@@ -329,3 +357,5 @@
         padding: 0 1em !important;
       }
 </style>
+
+
