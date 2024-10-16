@@ -225,13 +225,13 @@ export default defineComponent({
 <style scoped>
 #login-bg {
   position: fixed;
-  z-index: 1000;
+  z-index: 1000000;
   transition: background 0.3s ease;
 }
 
 #login-main {
   position: relative;
-  z-index: 1001;
+  z-index: 1000001;
 }
 
 .column {
