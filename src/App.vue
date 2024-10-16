@@ -111,7 +111,10 @@
     @addBook="addBook", @removeBook="removeBook", @locate="locate", @getUserLocation="getUserLocation", @logout="logout" ,@registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
   br.no-print
   br.no-print
-  chatbox#ch.no-print(@loginGoogle = "loginGoogle", @toggleLogin="toggleLogin", :uid = "uid", :user="user", :photoURL="photoURL")
+  chatbox#ch.no-print(@loginGoogle = "loginGoogle", 
+  @toggleLogin="toggleLogin", 
+  :uid = "uid", 
+  :user="user", :users="users", :photoURL="photoURL"  )
   login(v-if="showLogin", :showLogin="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
 
   </template>

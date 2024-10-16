@@ -62,7 +62,7 @@
     export default defineComponent({
       name: 'ChatBox',
       mixins: [mix],
-      props: ['uid', 'user', 'photoURL'],
+      props: ['uid', 'user', 'users', 'photoURL'],
       data() {
         return {
           p: '',
@@ -150,6 +150,12 @@
           this.$emit('toggleLogin');
         },
         isUser(uid) {
+          //console.log(this.users);
+          if (!this.users) {
+            return false;
+          }
+          //console.log(this.users[uid]);
+          //console.log(this.users[uid].note);
           return uid && this.users[uid] && this.users[uid].note
         },
         fil(list) {
