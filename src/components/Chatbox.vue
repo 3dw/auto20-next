@@ -12,7 +12,7 @@
       button.no-border.item(v-if="!isFull" @click="toggleFullScreen")
         i.comments.icon
         | {{$t('chat.gc')}}
-        span.red(v-show="fil(chats).length > readSum") ({{ fil(chats).length - readSum }})    
+        span.red(v-show="chats.length > readSum + 1") ({{ chats.length - readSum - 1 }})    
       button.no-border.item(v-if="!isMini" @click="isFull = false; isMini = true")
         i.compress.icon
         | {{$t('chat.cp')}}
@@ -83,9 +83,17 @@
         }
       },
       watch: {
-        label(newLabel) {
+        label(newLabel, oldLabel) {
           this.key = newLabel;
-          this.$root.markCategoryAsRead(newLabel);
+          
+          this.reCount();
+
+          // Update localStorage for the old label
+          if (oldLabel) {
+            localStorage.setItem(`read_${oldLabel}`, this.read[oldLabel].toString());
+          }
+          // Update localStorage for the new label
+          localStorage.setItem(`read_${newLabel}`, this.read[newLabel].toString());
         }
       },
       methods: {
@@ -184,19 +192,16 @@
         },
         reCount() {
           const currentLabel = this.label;
-          const count = this.fil(this.chats)
-            .filter(chat => chat.l === currentLabel).length;
+          const count = this.chats.filter(chat => chat.l === currentLabel).length;
           this.read[currentLabel] = count;
+          // Update localStorage when recounting
           localStorage.setItem(`read_${currentLabel}`, count.toString());
         },
         updateReadCounts() {
           this.labels.forEach(label => {
-            const storedCount = localStorage.getItem(`read_${label}`);
-            if (storedCount && storedCount !== 'undefined') {
-              this.read[label] = parseInt(storedCount, 10);
-            } else {
-              this.read[label] = 0;
-            }
+            const count = this.chats.filter(chat => chat.l === label).length;
+            this.read[label] = count;
+            localStorage.setItem(`read_${label}`, count.toString());
           });
         },
         toggleFullScreen() {
@@ -215,7 +220,6 @@
           } else {
             this.chats = [];
           }
-          console.log('Chats updated:', this.chats);
           
           // 更新每個類別的已讀消息數量
           this.updateReadCounts();
@@ -357,5 +361,7 @@
         padding: 0 1em !important;
       }
 </style>
+
+
 
 
