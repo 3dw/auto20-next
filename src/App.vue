@@ -586,11 +586,19 @@
           }
         } catch (error: any) {
           console.error("登入失敗：", error);
-          if (error.message.includes('auth/user-not-found')) {
-            alert("登入失敗：帳號不存在");
+          let errorMessage = "登入失敗：";
+          if (error.message.includes('auth/wrong-password')) {
+            errorMessage = "密碼錯誤，請檢查後再試。";
+          } else if (error.message.includes('auth/user-not-found')) {
+            errorMessage = "帳號不存在，請確認您的電子郵件地址。";
+          } else if (error.message.includes('auth/invalid-email')) {
+            errorMessage = "無效的電子郵件地址，請重新輸入。";
+          } else if (error.message.includes('auth/too-many-requests')) {
+            errorMessage = "嘗試次數過多，請稍後再試。";
           } else {
-            alert("登入失敗：" + error.message);
+            errorMessage += error.message;
           }
+          alert(errorMessage);
         }
       },
       resendVerificationEmail() {
