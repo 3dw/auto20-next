@@ -181,7 +181,12 @@
       mounted() {
         onValue(chatsRef, (snapshot) => {
           const data = snapshot.val();
-          this.chats = data;
+          if (data) {
+            this.chats = Object.values(data);
+          } else {
+            this.chats = [];
+          }
+          console.log('Chats updated:', this.chats);
         });
         this.read = localStorage.getItem('read') || 0;
         if (this.read === 'undefined') {
