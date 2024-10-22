@@ -91,6 +91,10 @@ export default defineComponent({
             callback: (token) => {
               turnstileToken.value = token;
             },
+            'error-callback': () => {
+              console.error('Turnstile 驗證失敗');
+              // 可以在這裡添加錯誤處理邏輯
+            }
           });
         } else {
           setTimeout(initializeTurnstile, 1000);
@@ -114,7 +118,7 @@ export default defineComponent({
         return;
       }
 
-      emit('loginGoogle', true, keeploggedin.value);
+      emit('loginGoogle', true, keeploggedin.value, turnstileToken.value);
     };
 
     const toggleLogin = () => {
@@ -222,6 +226,7 @@ export default defineComponent({
       registerWithEmail,
       loginWithEmail,
       resetPassword,
+      turnstileToken, // 添加這行
     };
   }
 });

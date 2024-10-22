@@ -111,7 +111,8 @@
                     .ui.divided.list.left.aligned
                       .item(v-for="(c, index) in latestChats" :key="index")
                         img.ui.avatar(:src="c.photoURL")    
-                        | {{c.n}} : {{c.t}}
+                        | {{removeBracket(c.n)}} : 
+                        VueMarkdownIt(:source="c.t")
                       .item.ui.form(v-if="isMember(groups[$route.params.idx].idx)")
                         .field
                           .ui.labeled.input
@@ -133,6 +134,7 @@ import { keywords } from '../data/keywords.js';
 import { defineComponent } from 'vue';
 import { onValue, set, push, ref } from 'firebase/database'
 import { db, groupsRef } from '../firebase'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it';
 
 export default defineComponent({
   name: 'GroupsView',
@@ -142,6 +144,9 @@ export default defineComponent({
     title: "$t('login.auto_gp')",
   },
   mixins: [mix],
+  components: {
+    VueMarkdownIt
+  },
   data () {
     return {
       edit: false,
@@ -178,6 +183,9 @@ export default defineComponent({
     }
   },
   methods: {    
+    removeBracket(text) {
+      return text.replace(/\(.*?\)/g, '');
+    },
     hideGroup(idx) {
       if (confirm(this.$t('group.delete_confirm'))) {
         this.groups[idx].hidden = true;

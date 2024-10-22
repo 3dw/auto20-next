@@ -25,7 +25,8 @@
           span.fat-only(v-else)
             img.ui.avatar(:src="c.photoURL || 'https://we.alearn.org.tw/logo-new.png'", alt="^_^")
           a.fat-only(@click="key = c.l" v-bind:class="c.l") [{{c.l}}]
-          span.text {{ c.n }} : {{ c.t }}
+          span.text {{ c.n }} :
+            VueMarkdownIt(:source="c.t")
           span.gray.fat-only(v-show="isFull") &nbsp;&nbsp;-
             | {{ countDateDiff(c.time) }}
       .item(v-if="uid")
@@ -58,11 +59,15 @@
     import { onValue, push, ref } from 'firebase/database';
     import { db, chatsRef } from '../firebase';
     import mix from '../mixins/mix.ts';
+    import { VueMarkdownIt } from '@f3ve/vue-markdown-it';
     
     export default defineComponent({
       name: 'ChatBox',
       mixins: [mix],
       props: ['uid', 'user', 'users', 'photoURL'],
+      components: {
+        VueMarkdownIt
+      },
       data() {
         return {
           p: '',
