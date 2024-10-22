@@ -3,11 +3,13 @@
     #login-main.ui.middle.aligned.center.aligned.grid(style="height: 100vh;")
       .column(style="max-width: 420px;")
         .ui.raised.segment
+          .ui.error.message(v-if="isInApp")
+            | 本系統不支援facebook, line等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
           h2.ui.black.header(style="font-size: 1.5rem; font-weight: 600;")
             | {{$t('login.login_into_your_account')}}
   
           //- Google Login Button
-          .ui.fluid.large.button(@click.stop="loginGoogle", style="background-color: #4285F4 !important; color: white;")
+          .ui.fluid.large.button(@click.stop="loginGoogle", style="background-color: #4285F4 !important; color: white;", :class="{disabled: isInApp}")
             i.google.icon
             | {{$t('login.login_with_google')}}
 
@@ -25,7 +27,7 @@
                 i.lock.icon
                 input(type="password" name="user_password" placeholder="Password", style="font-size: 14px;", v-model="user_password", @click.stop)
 
-            .ui.fluid.large.button(@click.prevent="loginWithEmail", style="background-color: #e47e10 ; color: white; font-weight: bold;") 登入
+            .ui.fluid.large.button(@click.prevent="loginWithEmail", style="background-color: #e47e10 ; color: white; font-weight: bold;", :class="{disabled: isInApp}") 登入
 
             a.small.forgot-password(@click="resetPassword") {{$t('login.forgot_password')}}
 
@@ -40,7 +42,7 @@
                   label {{$t('login.keep_me_logged_in')}}
 
             p 新用戶？按此
-              .ui.large.basic.button#register-btn(@click.stop="registerWithEmail") 註冊
+              .ui.large.basic.button#register-btn(@click.stop="registerWithEmail", :class="{disabled: isInApp}") 註冊
 </template>
 
   
@@ -56,6 +58,10 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 export default defineComponent({
   name: "LoginBox",
   props: {
+    isInApp: {
+      type: Boolean,
+      required: true
+    },
     showLogin: {
       type: Boolean,
       required: true

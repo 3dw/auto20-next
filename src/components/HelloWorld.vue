@@ -5,7 +5,7 @@
   
 br
 .ui.huge.buttons(v-show="!uid")
-  button.ui.basic.orange.button(@click="toggleLogin", :class="{disabled: isInApp}")
+  button.ui.basic.orange.button(@click="toggleLogin")
     // i.google.icon
     | {{ $t('login.login' )}}
   .or
@@ -20,9 +20,6 @@ br
     //i.book.icon.no-float
     | {{ $t('login.bk')}}
 
-
-
-p(v-if="isInApp") 本系統不支援facebook, line等app內部瀏覽，請用一般瀏覽器開啟，方可登入，謝謝
 
 //.ui.divider
 //select.ui.dropdown(v-show="users && toList(users).length > 0", v-model="logic" )

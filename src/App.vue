@@ -115,7 +115,12 @@
   @toggleLogin="toggleLogin", 
   :uid = "uid", 
   :user="user", :users="users", :photoURL="photoURL"  )
-  login(v-if="showLogin", :showLogin="showLogin", @loginGoogle="loginGoogle", @toggleLogin="toggleLogin", @registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
+  login(v-if="showLogin", 
+    :showLogin="showLogin", 
+    :isInApp="isInApp",
+    @loginGoogle="loginGoogle", 
+    @toggleLogin="toggleLogin", 
+    @registerWithEmail="registerWithEmail" ,@loginWithEmail="loginWithEmail")
 
   </template>
   
