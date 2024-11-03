@@ -2,7 +2,7 @@
 .chats(v-bind:class = "{ full : isFull, mini: isMini }")
   #menu.ui.inverted.big.menu
     router-link.item.relative.overflow-visible(to="/feedback")
-      img.abs-upper-right(src="../assets/new-yellow.png", alt="New")
+      // img.abs-upper-right(src="../assets/new-yellow.png", alt="New")
       i.comment.icon.no-float
       | {{ $t('chat.feedback') }}
     .item.ui.form(v-show="isFull")
