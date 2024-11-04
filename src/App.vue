@@ -491,8 +491,6 @@
           return false;
         }
       },
-
-
       updateUserData(user: any) {
         if (!user) {
           console.error('User is undefined in updateUserData');
@@ -559,6 +557,7 @@
 
           if (!user.emailVerified) {
             alert('您的電子郵件尚未驗證，請檢查您的郵箱並完成驗證。');
+            this.resendVerificationEmail();
             this.logout();
             return;
           }
@@ -610,10 +609,10 @@
         const user = getAuth().currentUser;
         if (user) {
           sendEmailVerification(user).then(() => {
-            alert('驗證郵件已重新發送。');
+            console.log('驗證郵件已重新發送。');
           }).catch((error) => {
             console.error('重新發送驗證郵件失敗：', error);
-            alert('重新發送驗證郵件失敗，請稍後再試。');
+            // alert('重新發送驗證郵件失敗，請稍後再試。');
           });
         }
       },
