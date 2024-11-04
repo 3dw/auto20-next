@@ -400,7 +400,7 @@
         
 
         try {
-          const auth = getAuth();
+          // const auth = getAuth();
           const userCredential = await createUserWithEmailAndPassword(auth, normalRegister_email, normalRegister_password);
           const user = userCredential.user;
 
