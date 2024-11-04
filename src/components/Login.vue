@@ -199,7 +199,7 @@ export default defineComponent({
 
       sendPasswordResetEmail(auth, users_email.value)
         .then(() => {
-          alert('密碼重置郵件已發送，請檢查您的郵箱');
+          alert('密碼重置郵件已發送，請檢查您的電子郵件信箱');
           console.log("Password reset email sent successfully");
         })
         .catch((error: { code: string; message: string }) => {
