@@ -188,6 +188,8 @@ export default {
       out_confirm: '確認您要退出社團嗎？',
     },
     group: {
+      copy_link: '複製連結',
+      link_copied: '連結已複製',
       members: '成員',
       save: '存檔',
       cancel: '取消',

@@ -187,6 +187,8 @@ export default {
       out_confirm: "Are you sure you want to leave the group?",
     },
     group: {
+      copy_link: 'Copy Link',
+      link_copied: 'Link Copied',
       members: 'Members',
       save: 'Save',
       cancel: 'Cancel',

@@ -123,6 +123,22 @@
                             textarea(v-model="msg" @input="filterInput('msg', $event)" :placeholder="$t('group.anything_to_say')" rows="3" style="font-size: 18px; padding: 10px;")
                             a.ui.label.green.button(:class="{disabled: !msg}", @click="addChat($route.params.idx)") {{ $t('login.leave_messages') }}
 
+        // 新增分享區塊
+        .ui.center.aligned.grid(style="margin-top: 20px;")
+          .column
+            .ui.buttons
+              button.ui.blue.button(@click="copyLink")
+                i.copy.icon
+                | {{ $t('group.copy_link') }}
+              button.ui.facebook.button(@click="shareToFacebook")
+                i.facebook.icon
+                | Facebook
+              button.ui.twitter.button(@click="shareToTwitter")
+                i.twitter.icon
+                | Twitter
+              button.ui.line.button(@click="shareToLine")
+                | Line
+
 </template>
 
   
@@ -421,7 +437,36 @@ export default defineComponent({
         });
         this.newIntro = '';
       }
-    }
+    },
+    // 複製連結
+    copyLink() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        alert(this.$t('group.link_copied'));
+      }).catch(err => {
+        console.error('無法複製連結:', err);
+      });
+    },
+
+    // Facebook分享
+    shareToFacebook() {
+      const url = encodeURIComponent(window.location.href);
+      const title = encodeURIComponent(this.groups[this.$route.params.idx].n);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`, '_blank');
+    },
+
+    // Twitter分享
+    shareToTwitter() {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent(this.groups[this.$route.params.idx].n);
+      window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+    },
+
+    // Line分享
+    shareToLine() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://social-plugins.line.me/lineit/share?url=${url}`, '_blank');
+    },
   },
   mounted () {
     onValue(groupsRef, (snapshot) => {
@@ -587,5 +632,28 @@ a {
 
 a:hover {
   color: #004494;
+}
+
+.ui.facebook.button {
+  background-color: #3b5998;
+  color: white;
+}
+
+.ui.twitter.button {
+  background-color: #1da1f2;
+  color: white;
+}
+
+.ui.line.button {
+  background-color: #00b900;
+  color: white;
+}
+
+.ui.buttons {
+  gap: 10px;
+}
+
+.ui.buttons .button {
+  margin: 0 5px;
 }
 </style>
