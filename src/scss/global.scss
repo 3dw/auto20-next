@@ -120,3 +120,15 @@ a, button {
   right: -.6em;
   z-index: 999909;
 }
+
+.flex-row-reverse {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse !important;
+}
+
+.flex-column-reverse {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column-reverse !important;
+}

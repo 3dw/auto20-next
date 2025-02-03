@@ -8,38 +8,59 @@
           | {{ $t('login.login_to_see_data') }}
 
   .ui.container(v-if="users && toList(users).length > 0")
-    .ui.grid
-      .ui.two.stackable.column.row
-        .ui.eight.wide.column.segment(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
-          , v-show = "!g.hidden")
-          h3 〈{{g.n}}〉
-          p {{g.intro}}
-            br.thin-only
-            | &nbsp;&nbsp;&nbsp;&nbsp;
-          p
-            .ui.buttons
-              router-link.ui.basic.green.button(:to="'/group/' + g.idx")
-                i.sign-in.icon
-                | {{$t('groups.go_group')}}
-              a.ui.green.button(v-if="isUser(uid) && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
-              a.ui.red.basic.button(v-if="isUser(uid) && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
-          .ui.grid
-            .row
-              p {{$t('groups.members')}}
-                span(v-for="m in g.members")
-                  router-link(:to = "'/flag/' + m", v-if="isUser(m)")
-                    img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
-        .ui.eight.wide.column.form(v-show="uid && users[uid]")
-          br
-          br
-          h4 {{ $t('groups.create_group') }}
-          .field
-            .ui.labeled.input
-              label.ui.label {{ $t('groups.group_name') }}
-              input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
-          .field.button-field
-            a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
-              | {{ $t('groups.create_group') }}
+    .ui.divided.list.flex-column-reverse
+
+      .item.form(v-show="uid && users[uid]")
+        br
+        br
+        h4 {{ $t('groups.create_group') }}
+        .field
+          .ui.labeled.input
+            label.ui.label {{ $t('groups.group_name') }}
+            input(type="text", v-model="newName" @input="filterInput('newName', $event)" :placeholder="$t('groups.enter_group_name')")
+        .field.button-field
+          a.ui.green.button(:class="{disabled: !newName}", @click="addGroup()")
+            | {{ $t('groups.create_group') }}
+
+      .item(v-for = "(g, idx) in searchBy(groups, mySearch)", :key="g.idx"
+        , v-show = "!g.hidden")
+        h3 〈{{g.n}}〉
+        p {{g.intro}}
+          br.thin-only
+          | &nbsp;&nbsp;&nbsp;&nbsp;
+        .popular-resources(v-if="getTopResources(g.res).length > 0")
+          h4 {{ $t('groups.popular_resources') }}
+            | (
+            | Total:
+            i.book.icon
+            | {{ (g.res || []).length }} {{ $t('groups.resources') }}
+            | )
+          .ui.bulleted.list
+            a.resource-link(
+              v-for="resource in getTopResources(g.res)"
+              :key="resource.href"
+              :href="resource.href"
+              target="_blank"
+            )
+              img.favicon(:src="getFavicon(resource.href)")
+              span {{ resource.n }}
+              span.likes ({{ (resource.likes || []).length }}
+              i.red.heart.icon
+              | )
+        p 
+          span(style="position: relative; top: 0.6em;") {{$t('groups.members')}}
+          span( v-for="m in g.members")
+            router-link(:to = "'/flag/' + m", v-if="isUser(m)")
+              img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
+        
+        p
+          .ui.buttons
+            router-link.ui.basic.green.button(:to="'/group/' + g.idx")
+              i.sign-in.icon
+              | {{$t('groups.go_group')}}
+            a.ui.green.button(v-if="isUser(uid) && !isMember(g.idx)", @click="join(g.idx)") {{$t('groups.join_group')}}
+            a.ui.red.basic.button(v-if="isUser(uid) && isMember(g.idx)", @click="out(g.idx)") {{ $t('groups.out_group') }}
+        
 </template>
 
 <script>
@@ -204,6 +225,21 @@ export default defineComponent({
       set(ref(db, 'groups'), this.groups).then(
         console.log(this.$t('groups.update_sucess'))
       )
+    },
+    getTopResources(resources) {
+      if (!resources || !Array.isArray(resources)) return [];
+      
+      return resources
+        .sort((a, b) => ((b.likes || []).length) - ((a.likes || []).length))
+        .slice(0, 3);
+    },
+    getFavicon(url) {
+      try {
+        const domain = new URL(url).hostname;
+        return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+      } catch (e) {
+        return '';
+      }
     }
   }
 })
@@ -294,8 +330,13 @@ img.ui.avatar {
 }
 
 p {
-  margin-left: 2em;
+  text-align: left;
+  display: flex;
+  margin: 1em auto;
+  font-size: 1.2em;
   color: #495057; 
+  max-width: 620px;
+  align-items: center;
 }
 
 a {
@@ -344,4 +385,43 @@ a:hover {
 .ui.lock.icon {
   margin-right: 8px;
 }
+
+.popular-resources {
+  margin: 1em 0;
+}
+
+.resource-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin-top: 0.5em;
+}
+
+.resource-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5em 1em;
+  background: #f8f9fa;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.resource-link:hover {
+  background: #e9ecef;
+  text-decoration: none;
+}
+
+.favicon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.likes {
+  margin-left: 0.5em;
+  color: #666;
+}
+
 </style>

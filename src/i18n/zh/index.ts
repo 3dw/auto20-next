@@ -174,6 +174,8 @@ export default {
       //report: '任何建議與錯誤回報，請上此<a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">議題區</a>'
     },
     groups: {
+      popular_resources: '熱門資源',
+      resources: '資源',
       group_name: '輸入社團名稱',
       enter_group_name: '請先輸入社團名稱',
       create_group: '創建社團',

@@ -173,6 +173,8 @@ export default {
       // report: 'For any suggestions and bug reports, please go to this <a href="https://github.com/3dw/auto20-next/issues" target="_blank" rel="noopener noreferrer">issue area</a>'
     },
     groups: {
+      popular_resources: 'Popular Resources',
+      resources: 'Resources',
       group_name: "Group Name",
       enter_group_name: "Enter Group Name",
       create_group: "Start a Group",
