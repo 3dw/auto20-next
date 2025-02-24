@@ -201,8 +201,8 @@
           {
             t: 'flag',
             r: '/profile'
-          },
-          { t: 'remove'},
+          }// ,
+          // { t: 'remove'},
           // 'report'
         ],
         zoom: 7,
