@@ -42,6 +42,18 @@
           | {{ $t('profile.form2')}}
           i.red.star
           | {{ $t('profile.form3') }}
+        .ui.vertical.buttons
+          button.ui.basic.purple.button(@click.prevent="$refs.fileInput.click()", v-show="!fileUploaded")
+            i.file.icon
+            | 匯入自學2.0格式資料
+          input(type="file" ref="fileInput" @change="handleFileChange", style="display: none")
+          button.ui.purple.button(v-show="fileUploaded" @click.prevent="importData()", :class="{disabled: !fileUploaded}")
+            i.file.icon
+            | 確認匯入
+          button.ui.basic.green.button(v-show="!isNew" @click.prevent="exportData()")
+            i.download.icon
+            | 匯出自學2.0格式資料
+        .ui.divider
         h4.ui.dividing.header {{$t('profile.form4')}}
         .field
           label.required {{$t('profile.form5')}}
@@ -202,6 +214,8 @@ export default {
   },
   data () {
     return {    
+      fileInput: null,
+      fileUploaded: false,
       agree: false,
       root: {
         latlngColumn: '23.5330,121.0654' // Default to Center of Taiwan
@@ -230,6 +244,109 @@ export default {
     }
   },
   methods: {
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.fileInput = file;
+        this.fileUploaded = true;
+      }
+    },
+    exportData() {
+      console.log('匯出資料');
+      const data = {
+        name: this.root.name,
+        email: this.root.email,
+        address: this.root.address,
+        connect_me: this.root.connect_me,
+        site: this.root.site,
+        site2: this.root.site2,
+        learner_birth: this.root.learner_birth,
+        learner_habit: this.root.learner_habit,
+        latlngColumn: this.root.latlngColumn,
+        child_birth: this.root.child_birth || '',
+        child_birth2: this.root.child_birth2 || '',
+        share: this.root.share,
+        ask: this.root.ask,
+        price: this.root.price,
+        note: this.root.note,
+      }
+      console.log(data);
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    importData() {
+      if (!this.fileInput) {
+        alert('請先選擇檔案');
+        return;
+      }
+
+      console.log('開始匯入資料');
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+
+          // 驗證必要欄位
+          const requiredFields = ['name', 'email', 'address', 'connect_me', 'learner_birth', 'learner_habit', 'share', 'note'];
+          const missingFields = requiredFields.filter(field => !data[field]);
+
+          if (missingFields.length > 0) {
+            alert(`匯入的資料缺少必要欄位：${missingFields.join(', ')}`);
+            return;
+          }
+
+          // 更新資料
+          this.root = {
+            ...this.root,
+            name: data.name,
+            email: data.email,
+            address: data.address,
+            connect_me: data.connect_me,
+            site: data.site || '',
+            site2: data.site2 || '',
+            learner_birth: data.learner_birth,
+            learner_habit: data.learner_habit,
+            child_birth: data.child_birth || '',
+            child_birth2: data.child_birth2 || '',
+            latlngColumn: data.latlngColumn || '23.5330,121.0654',
+            share: data.share,
+            ask: data.ask || '',
+            price: data.price || '',
+            note: data.note
+          };
+
+          // 如果地址有更新，需要重新初始化地圖
+          if (this.map && data.latlngColumn) {
+            this.setMapAndMarker();
+          }
+
+          this.$forceUpdate();
+          alert('資料匯入成功');
+
+          // 重置檔案輸入狀態
+          this.fileInput = null;
+          this.fileUploaded = false;
+          this.$refs.fileInput.value = ''; // 清空檔案輸入框
+        } catch (error) {
+          console.error('JSON 解析錯誤:', error);
+          alert('匯入的檔案格式不正確，請確認是否為有效的 JSON 檔案');
+        }
+      };
+
+      reader.onerror = () => {
+        console.error('檔案讀取失敗');
+        alert('檔案讀取失敗，請重試');
+      };
+
+      reader.readAsText(this.fileInput);
+    },
+
     containsKeyword(message) {
       return keywords.some(keyword => message.includes(keyword));
     },
