@@ -109,9 +109,9 @@ export default defineComponent({
       console.log(newL);
       const nearMatch = newL.match(/^near_(\d+\.\d+),(\d+\.\d+)$/);
       if (!nearMatch && !this.userLocation) {
-        console.log(this.users[this.uid].latlngColumn);
+        console.log(this.users[this.uid] && this.users[this.uid].latlngColumn);
         // 從this.users[this.uid].latlngColumn剖析出位置, 存入this.userLocation
-        if (this.users[this.uid].latlngColumn) {
+        if (this.users[this.uid] && this.users[this.uid].latlngColumn) {
           const [lat, lng] = this.users[this.uid].latlngColumn.split(',').map(Number);
           if (!isNaN(lat) && !isNaN(lng)) {
             this.userLocation = { lat, lng };
