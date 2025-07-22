@@ -42,10 +42,10 @@ import Card from './Card.vue';
 import Loader from './Loader.vue';
 import { hints } from '../data/hints';
 
-interface UserOrPlace {
-  lastUpdate?: number;
-  [key: string]: any;
-}
+// interface UserOrPlace {
+//   lastUpdate?: number;
+//   [key: string]: any;
+// }
 
 export default defineComponent({
   name: 'HelloWorld',

@@ -47,13 +47,13 @@
               span.likes ({{ (resource.likes || []).length }}
               i.red.heart.icon
               | )
-        p 
+        .members-section 
           span(style="position: relative; top: 0.6em;") {{$t('groups.members')}}
           span( v-for="m in g.members")
             router-link(:to = "'/flag/' + m", v-if="isUser(m)")
               img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
         
-        p
+        .buttons-section
           .ui.buttons
             router-link.ui.basic.green.button(:to="'/group/' + g.idx")
               i.sign-in.icon

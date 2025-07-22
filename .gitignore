@@ -22,3 +22,6 @@ pnpm-debug.log*
 *.sln
 *.sw?
 .yarn/install-state.gz
+
+# Firebase configuration
+src/firebase.ts

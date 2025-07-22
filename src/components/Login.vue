@@ -41,7 +41,7 @@
                   input(type="checkbox" v-model="keeploggedin")
                   label {{$t('login.keep_me_logged_in')}}
 
-            p 新用戶？按此
+            .new-user-section 新用戶？按此
               .ui.large.basic.button#register-btn(@click.stop="registerWithEmail", :class="{disabled: isInApp}") 註冊
 </template>
 
@@ -110,7 +110,7 @@ export default defineComponent({
       const path = window.location.pathname;
 
       if (path === '/friends' || path === '/maps' || path === '/privacy-policy' || path.startsWith('/flag') || path.startsWith('/group')) {
-        autoredirect = false;
+        // autoredirect = false;
       }
 
       if (!turnstileToken.value) {

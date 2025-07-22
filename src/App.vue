@@ -132,7 +132,7 @@
   import { showLogin } from './developer/testOnly'; // 導入測試開關
 
   import InApp from 'detect-inapp'; // 導入InApp以偵測瀏覽器內部環境
-  import { set, push, ref, onValue, get, remove } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
+  import { set, push, ref, onValue, get } from 'firebase/database'; // 從firebase/database導入onValue函式用於資料即時讀取
   import { app, usersRef, groupsRef, booksRef, db } from './firebase'; // 導入Firebase相關配置和參考
   import { getAuth, GoogleAuthProvider, EmailAuthProvider, 
     signInWithPopup,
@@ -946,12 +946,12 @@
     
 <style lang="scss">
 
-@import "./scss/global.scss";
-@import "./scss/phone.scss";
-@import "./scss/fat.scss";
-@import "./scss/navbar.scss";
-@import "./scss/sidebar.scss";
-@import "./scss/main-layout.scss";
-@import "./scss/printer.scss";
+@use "./scss/global.scss";
+@use "./scss/phone.scss";
+@use "./scss/fat.scss";
+@use "./scss/navbar.scss";
+@use "./scss/sidebar.scss";
+@use "./scss/main-layout.scss";
+@use "./scss/printer.scss";
 
 </style>
