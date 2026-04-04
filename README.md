@@ -14,68 +14,23 @@
 ## 開發指令
 
 ### 專案設定
-```
-yarn
-```
 
-or 
+``` npm i -g yarn ```
 
-```
 
-npm i
+```yarn```
 
-```
 
 ### 編譯並熱重載以進行開發
-```
-yarn serve
-```
 
-or 
+```yarn serve```
 
-```
-npm run serve
-```
 
 ### 編譯並壓縮以進行生產
-```
-yarn build
-```
-
-or 
-```
-npm run build
-```
-
-### 建構更新並上傳至網路
-
-#### Mac
-```
-yarn deploy
-```
-
-or 
-
-```
-sh deploy.sh
-```
-
-or 
-
-#### Windows
-
-```
-bash depoly.sh
-```
+```yarn build```
 
 ### 檢查和修正檔案
-```
-yarn lint
-```
-or 
-```
-npm run lint
-```
+```yarn lint```
 
 
 ### 自訂配置
