@@ -7,8 +7,6 @@
     "jsx": "preserve",
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,7 +14,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env", "@types/leaflet", "@types/leaflet.markercluster"
     ],
     "paths": {
       "@/*": [

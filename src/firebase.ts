@@ -4,8 +4,7 @@ import { getAuth } from "firebase/auth";
 
 // Initialize Firebase
 const fb = initializeApp({
-  // apiKey: "AIzaSyA64Lzpmdn-HovWkOvTtPFecurm9Szaxf8",
-  apiKey: "AIzaSyBvs4Hkr_IdWC00FY7SYF0fcSjTHAYv5Kg",
+  apiKey: "AIzaSyA64Lzpmdn-HovWkOvTtPFecurm9Szaxf8",
   authDomain: "shackhand-autolearn.firebaseapp.com",
   databaseURL: "https://shackhand-autolearn.firebaseio.com",
   projectId: "shackhand-autolearn",
