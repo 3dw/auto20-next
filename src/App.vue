@@ -50,12 +50,15 @@
           button.no-border.ui.item(v-if="uid", @click="logout")
             i.sign-out.icon
             | {{ $t('login.logout')}}
-  carousel.no-print(:wrapAround="true", :items-to-show="1", :autoplay="3500", :transition="4000", :pauseAutoplayOnHover="true")
-    slide(v-for="slide in news", :key="slide.t")
-      a(v-if="slide.h") {{ $t('news.' + slide.t) }}
-      router-link(v-else-if="slide.r", :to="slide.r") {{ $t('news.' + slide.t) }}
-      span(v-else) {{ $t('news.' + slide.t) }}
-    template(#addons)
+  .no-print.news-carousel(@mouseenter="pauseNewsRotation", @mouseleave="startNewsRotation")
+    transition(name="news-fade", mode="out-in")
+      .news-slide(v-if="currentNews", :key="newsSlideKey(currentNews)")
+        template(v-if="currentNews.type === 'api'")
+          a(:href="currentNews.url", :title="currentNews.description", target="_blank", rel="noopener noreferrer") {{ formatApiNews(currentNews) }}
+        template(v-else)
+          a(v-if="currentNews.h", :href="currentNews.h", target="_blank", rel="noopener noreferrer") {{ $t('news.' + currentNews.t) }}
+          router-link(v-else-if="currentNews.r", :to="currentNews.r") {{ $t('news.' + currentNews.t) }}
+          span(v-else) {{ $t('news.' + currentNews.t) }}
   Tutorial.no-print(v-if="uid && showTutorial && !allTasksCompleted && users && toList(users).length > 0",
   @hideTutorial="showTutorial = false",
   :someTaskCompleted = "checkAllTasks()")  
@@ -146,10 +149,6 @@
   import Login from './components/Login.vue'; // 導入Login
   import Chatbox from './components/Chatbox.vue';
   
-  // If you are using PurgeCSS, make sure to whitelist the carousel CSS classes
-  import 'vue3-carousel/dist/carousel.css'
-  import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
-  
   // 1. 擴展 isInApp 的偵測邏輯
   const inApp = new InApp(window.navigator.userAgent);
   // 初始假設為 InApp 庫的偵測結果
@@ -164,6 +163,47 @@
   const auth = getAuth(app); // 獲取Firebase身份驗證實例
   
   const provider = new GoogleAuthProvider(); // 創建Google認證提供者
+
+  const NEWS_API = 'https://members-backend.alearn13994229.workers.dev/news';
+  const NEWS_AUTOPLAY_MS = 5000;
+
+  type LocalNewsSlide = {
+    type: 'local';
+    t: string;
+    h?: string;
+    r?: string;
+  };
+
+  type ApiNewsSlide = {
+    type: 'api';
+    name: string;
+    date: string;
+    url: string;
+    description: string;
+    category: string;
+    tags: string[];
+  };
+
+  type NewsSlide = LocalNewsSlide | ApiNewsSlide;
+
+  function parseNewsDateMs(dateStr: string): number {
+    const s = String(dateStr ?? '').trim();
+    if (!s) return NaN;
+    return new Date(s.includes('T') ? s : `${s}T00:00:00`).getTime();
+  }
+
+  function filterNewsToLastTwoYears(items: ApiNewsSlide[]): ApiNewsSlide[] {
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - 2);
+    cutoff.setHours(0, 0, 0, 0);
+    const min = cutoff.getTime();
+    return items
+      .filter((it) => {
+        const t = parseNewsDateMs(it.date);
+        return !Number.isNaN(t) && t >= min;
+      })
+      .sort((a, b) => parseNewsDateMs(b.date) - parseNewsDateMs(a.date));
+  }
   
   provider.addScope('profile');
   provider.addScope('email');
@@ -173,10 +213,6 @@
   export default defineComponent({
     name: 'WeLearn', // 定義組件名稱,
     components: {
-      Carousel,
-      Slide,
-      Pagination,
-      Navigation,
       Chatbox,
       Login,
       Tutorial,  // 加入 Tutorial 組件
@@ -190,21 +226,26 @@
         //someTaskCompleted: [false, false, false, false],
         mySearch: '',
         news: [
-          /*{
+          {
+            type: 'local',
             t: 'donate_us',
             h: 'https://www.alearn.org.tw'
-          }, */
-          {
+          },
+          /* {
+            type: 'local',
             t: 'upgrading',
             r: '/about'
-          },
+          }, */
           {
+            type: 'local',
             t: 'flag',
             r: '/profile'
           }// ,
           // { t: 'remove'},
           // 'report'
-        ],
+        ] as NewsSlide[],
+        currentNewsIndex: 0,
+        newsTimer: null as number | null,
         zoom: 7,
         center: [23.5330, 121.0654],
         sidebarVisible: false, // 定義側邊欄可見狀態
@@ -234,9 +275,16 @@
         
       }
     },
+    computed: {
+      currentNews(): NewsSlide | null {
+        return this.news[this.currentNewsIndex] || null;
+      }
+    },
     mounted () {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const vm = this; // 儲存當前Vue實例
+      vm.loadRemoteNews();
+      vm.startNewsRotation();
       //console.log(vm.isInApp); // 輸出是否在應用內部的狀態
       onValue(usersRef, (snapshot) => {
         const data = snapshot.val(); // 讀取用戶資料
@@ -346,6 +394,9 @@
         vm.books = data || {};
       });
     },
+    beforeUnmount() {
+      this.pauseNewsRotation();
+    },
     watch: {
       photoURL(newVal, oldVal) {
         console.log("photoURL changed from", oldVal, "to", newVal);
@@ -380,6 +431,46 @@
       },
       navTo (path) {
         this.$router.push(path)
+      },
+      newsSlideKey(slide: NewsSlide) {
+        return slide.type === 'api' ? slide.url : slide.t;
+      },
+      formatApiNews(slide: ApiNewsSlide) {
+        return `[${slide.category}] ${slide.name} (${slide.date})`;
+      },
+      startNewsRotation() {
+        this.pauseNewsRotation();
+        this.newsTimer = window.setInterval(() => {
+          if (this.news.length > 1) {
+            this.currentNewsIndex = (this.currentNewsIndex + 1) % this.news.length;
+          }
+        }, NEWS_AUTOPLAY_MS);
+      },
+      pauseNewsRotation() {
+        if (this.newsTimer !== null) {
+          window.clearInterval(this.newsTimer);
+          this.newsTimer = null;
+        }
+      },
+      async loadRemoteNews() {
+        try {
+          const response = await axios.get<ApiNewsSlide[]>(NEWS_API);
+          const data = Array.isArray(response.data) ? response.data : [];
+          const remoteNews = filterNewsToLastTwoYears(data.map((item) => ({
+            ...item,
+            type: 'api' as const
+          })));
+          const nextNews = [
+            ...this.news.filter((slide) => slide.type !== 'api'),
+            ...remoteNews
+          ];
+          this.news = nextNews;
+          if (this.currentNewsIndex >= nextNews.length) {
+            this.currentNewsIndex = 0;
+          }
+        } catch (error) {
+          console.error('載入最新消息失敗', error);
+        }
       },
       async registerWithEmail(normalRegister_email: string, normalRegister_password: string, normalRegister_keeploggedin: boolean, turnstileToken: string) {
         if (!normalRegister_password || typeof normalRegister_password !== 'string') {
@@ -953,5 +1044,39 @@
 @import "./scss/sidebar.scss";
 @import "./scss/main-layout.scss";
 @import "./scss/printer.scss";
+
+.news-carousel {
+  height: 2em;
+  overflow: hidden;
+  padding: 0.3em;
+  background-color: #ffc107;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+
+  .news-slide {
+    overflow: hidden;
+  }
+
+  a,
+  span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+  }
+}
+
+.news-fade-enter-active,
+.news-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.news-fade-enter-from,
+.news-fade-leave-to {
+  opacity: 0;
+}
 
 </style>
