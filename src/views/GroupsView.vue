@@ -50,7 +50,7 @@
         p 
           span(style="position: relative; top: 0.6em;") {{$t('groups.members')}}
           span( v-for="m in g.members")
-            router-link(:to = "'/flag/' + m", v-if="isUser(m)")
+            router-link(:to = "'/flag/' + m", v-if="isUser(m)", :title="users[m].name")
               img.ui.avatar(:src="users[m].photoURL", :alt="users[m].name")
         
         p
