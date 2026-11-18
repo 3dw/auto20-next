@@ -33,9 +33,6 @@
 
           form.ui.large.form
             .ui.segment(style="border: none; padding-top: 10px;")
-              .field                
-                .cf-turnstile(data-sitekey="0x4AAAAAAAwqeJZqvEuGZj6H")
-                  //- ,data-callback="javascriptCallback")              
               .field
                 .ui.checkbox(@click.stop)
                   input(type="checkbox" v-model="keeploggedin")
@@ -47,11 +44,6 @@
 
   
 <script lang="ts">
-declare global {
-  interface Window {
-    turnstile: any;
-  }
-}
 import { defineComponent, ref, watch, onMounted } from 'vue';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
@@ -61,17 +53,12 @@ export default defineComponent({
     isInApp: {
       type: Boolean,
       required: true
-    },
-    showLogin: {
-      type: Boolean,
-      required: true
     }
   },
-  setup(props, { emit }) {
+  setup(_props, { emit }) {
     const users_email = ref('');
     const user_password = ref('');
     const keeploggedin = ref(false);
-    const turnstileToken = ref(null);
 
     watch(keeploggedin, (newVal) => {
       localStorage.setItem('keeploggedin', JSON.stringify(newVal));
@@ -82,27 +69,6 @@ export default defineComponent({
       if (storedValue !== null) {
         keeploggedin.value = JSON.parse(storedValue);
       }
-
-      const initializeTurnstile = () => {
-        const turnstileElement = document.querySelector('.cf-turnstile');
-        if (props.showLogin && turnstileElement && (window as any).turnstile) {
-          (window as any).turnstile.render(turnstileElement, {
-            sitekey: '0x4AAAAAAAwqeJZqvEuGZj6H',
-            callback: (token) => {
-              turnstileToken.value = token;
-            },
-            'error-callback': () => {
-              console.error('Turnstile 驗證失敗');
-              // 可以在這裡添加錯誤處理邏輯
-            }
-          });
-        } else {
-          setTimeout(initializeTurnstile, 1000);
-        }
-      };
-
-      // 初始化 Turnstile
-      initializeTurnstile();
     });
 
     const loginGoogle = () => {
@@ -113,12 +79,7 @@ export default defineComponent({
         autoredirect = false;
       }
 
-      if (!turnstileToken.value) {
-        alert('請完成驗證');
-        return;
-      }
-
-      emit('loginGoogle', true, keeploggedin.value, turnstileToken.value);
+      emit('loginGoogle', true, keeploggedin.value);
     };
 
     const toggleLogin = () => {
@@ -131,11 +92,6 @@ export default defineComponent({
     };
 
     const registerWithEmail = () => {
-      if (!turnstileToken.value) {
-        alert('請完成驗證');
-        return;
-      }
-
       console.log("users_email:", users_email.value);
       console.log("user_password:", user_password.value);
       console.log('Register clicked');
@@ -155,18 +111,13 @@ export default defineComponent({
         return;
       }
 
-      emit('registerWithEmail', users_email.value, user_password.value, keeploggedin.value, turnstileToken.value);
+      emit('registerWithEmail', users_email.value, user_password.value, keeploggedin.value);
     };
 
     const loginWithEmail = () => {
       let autoredirect = true;
       console.log('Login clicked');
       const path = window.location.pathname;
-
-      if (!turnstileToken.value) {
-        alert('請完成驗證');
-        return;
-      }
 
       if (!validateEmail(users_email.value)) {
         alert('email格式錯誤，請重試');
@@ -226,7 +177,6 @@ export default defineComponent({
       registerWithEmail,
       loginWithEmail,
       resetPassword,
-      turnstileToken, // 添加這行
     };
   }
 });

@@ -119,7 +119,6 @@
   :uid = "uid", 
   :user="user", :users="users", :photoURL="photoURL"  )
   login(v-if="showLogin", 
-    :showLogin="showLogin", 
     :isInApp="isInApp",
     @loginGoogle="loginGoogle", 
     @toggleLogin="toggleLogin", 
@@ -472,23 +471,11 @@
           console.error('載入最新消息失敗', error);
         }
       },
-      async registerWithEmail(normalRegister_email: string, normalRegister_password: string, normalRegister_keeploggedin: boolean, turnstileToken: string) {
+      async registerWithEmail(normalRegister_email: string, normalRegister_password: string, normalRegister_keeploggedin: boolean) {
         if (!normalRegister_password || typeof normalRegister_password !== 'string') {
           alert('接收的密碼無效，請確認輸入');
           return;
         }
-
-        // 驗證 Turnstile token
-        const isValidTurnstile = await this.verifyTurnstileToken(turnstileToken)
-        
-        console.log('isValidTurnstile', isValidTurnstile)
-        
-        if (!isValidTurnstile) {
-          console.log('驗證失敗')
-          alert('驗證失敗，請重試')
-          return
-        }
-        
 
         try {
           // const auth = getAuth();
@@ -558,28 +545,6 @@
             console.error("註冊失敗：", error);
             alert("註冊失敗：" + error.message);
           }
-        }
-      },
-      
-
-      async verifyTurnstileToken(token: string): Promise<boolean> {
-        try {
-          const response = await axios.post(
-            'https://auto20.alearn13994229.workers.dev/', 
-            { token }, 
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              // 若需要帶上預檢 OPTIONS 請求
-              // withCredentials: true 
-            }
-          );
-          console.log('response', response);
-          return response.data.success;
-        } catch (error) {
-          console.error("Turnstile 驗證錯誤", error);
-          return false;
         }
       },
       updateUserData(user: any) {

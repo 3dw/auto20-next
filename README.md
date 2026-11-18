@@ -10,6 +10,10 @@
 3. PWA手機可從網頁安裝成類似App的樣子
 4. 多元配對邏輯
 
+## 登入與註冊
+
+本分支已移除 Cloudflare Turnstile 人機驗證，Google 登入、Email 登入與註冊不再需要驗證 token，也不會呼叫 Turnstile 驗證 Worker。Email 註冊仍保留欄位檢查與註冊後的電子郵件驗證流程。
+
 
 ## 開發指令
 
